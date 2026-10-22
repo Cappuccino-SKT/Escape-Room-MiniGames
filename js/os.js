@@ -181,8 +181,62 @@
   const api = (id) => ({
     close: () => closeWin(id),
     unlock: (appId) => unlock(appId),
-    notify
+    win: (container) => reveal(id, container),
+    notify,
+    play
   });
+
+  // Arquivo bloqueado: pede a senha revelada pelo minigame anterior
+  function lockScreen(app, content) {
+    play("denied");
+    content.innerHTML = `
+      <form class="lock-screen">
+        <div class="lock-ico">🔒</div>
+        <h3>ARQUIVO CRIPTOGRAFADO</h3>
+        <p>Digite a senha para acessar <b>${app.title}</b></p>
+        <input type="password" autocomplete="off" placeholder="Senha">
+        <p class="lock-msg"></p>
+      </form>`;
+    const form = content.querySelector("form"), input = form.querySelector("input");
+    setTimeout(() => input.focus(), 50);
+    form.onsubmit = (e) => {
+      e.preventDefault();
+      if (input.value.trim().toUpperCase() === String(app.password || "").toUpperCase()) {
+        unlock(app.id);
+        content.innerHTML = "";
+        app.render(content, api(app.id));
+      } else {
+        play("loginError");
+        input.value = "";
+        form.querySelector(".lock-msg").textContent = taunts[Math.floor(Math.random() * taunts.length)];
+        form.classList.remove("shake"); void form.offsetWidth; form.classList.add("shake");
+      }
+    };
+  }
+
+  // Minigame vencido: mostra a senha do próximo arquivo (campo "next" do app)
+  function reveal(id, container) {
+    const app = APPS.find((a) => a.id === id);
+    const next = APPS.find((a) => a.id === app.next);
+    const box = document.createElement("div");
+    box.className = "reveal";
+    box.innerHTML = next
+      ? `<div><small>SENHA OBTIDA</small><div class="code"></div><p>Use-a para abrir <b>${next.icon} ${next.title}</b></p></div>`
+      : `<div><small>VOCÊ VENCEU</small><div class="code"></div><p>${app.winMessage || ""}</p></div>`;
+    container.appendChild(box);
+    scramble(box.querySelector(".code"), next ? next.password : (app.finalCode || "LIVRE"));
+    play("unlock");
+  }
+
+  // Efeito de "decodificação" letra por letra
+  function scramble(el, text) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&@";
+    let frame = 0;
+    const t = setInterval(() => {
+      el.textContent = [...text].map((c, i) => (i < frame / 4 ? c : chars[Math.floor(Math.random() * chars.length)])).join("");
+      if (++frame > text.length * 4) clearInterval(t);
+    }, 40);
+  }
 
   function openApp(id) {
     const app = APPS.find((a) => a.id === id);
@@ -206,13 +260,8 @@
     $("#windows").appendChild(w);
 
     const content = w.querySelector(".content");
-    if (!unlocked.has(id)) {
-      w.classList.add("denied");
-      play("denied");
-      content.innerHTML = `<div class="center denied-msg">⛔<br>ACESSO NEGADO<br><small>Este arquivo ainda não está disponível para você.</small></div>`;
-    } else {
-      app.render(content, api(id));
-    }
+    if (!unlocked.has(id)) lockScreen(app, content);
+    else app.render(content, api(id));
 
     const tb = document.createElement("button");
     tb.className = "task";
@@ -279,5 +328,5 @@
   addEventListener("contextmenu", (e) => e.preventDefault());
 
   // Expõe API para minigames
-  window.OS = { openApp, closeWin, notify, unlock, play };
+  window.OS = { openApp, closeWin, notify, unlock, play, scramble };
 })();

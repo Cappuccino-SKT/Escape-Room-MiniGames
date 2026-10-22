@@ -4,11 +4,14 @@
 //   title:   nome exibido no ícone e na janela
 //   icon:    emoji do ícone
 //   width/height: tamanho inicial da janela (px)
-//   locked:  (opcional) true = mostra "acesso negado" ao abrir
+//   locked:  (opcional) true = arquivo começa trancado e pede senha
+//   password: senha que abre o arquivo trancado
+//   next:    id do próximo arquivo; ao vencer, o jogo mostra a senha dele
 //   render(container, api): função que monta o conteúdo da janela.
 //     api.close()       fecha a janela
 //     api.unlock(id)    desbloqueia outro app (ex.: ao vencer um minigame)
 //     api.notify(text)  mostra uma notificação
+//     api.win(container) vitória: mostra a senha do arquivo "next"
 window.APPS = [
   {
     id: "readme",
@@ -31,9 +34,24 @@ Viver ou morrer. A escolha é sua.
                                   — J</div>`;
     }
   },
-  { id: "game1", title: "Jogo 1", icon: "🧩", width: 500, height: 380, render: placeholder },
-  { id: "game2", title: "Jogo 2", icon: "🔪", locked: true, width: 500, height: 380, render: placeholder },
-  { id: "game3", title: "Jogo 3", icon: "⏱️", locked: true, width: 500, height: 380, render: placeholder },
+  {
+    id: "terminal", title: "acesso_remoto.exe", icon: "💻",
+    next: "wires",
+    width: 760, height: 480,
+    render: (el, api) => TerminalGame(el, api)
+  },
+  {
+    id: "wires", title: "painel_energia.exe", icon: "🔌",
+    locked: true, password: "ADAM",       // <<< senha revelada pelo terminal
+    next: "game3",
+    width: 820, height: 500,
+    render: (el, api) => WiresGame(el, api)
+  },
+  {
+    id: "game3", title: "Jogo 3", icon: "⏱️",
+    locked: true, password: "BILLY",      // <<< senha revelada pelo painel de fios
+    width: 500, height: 380, render: placeholder
+  },
   {
     id: "trash",
     title: "Lixeira",

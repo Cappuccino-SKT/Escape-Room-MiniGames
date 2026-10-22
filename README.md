@@ -15,3 +15,10 @@ Abra `index.html` no navegador (Chrome recomendado). Não precisa de internet ne
 ## Adicionar minigames
 Em `apps/apps.js`, adicione um item na lista `APPS` com uma função `render(container, api)`.
 `api.unlock("id")` desbloqueia outro app (ex.: vencer o Jogo 1 libera o Jogo 2).
+
+## Minigames atuais (sequência)
+1. **acesso_remoto.exe** – terminal hacker: `help` → `scan` → `crack 192.168.6.66` → `connect 192.168.6.66` → `ls`/`cat` → `decrypt chave.enc`. Revela a senha do próximo arquivo.
+2. **painel_energia.exe** (senha `ADAM`) – ligar os fios da fonte ATX nos pinos certos usando o manual. Revela a próxima senha.
+3. **Jogo 3** (senha `BILLY`) – a fazer.
+
+Senhas dos arquivos: campo `password` em `apps/apps.js`. A senha revelada ao vencer é sempre a do arquivo indicado em `next`.
