@@ -1,0 +1,121 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; background: #000; color: #ddd;
+  font-family: "Segoe UI", Tahoma, sans-serif; user-select: none; }
+.hidden { display: none !important; }
+.center { text-align: center; padding: 30px 10px; }
+.muted { color: #888; }
+
+.screen { position: fixed; inset: 0; display: none; }
+.screen.active { display: flex; }
+
+/* ---------- Power ---------- */
+#screen-power { flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+#power-btn { width: 110px; height: 110px; border-radius: 50%; font-size: 52px; cursor: pointer;
+  background: #110000; color: #b00; border: 3px solid #500; transition: .3s; }
+#power-btn:hover { color: #f22; border-color: #f22; box-shadow: 0 0 40px #f004; }
+.power-hint { color: #555; font-size: 14px; }
+
+/* ---------- Boot ---------- */
+#screen-boot { padding: 30px; }
+#boot-log { font-family: "Courier New", monospace; font-size: 18px; color: #c8c8c8; line-height: 1.5; }
+#boot-log::after { content: "_"; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ---------- Login ---------- */
+#screen-login { align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at center, #3a0000 0%, #120000 60%, #000 100%); }
+.login-box { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 320px; }
+.login-box h2 { font-weight: 300; font-size: 28px; color: #eee; }
+#login-form { display: flex; width: 100%; }
+#login-pass { flex: 1; padding: 10px 12px; font-size: 16px; background: #0008; color: #fff;
+  border: 1px solid #600; border-right: 0; outline: none; }
+#login-pass:focus { border-color: #c00; }
+#login-form button { width: 44px; background: #600; color: #fff; border: 0; font-size: 18px; cursor: pointer; }
+#login-form button:hover { background: #a00; }
+#login-msg { min-height: 20px; font-size: 15px; }
+#login-msg.err { color: #ff4040; }
+#login-msg.ok { color: #9f9; }
+#hint-btn { background: none; border: 0; color: #a66; cursor: pointer; text-decoration: underline; visibility: hidden; }
+#hint-text { color: #ccc; font-style: italic; text-align: center; min-height: 18px; }
+.login-clock { position: absolute; bottom: 30px; left: 40px; font-size: 64px; font-weight: 200; color: #fff8; }
+.shake { animation: shake .4s; }
+@keyframes shake { 20%,60% { transform: translateX(-10px); } 40%,80% { transform: translateX(10px); } }
+
+/* Avatar: boneco Billy em CSS */
+.avatar { width: 130px; height: 130px; border-radius: 50%; background: #1a0000; border: 3px solid #700;
+  display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.puppet { position: relative; width: 70px; height: 92px; background: #f2efe6; border-radius: 45% 45% 40% 40%; }
+.puppet .eye { position: absolute; top: 28px; width: 16px; height: 16px; background: #000; border-radius: 50%; }
+.puppet .eye::after { content: ""; position: absolute; top: 5px; left: 5px; width: 6px; height: 6px; background: #c00; border-radius: 50%; }
+.puppet .eye.l { left: 12px; } .puppet .eye.r { right: 12px; }
+.puppet .cheek { position: absolute; top: 52px; width: 16px; height: 16px; border-radius: 50%;
+  background: radial-gradient(circle, #e00 0 25%, #d00 26% 100%); }
+.puppet .cheek.l { left: 4px; } .puppet .cheek.r { right: 4px; }
+.puppet .mouth { position: absolute; bottom: 12px; left: 50%; width: 24px; height: 4px; margin-left: -12px; background: #600; }
+.puppet .mouth::before, .puppet .mouth::after { content: ""; position: absolute; top: 4px; width: 2px; height: 14px; background: #333; }
+.puppet .mouth::before { left: 2px; } .puppet .mouth::after { right: 2px; }
+
+/* ---------- Desktop ---------- */
+#screen-desktop { flex-direction: column; }
+#desktop { position: relative; flex: 1; overflow: hidden;
+  background:
+    radial-gradient(circle at 75% 45%, #5a000088 0, transparent 35%),
+    repeating-linear-gradient(45deg, #0000 0 40px, #ffffff05 40px 41px),
+    linear-gradient(160deg, #1c0000, #050000 70%); }
+#desktop::after { content: "VIVER OU MORRER"; position: absolute; right: 5%; bottom: 8%;
+  font-size: 5vw; font-weight: 900; letter-spacing: .2em; color: #ffffff08; pointer-events: none; }
+#icons { position: absolute; top: 10px; left: 10px; bottom: 10px; display: flex; flex-direction: column; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
+.icon { width: 88px; padding: 6px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  border: 1px solid transparent; border-radius: 3px; cursor: pointer; text-align: center; }
+.icon:hover { background: #ffffff14; }
+.icon.sel { background: #b0000044; border-color: #b0000088; }
+.icon .ico { font-size: 40px; filter: drop-shadow(0 2px 3px #000); }
+.icon .lbl { font-size: 13px; color: #fff; text-shadow: 0 1px 2px #000, 0 0 4px #000; word-break: break-word; }
+.icon.locked .ico { filter: grayscale(1) brightness(.6); }
+.icon.locked .lbl::before { content: "🔒 "; }
+
+/* ---------- Janelas ---------- */
+.window { position: absolute; display: flex; flex-direction: column; background: #161616;
+  border: 1px solid #500; box-shadow: 0 10px 40px #000c; min-width: 220px; min-height: 120px; resize: both; overflow: hidden; }
+.window.min { display: none; }
+.window.max { left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important; resize: none; }
+.titlebar { display: flex; align-items: center; justify-content: space-between; height: 32px; padding-left: 10px;
+  background: linear-gradient(#3a0000, #250000); cursor: move; flex-shrink: 0; }
+.titlebar .t { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.titlebar .btns { display: flex; height: 100%; }
+.titlebar button { width: 42px; height: 100%; background: none; border: 0; color: #ccc; font-size: 14px; cursor: pointer; }
+.titlebar button:hover { background: #ffffff1a; }
+.titlebar .b-close:hover { background: #c00; color: #fff; }
+.content { flex: 1; overflow: auto; position: relative; }
+.notepad { white-space: pre-wrap; font-family: "Courier New", monospace; font-size: 15px; padding: 16px;
+  background: #f4f1e8; color: #111; min-height: 100%; user-select: text; }
+.denied-msg { color: #f33; font-size: 22px; font-weight: bold; line-height: 1.6; }
+.denied-msg small { color: #999; font-size: 13px; font-weight: normal; }
+
+/* ---------- Taskbar ---------- */
+#taskbar { height: 42px; display: flex; align-items: stretch; background: #0b0b0bee; border-top: 1px solid #400; z-index: 9000; }
+#start-btn { padding: 0 16px; background: #400; color: #fff; border: 0; font-weight: bold; cursor: pointer; }
+#start-btn:hover { background: #700; }
+#task-items { flex: 1; display: flex; gap: 2px; padding: 4px; overflow: hidden; }
+.task { max-width: 180px; padding: 0 12px; background: #1c1c1c; color: #ccc; border: 0; border-bottom: 2px solid transparent;
+  cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
+.task.active { background: #2a0a0a; border-bottom-color: #c00; color: #fff; }
+#timer { display: flex; align-items: center; padding: 0 14px; font-family: "Courier New", monospace; font-size: 18px; font-weight: bold; color: #f55; }
+#timer:empty { display: none; }
+#timer.danger { animation: blink 1s steps(1) infinite; color: #f00; }
+#clock { display: flex; align-items: center; padding: 0 14px; font-size: 14px; color: #aaa; }
+
+#start-menu { position: absolute; left: 0; bottom: 42px; width: 260px; background: #111; border: 1px solid #400; z-index: 9001; display: flex; flex-direction: column; }
+.start-header { padding: 14px; background: #2a0000; font-weight: bold; }
+#start-apps { display: flex; flex-direction: column; padding: 6px 0; }
+#start-menu button { text-align: left; padding: 10px 16px; background: none; border: 0; color: #ddd; cursor: pointer; font-size: 14px; }
+#start-menu button:hover { background: #400; }
+#lock-btn { border-top: 1px solid #300 !important; }
+
+/* ---------- Extras ---------- */
+.toast { position: fixed; right: 16px; bottom: 56px; padding: 12px 18px; background: #1a0000; border: 1px solid #a00;
+  color: #fff; z-index: 9500; animation: toast .3s; }
+@keyframes toast { from { transform: translateY(20px); opacity: 0; } }
+#gameover { position: fixed; inset: 0; z-index: 99999; display: flex; align-items: center; justify-content: center;
+  background: #000e; color: #f00; font-size: 6vw; font-weight: 900; text-align: center; letter-spacing: .05em;
+  animation: blink 1.2s steps(1) infinite; }

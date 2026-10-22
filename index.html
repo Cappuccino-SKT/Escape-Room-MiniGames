@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JIGSAW OS</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- 0. Tela de "ligar" (necessária para liberar tela cheia e áudio) -->
+  <section id="screen-power" class="screen active">
+    <button id="power-btn" title="Ligar">⏻</button>
+    <p class="power-hint">Clique para ligar o computador</p>
+  </section>
+
+  <!-- 1. Boot -->
+  <section id="screen-boot" class="screen">
+    <pre id="boot-log"></pre>
+  </section>
+
+  <!-- 2. Login -->
+  <section id="screen-login" class="screen">
+    <div class="login-box">
+      <div class="avatar">
+        <div class="puppet">
+          <span class="eye l"></span><span class="eye r"></span>
+          <span class="cheek l"></span><span class="cheek r"></span>
+          <span class="mouth"></span>
+        </div>
+      </div>
+      <h2 id="login-user"></h2>
+      <form id="login-form" autocomplete="off">
+        <input id="login-pass" type="password" placeholder="Senha" autofocus>
+        <button type="submit">➜</button>
+      </form>
+      <p id="login-msg"></p>
+      <button id="hint-btn" type="button">Esqueci minha senha</button>
+      <p id="hint-text"></p>
+    </div>
+    <div class="login-clock" id="login-clock"></div>
+  </section>
+
+  <!-- 3. Área de trabalho -->
+  <section id="screen-desktop" class="screen">
+    <div id="desktop">
+      <div id="icons"></div>
+      <div id="windows"></div>
+    </div>
+    <div id="start-menu" class="hidden">
+      <div class="start-header" id="start-user"></div>
+      <div id="start-apps"></div>
+      <button id="lock-btn">🔒 Bloquear</button>
+    </div>
+    <footer id="taskbar">
+      <button id="start-btn">☠ Iniciar</button>
+      <div id="task-items"></div>
+      <div id="timer" title="Tempo restante"></div>
+      <div id="clock"></div>
+    </footer>
+  </section>
+
+  <script src="js/config.js"></script>
+  <script src="apps/apps.js"></script>
+  <script src="js/os.js"></script>
+</body>
+</html>
