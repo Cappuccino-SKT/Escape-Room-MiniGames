@@ -4,6 +4,11 @@
   const wait = (ms) => new Promise((r) => setTimeout(r, ms / (C.bootSpeed || 1)));
   const unlocked = new Set(APPS.filter((a) => !a.locked).map((a) => a.id));
 
+  function play(name) {
+    const src = C.sounds && C.sounds[name];
+    if (src) { const a = new Audio(src); a.play().catch(() => {}); }
+  }
+
   function show(id) {
     document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
     $("#screen-" + id).classList.add("active");
@@ -14,6 +19,7 @@
     if (C.fullscreenOnStart && document.documentElement.requestFullscreen) {
       document.documentElement.requestFullscreen().catch(() => {});
     }
+    play("boot");
     boot();
   };
 
@@ -69,10 +75,12 @@
     if (val === String(C.password).toUpperCase()) {
       $("#login-msg").textContent = "Bem-vindo.";
       $("#login-msg").className = "ok";
+      play("loginOk");
       setTimeout(enterDesktop, 900);
       return;
     }
     errors++;
+    play("loginError");
     $("#login-msg").className = "err";
     $("#login-msg").textContent = taunts[Math.min(errors - 1, taunts.length - 1)];
     $("#login-pass").value = "";
@@ -124,6 +132,15 @@
     setInterval(tickClock, 1000); tickClock();
   }
 
+  function unlock(appId) {
+    if (unlocked.has(appId)) return;
+    unlocked.add(appId);
+    refreshLocks();
+    play("unlock");
+    const app = APPS.find((a) => a.id === appId);
+    if (app) notify(`🔓 Novo arquivo liberado: ${app.title}`);
+  }
+
   function refreshLocks() {
     document.querySelectorAll(".icon").forEach((i) => i.classList.toggle("locked", !unlocked.has(i.dataset.id)));
   }
@@ -163,7 +180,7 @@
 
   const api = (id) => ({
     close: () => closeWin(id),
-    unlock: (appId) => { unlocked.add(appId); refreshLocks(); },
+    unlock: (appId) => unlock(appId),
     notify
   });
 
@@ -191,6 +208,7 @@
     const content = w.querySelector(".content");
     if (!unlocked.has(id)) {
       w.classList.add("denied");
+      play("denied");
       content.innerHTML = `<div class="center denied-msg">⛔<br>ACESSO NEGADO<br><small>Este arquivo ainda não está disponível para você.</small></div>`;
     } else {
       app.render(content, api(id));
@@ -261,5 +279,5 @@
   addEventListener("contextmenu", (e) => e.preventDefault());
 
   // Expõe API para minigames
-  window.OS = { openApp, closeWin, notify, unlock: (id) => api().unlock(id) };
+  window.OS = { openApp, closeWin, notify, unlock, play };
 })();
