@@ -16,9 +16,16 @@ Abra `index.html` no navegador (Chrome recomendado). Não precisa de internet ne
 Em `apps/apps.js`, adicione um item na lista `APPS` com uma função `render(container, api)`.
 `api.unlock("id")` desbloqueia outro app (ex.: vencer o Jogo 1 libera o Jogo 2).
 
-## Minigames atuais (sequência)
-1. **acesso_remoto.exe** – terminal hacker: `help` → `scan` → `crack 192.168.6.66` → `connect 192.168.6.66` → `ls`/`cat` → `decrypt chave.enc`. Revela a senha do próximo arquivo.
-2. **painel_energia.exe** (senha `ADAM`) – ligar os fios da fonte ATX nos pinos certos usando o manual. Revela a próxima senha.
-3. **Jogo 3** (senha `BILLY`) – a fazer.
+## Nível 1 (`js/level1.js`)
+1. **Acesso de administrador:** qualquer app mostra "Acesso negado" → aparece `cadastro_adm` → criar usuário e escolher o nível. O nível Administrador pede a **senha de permissão** (`adminPassword` em `js/config.js`, escondida na sala). Se escolher outro nível, o jogo segue normalmente.
+2. **Remover o hacker:** alerta de segurança → aparece `gerenciador_usuarios` e começa a contagem (`hackerMinutes`). O gerenciador exige administrador (o botão "Não" não funciona). Exclua o hacker (`hacker: true` na lista `users` do config).
+   - Pegadinha: excluir o próprio usuário pede confirmação; se confirmar, precisa recriar o usuário.
+   - Se o tempo acabar, o usuário do jogador é excluído e precisa ser recriado. Os usuários já excluídos continuam excluídos.
+3. **Próxima parte:** os apps são liberados (por enquanto: terminal → painel de fios → Jogo 3).
+
+## Minigames
+- **acesso_remoto.exe** – terminal hacker: `help` → `scan` → `crack 192.168.6.66` → `connect 192.168.6.66` → `ls`/`cat` → `decrypt chave.enc`. Revela a senha do próximo arquivo.
+- **painel_energia.exe** (senha `ADAM`) – ligar os fios da fonte ATX nos pinos certos usando o manual.
+- **Jogo 3** (senha `BILLY`) – a fazer.
 
 Senhas dos arquivos: campo `password` em `apps/apps.js`. A senha revelada ao vencer é sempre a do arquivo indicado em `next`.

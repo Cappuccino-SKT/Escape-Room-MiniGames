@@ -108,10 +108,11 @@
 
   function buildDesktop() {
     $("#start-user").textContent = "☠ " + C.userName;
+    if (window.onDesktopReady) setTimeout(window.onDesktopReady, 0);
     const icons = $("#icons"), menu = $("#start-apps");
     APPS.forEach((app) => {
       const ic = document.createElement("div");
-      ic.className = "icon";
+      ic.className = "icon" + (app.hidden ? " hidden" : "");
       ic.dataset.id = app.id;
       ic.innerHTML = `<span class="ico">${app.icon}</span><span class="lbl">${app.title}</span>`;
       ic.onclick = () => { document.querySelectorAll(".icon").forEach((i) => i.classList.remove("sel")); ic.classList.add("sel"); };
@@ -121,6 +122,8 @@
       icons.appendChild(ic);
 
       const mi = document.createElement("button");
+      mi.dataset.id = app.id;
+      if (app.hidden) mi.classList.add("hidden");
       mi.innerHTML = `${app.icon} ${app.title}`;
       mi.onclick = () => { toggleStart(false); openApp(app.id); };
       menu.appendChild(mi);
@@ -241,6 +244,8 @@
   function openApp(id) {
     const app = APPS.find((a) => a.id === id);
     if (!app) return;
+    // Regras de fase (ex.: exigir administrador). Retornar false impede a abertura.
+    if (window.GATE && window.GATE(app) === false) return;
     if (wins[id]) { wins[id].el.classList.remove("min"); focus(id); return; }
 
     const w = document.createElement("div");
@@ -312,11 +317,57 @@
     });
   }
 
+  // Mostra um ícone que estava escondido
+  function showIcon(id, on = true) {
+    document.querySelectorAll(`.icon[data-id="${id}"], #start-apps [data-id="${id}"]`).forEach((n) => n.classList.toggle("hidden", !on));
+    if (on) {
+      const ic = document.querySelector(`.icon[data-id="${id}"]`);
+      ic.classList.remove("appear"); void ic.offsetWidth; ic.classList.add("appear");
+    }
+  }
+
+  // Caixa de diálogo modal. Retorna uma Promise com o "value" do botão clicado
+  // (ou o texto digitado, se input: true).
+  // buttons: [{ label, value, primary, dead }]  dead = botão que não faz nada
+  function dialog({ title = "Sistema", text = "", icon = "⚠", type = "", input = false, msg = "", buttons = [{ label: "OK", value: true, primary: true }] }) {
+    return new Promise((resolve) => {
+      const o = document.createElement("div");
+      o.className = "dialog-overlay";
+      o.innerHTML = `
+        <form class="dialog ${type}">
+          <div class="titlebar"><span class="t">${title}</span></div>
+          <div class="dialog-body"><div class="dialog-ico">${icon}</div><div class="dialog-text">${text}</div></div>
+          ${input ? `<input type="password" autocomplete="off" class="dialog-input" placeholder="Senha">` : ""}
+          <p class="dialog-msg">${msg}</p>
+          <div class="dialog-btns"></div>
+        </form>`;
+      const form = o.querySelector("form"), btns = o.querySelector(".dialog-btns"), inp = o.querySelector("input");
+      buttons.forEach((b) => {
+        const el = document.createElement("button");
+        el.type = b.primary ? "submit" : "button";
+        el.textContent = b.label;
+        if (b.primary) el.classList.add("primary");
+        el.onclick = (e) => {
+          e.preventDefault();
+          if (b.dead) { form.classList.remove("shake"); void form.offsetWidth; form.classList.add("shake"); return; }
+          o.remove();
+          resolve(input ? (b.primary ? inp.value.trim() : null) : b.value);
+        };
+        btns.appendChild(el);
+      });
+      if (type === "danger") play("denied");
+      document.body.appendChild(o);
+      setTimeout(() => (inp || btns.querySelector(".primary") || btns.firstChild).focus(), 50);
+    });
+  }
+
   function notify(text) {
     const n = document.createElement("div");
     n.className = "toast";
     n.textContent = text;
-    document.body.appendChild(n);
+    let box = document.getElementById("toasts");
+    if (!box) { box = document.createElement("div"); box.id = "toasts"; document.body.appendChild(box); }
+    box.appendChild(n);
     setTimeout(() => n.remove(), 4000);
   }
 
@@ -328,5 +379,5 @@
   addEventListener("contextmenu", (e) => e.preventDefault());
 
   // Expõe API para minigames
-  window.OS = { openApp, closeWin, notify, unlock, play, scramble };
+  window.OS = { openApp, closeWin, notify, unlock, play, scramble, dialog, showIcon, isUnlocked: (id) => unlocked.has(id) };
 })();
