@@ -258,6 +258,7 @@ window.BiosGame = function (el, api) {
       await Interference.run();
     }
     overlay.classList.add("hidden");
+    if (MS.onDone) return MS.onDone();
     api.win(el.querySelector(".bios"));
   }
 
@@ -272,8 +273,8 @@ window.BiosGame = function (el, api) {
   // ---------- Teclado ----------
   const onKey = (e) => {
     if (!el.isConnected) return removeEventListener("keydown", onKey);
-    // Atalho do mestre do jogo: Ctrl+Shift+N pula o componente atual
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "n" && mode !== "win" && mode !== "idle") return levelDone();
+    // Atalho do mestre do jogo: Ctrl+Shift+S (ou N) pula o componente atual
+    if (e.ctrlKey && e.shiftKey && "ns".includes(e.key.toLowerCase()) && mode !== "win" && mode !== "idle") return levelDone();
     const d = KEYS[e.key];
     if (!d || mode === "idle" || mode === "win") return;
     e.preventDefault();
@@ -289,7 +290,9 @@ window.BiosGame = function (el, api) {
     if (MS.done) {
       loadLevel(); mode = "win";
       requestAnimationFrame(frame);
-      return api.win(el.querySelector(".bios"));
+      el.querySelector(".bios-main").classList.add("powered");
+      overlay.innerHTML = `<div class="mz-msg">✔ TODOS OS COMPONENTES<br>RECONECTADOS</div>`;
+      return overlay.classList.remove("hidden");
     }
     loadLevel();
     requestAnimationFrame(frame);

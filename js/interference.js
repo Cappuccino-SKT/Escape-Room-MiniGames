@@ -1,6 +1,8 @@
 // ===== INTERFERÊNCIA DO HACKER + JUMP SCARE =====
 // Uso: Interference.run().then(() => ...)  — janelas de cmd e erros se sobrepondo,
 // tela falhando, silêncio e, por fim, o susto com som alto.
+// Interference.scare() — só o susto (tela preta + rosto + grito).
+// Interference.mock(texto) — máscara neutra com uma frase, sem susto.
 window.Interference = (() => {
   const C = window.CONFIG;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -167,8 +169,46 @@ window.Interference = (() => {
     running = false;
   }
 
+  // Só o susto, sem as janelas de erro
+  async function scare() {
+    if (running) return;
+    running = true;
+    document.activeElement && document.activeElement.blur();
+    const l = layer();
+    l.classList.add("dark");
+    await sleep(500);
+    l.innerHTML = `<div class="hack-scare">${scareFace()}</div>`;
+    scream();
+    await sleep(1700);
+    l.remove();
+    running = false;
+  }
+
+  // Máscara neutra (easter egg): sem susto, só a cara e uma pergunta
+  function mockFace() {
+    if (C.mockImage) return `<img src="${C.mockImage}" alt="">`;
+    return `<svg viewBox="0 0 200 240" class="hack-face">
+      <ellipse cx="100" cy="120" rx="85" ry="110" fill="#f1ede2"/>
+      <ellipse cx="62" cy="95" rx="22" ry="24" fill="#000"/><ellipse cx="138" cy="95" rx="22" ry="24" fill="#000"/>
+      <circle cx="62" cy="97" r="5" fill="#f00"/><circle cx="138" cy="97" r="5" fill="#f00"/>
+      <circle cx="42" cy="155" r="18" fill="#c00"/><circle cx="158" cy="155" r="18" fill="#c00"/>
+      <path d="M76 188 L124 188" stroke="#900" stroke-width="6" stroke-linecap="round"/>
+    </svg>`;
+  }
+  async function mock(text) {
+    if (running) return;
+    running = true;
+    document.activeElement && document.activeElement.blur();
+    const l = layer();
+    l.classList.add("mock");
+    l.innerHTML = `<div class="hack-mock">${mockFace()}<p>${text}</p></div>`;
+    await sleep(3800);
+    l.remove();
+    running = false;
+  }
+
   // Atalho do mestre do jogo para testar
   addEventListener("keydown", (e) => { if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "h") run(); });
 
-  return { run, get running() { return running; } };
+  return { run, scare, mock, get running() { return running; } };
 })();

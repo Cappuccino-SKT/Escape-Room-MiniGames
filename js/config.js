@@ -18,8 +18,37 @@ window.CONFIG = {
   // ===== NÍVEL 1 =====
   adminPassword: "KRAMER",     // <<< senha de permissão de ADMINISTRADOR (escondida na sala)
   hackerMinutes: 5,            // tempo para excluir o hacker antes que ele exclua você
-  // Lista do Gerenciador de Usuários. Marque o hacker com hacker: true.
-  // O usuário criado pelo jogador é inserido em uma posição aleatória.
+  wrongDeletePenalty: 30,      // segundos perdidos ao excluir um usuário inocente
+  // A lista de usuários (users) fica mais abaixo.
+
+  // Dicas que cada fase desbloqueia (a 5ª é a física, dentro da caixa). Ficam salvas em dicas.txt.
+  // >>> TEXTOS PROVISÓRIOS: trocar quando a resposta final for decidida.
+  hints: [
+    "DICA 1 (a definir)",
+    "DICA 2 (a definir)",
+    "DICA 3 (a definir)",
+    "DICA 4 (a definir)"
+  ],
+
+  // Fase 2: registro de segurança (app log_seguranca.txt). É a pista para descobrir o hacker:
+  // acesso REMOTO, HOJE às 23:59, com nível ADMINISTRADOR → só o t.hoffman bate com tudo na lista de usuários.
+  securityLog: [
+    "=== REGISTRO DE SEGURANÇA — JIGSAW OS ===",
+    "",
+    "hoje 21:53   login local ............. m.guimaraes",
+    "hoje 22:26   backup automático ....... concluído",
+    "hoje 23:06   3 senhas incorretas ..... b.lima (bloqueado)",
+    "hoje 23:41   login local ............. i.ribeiro",
+    "hoje 23:58   conexão externa recebida de 192.168.6.66",
+    "hoje 23:59   login local ............. h.costa",
+    "hoje 23:59   login REMOTO ............ ████████  (192.168.6.66)",
+    "             nível da conta: ADMINISTRADOR",
+    "hoje 23:59   login local ............. s.freitas",
+    "hoje 23:59   câmera 02 ativada remotamente",
+    "hoje 23:59   ████████ tentou apagar este registro",
+    "",
+    "AVISO: o nome da conta remota foi apagado deste registro."
+  ],
   // ===== FASE 3: BIOS — JOGO DO LABIRINTO =====
   // Cada componente é um labirinto. O ponto anda sozinho; o jogador muda a direção com WASD ou setas.
   // w = largura dos corredores (em blocos; 1 = estreito), cols/rows = tamanho do labirinto em "salas",
@@ -40,21 +69,62 @@ window.CONFIG = {
     // ...ou, garantido, ao terminar o último labirinto.
   },
 
+  // ===== FASE 4: RECONFIGURAÇÃO PELO CMD =====
+  // A tela mostra uma correção (task). Na sala, o papel "Tabela de correções" liga a correção ao número (num),
+  // e o papel "Manual de comandos" (do lado oposto) liga o número ao comando (cmd).
+  // A cada partida são sorteadas "steps" correções. Comando válido mas errado = recomeça do zero.
+  // Depois de mudar esta lista, imprima de novo os papéis (imprimir.html).
+  reconfig: {
+    steps: 6,
+    tasks: [
+      { task: "Formatar Windows",               num: 1,  cmd: "fw" },
+      { task: "Atualizar registro do sistema",  num: 2,  cmd: "arg" },
+      { task: "Ativar antivírus",               num: 3,  cmd: "atv" },
+      { task: "Recriar ícones",                 num: 4,  cmd: "ric" },
+      { task: "Recuperar arquivos do usuário",  num: 6,  cmd: "rau" },
+      { task: "Restaurar área de trabalho",     num: 7,  cmd: "rad" },
+      { task: "Montar disco C:",                num: 8,  cmd: "mdc" },
+      { task: "Configurar data e hora",         num: 9,  cmd: "cdh" },
+      { task: "Restaurar papel de parede",      num: 11, cmd: "rpp" },
+      { task: "Reinstalar drivers de vídeo",    num: 12, cmd: "rdv" },
+      { task: "Reiniciar serviços do sistema",  num: 14, cmd: "rss" },
+      { task: "Reconectar à rede",              num: 15, cmd: "rcn" }
+    ],
+    // Comandos falsos: aparecem no manual, são aceitos pelo cmd, mas nunca são a resposta certa.
+    decoys: [
+      { num: 5,  cmd: "wf" },  { num: 10, cmd: "dar" }, { num: 13, cmd: "rvd" },
+      { num: 16, cmd: "ncr" }, { num: 17, cmd: "tva" }, { num: 18, cmd: "pps" }
+    ]
+  },
+
   // Jump scare: imagem e volume. Deixe scareImage "" para usar o rosto desenhado no código.
   // Para usar um som próprio, preencha sounds.scare (senão um grito é gerado pelo navegador).
   scareImage: "",
   scareVolume: 1.0,           // 0.0 a 1.0
+  mockImage: "",              // máscara neutra do easter egg da fase 4 ("" = desenhada no código)
+
+  // ===== FASE 5: RANSOMWARE =====
+  // A chave é impressa (imprimir.html, página 3), rasgada nos "-" e os pedaços são escondidos na sala.
+  // Ao digitar a chave certa, o jogo mostra o código do cadeado da caixa (onde está a última dica).
+  ransom: {
+    minutes: 8,                        // se acabar: jump scare e o cronômetro recomeça
+    key: "K7RX-M3Q9-ZT4H-W8PL-6NFD",   // 5 pedaços (um por jogador)
+    lockCode: "0000"                   // >>> código do cadeado da caixa (a definir)
+  },
+
+  // Lista do Gerenciador de Usuários. Marque o hacker com hacker: true.
+  // O usuário criado pelo jogador é inserido em uma posição aleatória.
 
   users: [
     { name: "a.souza", level: "Editor", last: "ontem, 18:41" },
     { name: "b.lima", level: "Espectador", last: "hoje, 23:06" },
     { name: "c.ferreira", level: "Editor", last: "09/10, 07:58" },
-    { name: "d.rocha", level: "Administrador", last: "ontem, 07:05" },
+    { name: "d.rocha", level: "Administrador", last: "hoje, 23:58" },
     { name: "e.martins", level: "Editor", last: "15/10, 08:15" },
     { name: "f.alves", level: "Espectador", last: "09/10, 19:03" },
     { name: "g.nunes", level: "Espectador", last: "ontem, 07:36" },
-    { name: "h.costa", level: "Editor", last: "hoje, 13:02" },
-    { name: "i.ribeiro", level: "Administrador", last: "21/10, 10:18" },
+    { name: "h.costa", level: "Editor", last: "hoje, 23:59" },
+    { name: "i.ribeiro", level: "Administrador", last: "hoje, 23:41" },
     { name: "j.carvalho", level: "Editor", last: "ontem, 23:07" },
     { name: "k.pereira", level: "Espectador", last: "09/10, 11:06" },
     { name: "l.mendes", level: "Espectador", last: "12/10, 09:35" },
@@ -64,7 +134,7 @@ window.CONFIG = {
     { name: "p.araujo", level: "Espectador", last: "ontem, 11:44" },
     { name: "q.cardoso", level: "Espectador", last: "hoje, 15:33" },
     { name: "r.dias", level: "Editor", last: "12/10, 20:18" },
-    { name: "s.freitas", level: "Espectador", last: "hoje, 22:26" },
+    { name: "s.freitas", level: "Espectador", last: "hoje, 23:59" },
     { name: "u.moreira", level: "Espectador", last: "21/10, 16:09" },
     { name: "v.pinto", level: "Editor", last: "15/10, 07:42" },
     { name: "w.ramos", level: "Espectador", last: "21/10, 23:36" },
@@ -81,7 +151,7 @@ window.CONFIG = {
     { name: "g.nascimento", level: "Editor", last: "hoje, 11:28" },
     { name: "h.correia", level: "Editor", last: "09/10, 14:56" },
     { name: "i.batista", level: "Espectador", last: "21/10, 19:55" },
-    { name: "j.farias", level: "Administrador", last: "12/10, 19:22" },
+    { name: "j.farias", level: "Administrador", last: "ontem, 23:59" },
     { name: "k.reis", level: "Editor", last: "ontem, 10:05" },
     { name: "l.santana", level: "Espectador", last: "ontem, 13:42" },
     { name: "m.guimaraes", level: "Espectador", last: "hoje, 21:53" },

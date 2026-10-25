@@ -18,13 +18,21 @@ Em `apps/apps.js`, adicione um item na lista `APPS` com uma função `render(con
 
 ## Nível 1 (`js/level1.js`)
 1. **Acesso de administrador:** qualquer app mostra "Acesso negado" → aparece `cadastro_adm` → criar usuário e escolher o nível. O nível Administrador pede a **senha de permissão** (`adminPassword` em `js/config.js`, escondida na sala). Se escolher outro nível, o jogo segue normalmente.
-2. **Remover o hacker:** alerta de segurança → aparece `gerenciador_usuarios` e começa a contagem (`hackerMinutes`). O gerenciador exige administrador (o botão "Não" não funciona). Exclua o hacker (`hacker: true` na lista `users` do config).
+2. **Remover o hacker:** alerta de segurança → aparecem `gerenciador_usuarios` e `log_seguranca.txt` (pista de quem é o hacker) e começa a contagem (`hackerMinutes`). Excluir um inocente tira `wrongDeletePenalty` segundos. O gerenciador exige administrador (o botão "Não" não funciona). Exclua o hacker (`hacker: true` na lista `users` do config).
    - Pegadinha: excluir o próprio usuário pede confirmação; se confirmar, precisa recriar o usuário.
    - Se o tempo acabar, o usuário do jogador é excluído e precisa ser recriado. Os usuários já excluídos continuam excluídos.
 3. **BIOS (jogo do labirinto):** aparece `bios_setup`. Para cada um dos 6 componentes, o ponto anda sozinho e o jogador muda a direção com **WASD/setas** até chegar ao ponto colorido. Bater na parede = erro (volta ao início daquele labirinto).
    - **Interferência do hacker** (uma única vez): aos 5 min jogando, OU com 30 erros acumulados, OU, garantido, ao terminar. Janelas de cmd e erros se sobrepõem, e no fim vem o jump scare com som alto.
    - Configuração em `maze`, `scareImage` e `scareVolume` no `js/config.js`.
-   - Atalhos do mestre do jogo: **Ctrl + Shift + H** dispara a interferência (teste); **Ctrl + Shift + N** pula o componente atual.
+   - Atalhos do mestre do jogo: **Ctrl + Shift + H** dispara a interferência (teste); **Ctrl + Shift + S** pula o componente atual.
+4. **Reconfiguração (cmd.exe):** a BIOS perdeu a configuração. O cmd pergunta `Y/N` (N = susto). Em cada etapa aparece uma correção; o grupo usa a **Tabela de correções** (correção → número) e o **Manual de comandos** (número → comando) colados na sala. Comando errado = recomeça do zero.
+   - Lista em `reconfig` no `js/config.js`. Para imprimir os dois papéis, abra **`imprimir.html`** e use Ctrl+P.
+   - **Ctrl + Shift + S** completa a correção atual.
+5. **Ransomware (final):** o hacker sequestra o sistema. A chave de recuperação (página 3 do `imprimir.html`) é rasgada e escondida pela sala. Com a chave certa, aparece o código do cadeado da caixa (`ransom.lockCode`). Se o cronômetro (`ransom.minutes`) acabar, vem um susto e ele recomeça. **Ctrl + Shift + S** preenche a chave.
+
+**Dicas e final:** as fases 1 a 4 desbloqueiam dicas (`hints` no config, guardadas em `dicas.txt`). A 5ª está na caixa. Com todas, o grupo fala a resposta final para o mestre do jogo.
+
+**Tempo por fase:** **Ctrl + Shift + L** mostra quanto tempo cada fase levou (útil nos testes).
 
 ## Minigames guardados (escondidos do desktop, para outros níveis)
 - **acesso_remoto.exe** – terminal hacker: `help` → `scan` → `crack 192.168.6.66` → `connect 192.168.6.66` → `ls`/`cat` → `decrypt chave.enc`. Revela a senha do próximo arquivo.

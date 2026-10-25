@@ -2,6 +2,9 @@
 // Fase 1: todo app pede ADMINISTRADOR → aparece "cadastro_adm" → jogador cria usuário.
 // Fase 2: alerta do hacker → aparece "gerenciador_usuarios" → excluir o hacker em X minutos.
 // Fase 3: aparece "bios_setup" → jogo do labirinto (6 componentes) + interferência do hacker.
+// Fase 4: a BIOS perdeu a configuração → aparece "cmd.exe" → reconfigurar com os comandos dos papéis da sala.
+// Fase 5: ransomware (js/ransom.js) → chave rasgada na sala → código do cadeado da caixa.
+// Cada fase de 1 a 4 desbloqueia uma dica (CONFIG.hints), guardada em "dicas.txt".
 (() => {
   const C = window.CONFIG;
   const LEVELS = [
@@ -9,7 +12,7 @@
     { id: "Editor",        icon: "✏️", desc: "Visualizar e editar arquivos" },
     { id: "Administrador", icon: "🛡️", desc: "Controle total do sistema" }
   ];
-  const S = { phase: 1, user: null, deleted: new Set(), timerEnd: 0, timerId: null, playerPos: 0 };
+  const S = { phase: 1, user: null, deleted: new Set(), timerEnd: 0, timerId: null, playerPos: 0, hints: 0 };
   const isAdmin = () => S.user && S.user.level === "Administrador";
 
   // ---------- Senha de administrador (repete até acertar ou cancelar) ----------
@@ -31,7 +34,7 @@
   // ---------- Regras de abertura dos apps ----------
   let shownCadastro = false;
   window.GATE = (app) => {
-    if (app.id === "cadastro") return true;
+    if (["cadastro", "log", "dicas"].includes(app.id)) return true;
     if (app.id === "gerenciador") { gateManager(); return false; }
     if (S.phase >= 3 && isAdmin()) return true;
 
@@ -114,14 +117,19 @@
   // ---------- Usuário criado ----------
   async function userCreated() {
     if (S.phase === 1) {
-      await sleep(1500);
+      PhaseLog.mark("Fase 1 – Administrador");
+      await sleep(1000);
+      await giveHint();
+      await sleep(800);
       await OS.dialog({ type: "danger", icon: "👁", title: "ALERTA DE SEGURANÇA",
         text: "Um usuário descobriu a sua existência e está tomando medidas para <b>excluir o seu usuário</b>.<br><br>" +
-              `Exclua o usuário dele antes que ele exclua o seu.<br>Você tem <b>${C.hackerMinutes} minutos</b>.`,
+              `Exclua o usuário dele antes que ele exclua o seu.<br>Você tem <b>${C.hackerMinutes} minutos</b>.<br><br>` +
+              "O <b>log_seguranca.txt</b> registrou a invasão. Cuidado: excluir um inocente dá tempo a ele.",
         buttons: [{ label: "Entendido", primary: true }] });
       S.phase = 2;
       OS.showIcon("gerenciador");
-      OS.notify("📥 Novo aplicativo instalado: gerenciador_usuarios");
+      OS.showIcon("log");
+      OS.notify("📥 Novos aplicativos: gerenciador_usuarios e log_seguranca.txt");
       startHackerTimer();
     } else if (S.phase === 2) {
       await sleep(800);
@@ -228,17 +236,31 @@
       busy = false;
       S.deleted.add(u.name);
       if (u.hacker) return hackerDeleted();
-      OS.notify(`🗑 Usuário ${u.name} excluído`);
+      S.timerEnd -= C.wrongDeletePenalty * 1000;
+      OS.play("denied");
+      OS.notify(`⚠ ${u.name} era inocente! O intruso ganhou ${C.wrongDeletePenalty} segundos.`);
+      const t = document.querySelector("#timer");
+      t.classList.remove("penalty"); void t.offsetWidth; t.classList.add("penalty");
+      tick();
       render();
     }
 
     async function hackerDeleted() {
       stopHackerTimer();
       S.phase = 3;
+      PhaseLog.mark("Fase 2 – Hacker");
       api.close();
+      OS.closeWin("log");
       OS.play("unlock");
       await OS.dialog({ icon: "✔", title: "Ameaça eliminada",
-        text: "O usuário que estava te vigiando <b>foi excluído</b>.<br><br>Podemos dar início à próxima parte." });
+        text: "O usuário que estava te vigiando <b>foi excluído</b>." });
+      await giveHint();
+      OS.play("denied");
+      await OS.dialog({ type: "danger", icon: "🧬", title: "FALHA CRÍTICA NA BIOS",
+        text: "Antes de ser excluído, o intruso <b>danificou a BIOS</b> deste computador.<br><br>" +
+              "Componentes corrompidos: <b>CPU, RAM, GPU, SSD, PSU e FAN</b>.<br><br>" +
+              "Se a BIOS não for reparada, o sistema não vai sobreviver ao próximo reinício. " +
+              "Abra o <b>bios_setup</b> e conserte cada componente." });
       OS.showIcon("bios");
       OS.notify("📥 Novo aplicativo instalado: bios_setup");
     }
@@ -246,14 +268,62 @@
     render();
   }
 
+  // ---------- Fase 4: BIOS reparada, mas sem configuração ----------
+  window.MazeState.onDone = async () => {
+    S.phase = 4;
+    PhaseLog.mark("Fase 3 – BIOS");
+    OS.closeWin("bios");
+    OS.play("unlock");
+    await OS.dialog({ icon: "✔", title: "BIOS reparada",
+      text: "Todos os componentes foram <b>reconectados</b>." });
+    await giveHint();
+    OS.play("denied");
+    await OS.dialog({ type: "danger", icon: "⚙", title: "CONFIGURAÇÃO PERDIDA",
+      text: "Os danos causados pelo intruso <b>apagaram a configuração</b> da BIOS.<br><br>" +
+            "A área de trabalho não pode ser carregada até que o sistema seja <b>reconfigurado</b>.<br><br>" +
+            "Abra o <b>cmd.exe</b> e reconfigure o sistema." });
+    OS.showIcon("reconfig");
+    OS.notify("📥 Novo aplicativo instalado: cmd.exe");
+  };
+
+  // ---------- Fase 5: sistema reconfigurado → ransomware ----------
+  window.ReconfigState.onDone = async () => {
+    S.phase = 5;
+    PhaseLog.mark("Fase 4 – cmd");
+    await sleep(1000);
+    OS.closeWin("reconfig");
+    await giveHint();
+    Ransom.start(() => PhaseLog.mark("Fase 5 – Ransomware"));
+  };
+
+  // ---------- Dicas ----------
+  async function giveHint() {
+    const n = ++S.hints;
+    OS.closeWin("dicas"); // reabre atualizado
+    OS.play("unlock");
+    await OS.dialog({ icon: "🧩", title: `DICA ${n} DESBLOQUEADA`,
+      text: `<b>${esc(C.hints[n - 1] || "")}</b><br><br><small>Esta dica fica guardada em <b>dicas.txt</b>.</small>` });
+    OS.showIcon("dicas");
+  }
+  function Dicas(el) {
+    const list = C.hints.slice(0, S.hints).map((h, i) => `DICA ${i + 1}: ${esc(h)}`).join("\n\n");
+    el.innerHTML = `<div class="notepad">${list || "Nenhuma dica ainda."}\n\n\n<i>A última dica não está neste computador.</i></div>`;
+  }
+  function LogSeguranca(el) {
+    el.innerHTML = `<div class="notepad">${C.securityLog.map(esc).join("\n")}</div>`;
+  }
+
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
   window.APPS.push(
+    { id: "dicas", title: "dicas.txt", icon: "🧩", hidden: true, width: 460, height: 360, render: Dicas },
+    { id: "log", title: "log_seguranca.txt", icon: "📜", hidden: true, width: 620, height: 440, render: LogSeguranca },
     { id: "cadastro", title: "cadastro_adm", icon: "🪪", hidden: true, width: 440, height: 470, render: Cadastro },
     { id: "gerenciador", title: "gerenciador_usuarios", icon: "👥", hidden: true, width: 640, height: 520, render: Gerenciador },
     { id: "bios", title: "bios_setup", icon: "🧬", hidden: true, width: 860, height: 560,
-      finalCode: "REBOOT", winMessage: "Componentes reconectados. A próxima fase será liberada em breve.",
-      render: (el, api) => BiosGame(el, api) }
+      render: (el, api) => BiosGame(el, api) },
+    { id: "reconfig", title: "cmd.exe", icon: "⌨️", hidden: true, width: 760, height: 480,
+      render: (el, api) => ReconfigGame(el, api) }
   );
 })();
