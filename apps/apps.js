@@ -4,6 +4,7 @@
 //   title:   nome exibido no ícone e na janela
 //   icon:    emoji do ícone
 //   width/height: tamanho inicial da janela (px)
+//   hidden:  (opcional) true = ícone escondido até OS.showIcon(id)
 //   locked:  (opcional) true = arquivo começa trancado e pede senha
 //   password: senha que abre o arquivo trancado
 //   next:    id do próximo arquivo; ao vencer, o jogo mostra a senha dele
@@ -35,20 +36,20 @@ Viver ou morrer. A escolha é sua.
     }
   },
   {
-    id: "terminal", title: "acesso_remoto.exe", icon: "💻",
+    id: "terminal", title: "acesso_remoto.exe", icon: "💻", hidden: true,   // guardado para outro nível
     next: "wires",
     width: 760, height: 480,
     render: (el, api) => TerminalGame(el, api)
   },
   {
-    id: "wires", title: "painel_energia.exe", icon: "🔌",
+    id: "wires", title: "painel_energia.exe", icon: "🔌", hidden: true,     // guardado para outro nível
     locked: true, password: "ADAM",       // <<< senha revelada pelo terminal
     next: "game3",
     width: 820, height: 500,
     render: (el, api) => WiresGame(el, api)
   },
   {
-    id: "game3", title: "Jogo 3", icon: "⏱️",
+    id: "game3", title: "Jogo 3", icon: "⏱️", hidden: true,
     locked: true, password: "BILLY",      // <<< senha revelada pelo painel de fios
     width: 500, height: 380, render: placeholder
   },

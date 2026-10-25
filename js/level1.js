@@ -1,7 +1,7 @@
 // ===== NÍVEL 1 =====
 // Fase 1: todo app pede ADMINISTRADOR → aparece "cadastro_adm" → jogador cria usuário.
 // Fase 2: alerta do hacker → aparece "gerenciador_usuarios" → excluir o hacker em X minutos.
-// Fase 3: apps liberados (próxima parte).
+// Fase 3: aparece "bios_setup" → reconectar os componentes no labirinto de paredes ocultas.
 (() => {
   const C = window.CONFIG;
   const LEVELS = [
@@ -239,7 +239,8 @@
       OS.play("unlock");
       await OS.dialog({ icon: "✔", title: "Ameaça eliminada",
         text: "O usuário que estava te vigiando <b>foi excluído</b>.<br><br>Podemos dar início à próxima parte." });
-      if (window.onLevel1Complete) window.onLevel1Complete();
+      OS.showIcon("bios");
+      OS.notify("📥 Novo aplicativo instalado: bios_setup");
     }
 
     render();
@@ -250,6 +251,9 @@
 
   window.APPS.push(
     { id: "cadastro", title: "cadastro_adm", icon: "🪪", hidden: true, width: 440, height: 470, render: Cadastro },
-    { id: "gerenciador", title: "gerenciador_usuarios", icon: "👥", hidden: true, width: 640, height: 520, render: Gerenciador }
+    { id: "gerenciador", title: "gerenciador_usuarios", icon: "👥", hidden: true, width: 640, height: 520, render: Gerenciador },
+    { id: "bios", title: "bios_setup", icon: "🧬", hidden: true, width: 860, height: 560,
+      finalCode: "REBOOT", winMessage: "Componentes reconectados. A próxima fase será liberada em breve.",
+      render: (el, api) => BiosGame(el, api) }
   );
 })();

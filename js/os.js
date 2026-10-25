@@ -46,7 +46,8 @@
       await wait(l.includes("....") ? 450 : 160);
     }
     await wait(900);
-    showLogin();
+    if (C.password) showLogin();
+    else enterDesktop();
   }
 
   // ---------- Login ----------
@@ -108,6 +109,7 @@
 
   function buildDesktop() {
     $("#start-user").textContent = "☠ " + C.userName;
+    if (!C.password) $("#lock-btn").classList.add("hidden");
     if (window.onDesktopReady) setTimeout(window.onDesktopReady, 0);
     const icons = $("#icons"), menu = $("#start-apps");
     APPS.forEach((app) => {

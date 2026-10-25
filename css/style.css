@@ -241,3 +241,39 @@ html, body { height: 100%; overflow: hidden; background: #000; color: #ddd;
 .um-del { padding: 4px 10px; background: #fff; border: 1px solid #c88; color: #a00; cursor: pointer; }
 .um-del:hover { background: #c00; color: #fff; }
 .um tr.deleting td { opacity: .4; text-decoration: line-through; }
+
+/* ---------- BIOS ---------- */
+.bios { height: 100%; display: flex; flex-direction: column; background: #0000a8; color: #c0c0c0;
+  font-family: "Courier New", monospace; font-size: 14px; }
+.bios-top { text-align: center; padding: 4px; background: #00a8a8; color: #000; font-weight: bold; letter-spacing: .1em; }
+.bios-tabs { display: flex; gap: 2px; padding: 0 10px; background: #00a8a8; }
+.bios-tabs span { padding: 3px 12px; color: #000; }
+.bios-tabs span.on { background: #0000a8; color: #fff; }
+.bios-body { flex: 1; display: flex; min-height: 0; padding: 10px; gap: 10px; }
+.bios-main { flex: 1; display: flex; flex-direction: column; border: 2px double #c0c0c0; padding: 10px; min-width: 0; }
+.bios-title { color: #fff; margin-bottom: 8px; }
+.bios-gridwrap { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; container-type: size; }
+.bios-grid { position: relative; display: grid; touch-action: none; cursor: crosshair;
+  grid-template-columns: repeat(var(--c), 1fr); grid-template-rows: repeat(var(--r), 1fr);
+  width: min(100cqw, 100cqh * var(--c) / var(--r)); aspect-ratio: var(--c) / var(--r);
+  background: #000058; border: 2px solid #c0c0c0; }
+.bios-cell { position: relative; border: 1px dashed #ffffff18; display: flex; align-items: center; justify-content: center; }
+.bios-cell.filled::before { content: ""; position: absolute; inset: 0; background: var(--fill); opacity: .18; }
+.bios-dot { position: relative; z-index: 2; width: 74%; height: 74%; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  color: #000; font-weight: bold; font-size: clamp(9px, 1.4vw, 14px); box-shadow: 0 0 10px #000; pointer-events: none; }
+.bios-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.bios-line { fill: none; stroke-width: .32; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
+.bios-line.ok { opacity: 1; filter: drop-shadow(0 0 .1px #fff); }
+.bios-wall { position: absolute; z-index: 3; background: #fff; box-shadow: 0 0 12px #ff0, 0 0 4px #fff; animation: wall 1.2s forwards; pointer-events: none; }
+.bios-wall.v { width: 6px; margin-left: -3px; } .bios-wall.h { height: 6px; margin-top: -3px; }
+@keyframes wall { 0%,60% { opacity: 1; } 100% { opacity: 0; } }
+.bios-grid.zap { animation: shake .3s; }
+.bios-main.powered .bios-grid { box-shadow: 0 0 30px #3f6; border-color: #3f6; }
+.bios-side { width: 220px; border: 2px double #c0c0c0; padding: 10px; font-size: 13px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+.bios-side b { color: #fff; }
+.bios-red { color: #ff5555; }
+.bios-status div { white-space: pre; }
+.bios-status i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; }
+.bios .ok { color: #55ff55; } .bios .bad { color: #ff5555; }
+.bios-foot { display: flex; gap: 20px; padding: 4px 12px; background: #00a8a8; color: #000; font-size: 13px; }
+@media (max-width: 640px) { .bios-side { display: none; } }
