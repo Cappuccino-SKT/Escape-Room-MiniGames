@@ -252,28 +252,49 @@ html, body { height: 100%; overflow: hidden; background: #000; color: #ddd;
 .bios-body { flex: 1; display: flex; min-height: 0; padding: 10px; gap: 10px; }
 .bios-main { flex: 1; display: flex; flex-direction: column; border: 2px double #c0c0c0; padding: 10px; min-width: 0; }
 .bios-title { color: #fff; margin-bottom: 8px; }
-.bios-gridwrap { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; container-type: size; }
-.bios-grid { position: relative; display: grid; touch-action: none; cursor: crosshair;
-  grid-template-columns: repeat(var(--c), 1fr); grid-template-rows: repeat(var(--r), 1fr);
-  width: min(100cqw, 100cqh * var(--c) / var(--r)); aspect-ratio: var(--c) / var(--r);
-  background: #000058; border: 2px solid #c0c0c0; }
-.bios-cell { position: relative; border: 1px dashed #ffffff18; display: flex; align-items: center; justify-content: center; }
-.bios-cell.filled::before { content: ""; position: absolute; inset: 0; background: var(--fill); opacity: .18; }
-.bios-dot { position: relative; z-index: 2; width: 74%; height: 74%; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  color: #000; font-weight: bold; font-size: clamp(9px, 1.4vw, 14px); box-shadow: 0 0 10px #000; pointer-events: none; }
-.bios-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-.bios-line { fill: none; stroke-width: .32; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
-.bios-line.ok { opacity: 1; filter: drop-shadow(0 0 .1px #fff); }
-.bios-wall { position: absolute; z-index: 3; background: #fff; box-shadow: 0 0 12px #ff0, 0 0 4px #fff; animation: wall 1.2s forwards; pointer-events: none; }
-.bios-wall.v { width: 6px; margin-left: -3px; } .bios-wall.h { height: 6px; margin-top: -3px; }
-@keyframes wall { 0%,60% { opacity: 1; } 100% { opacity: 0; } }
-.bios-grid.zap { animation: shake .3s; }
-.bios-main.powered .bios-grid { box-shadow: 0 0 30px #3f6; border-color: #3f6; }
+.bios-title b { color: #ff0; }
+.bios-main.powered { border-color: #3f6; box-shadow: inset 0 0 30px #3f63; }
 .bios-side { width: 220px; border: 2px double #c0c0c0; padding: 10px; font-size: 13px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
 .bios-side b { color: #fff; }
 .bios-red { color: #ff5555; }
 .bios-status div { white-space: pre; }
 .bios-status i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; }
-.bios .ok { color: #55ff55; } .bios .bad { color: #ff5555; }
+.bios .ok { color: #55ff55; } .bios .bad { color: #777; } .bios .cur { color: #ff0; }
 .bios-foot { display: flex; gap: 20px; padding: 4px 12px; background: #00a8a8; color: #000; font-size: 13px; }
+.mz-wrap { position: relative; flex: 1; min-height: 0; }
+.mz-wrap canvas { position: absolute; inset: 0; }
+.mz-wrap.zap { animation: shake .3s; }
+.mz-wrap.zap::after { content: "CURTO-CIRCUITO"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 34px; font-weight: bold; background: #f003; text-shadow: 0 0 10px #f00; }
+.mz-overlay { position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; background: #00004099; }
+.mz-msg { color: #fff; font-size: 40px; font-weight: bold; text-align: center; text-shadow: 0 0 12px #00f; }
+.mz-msg small { font-size: 18px; color: #ff0; }
+.mz-ask { background: #c0c0c0; color: #000; padding: 20px 26px; border: 2px solid #fff; box-shadow: 6px 6px 0 #000; text-align: center; min-width: 260px; }
+.mz-ask p { font-size: 18px; font-weight: bold; margin-bottom: 16px; }
+.mz-ask button { margin: 0 6px; padding: 6px 24px; font: bold 15px "Courier New", monospace; background: #0000a8; color: #fff; border: 2px solid #fff; cursor: pointer; }
+.mz-ask button.yes { background: #a00; }
 @media (max-width: 640px) { .bios-side { display: none; } }
+
+/* ---------- Interferência do hacker ---------- */
+#hack-layer { position: fixed; inset: 0; z-index: 99990; overflow: hidden; cursor: none; }
+#hack-layer.dark { background: #000; }
+#hack-layer.glitch { animation: glitch .12s steps(2) infinite; }
+@keyframes glitch { 0% { transform: translate(6px, -4px); filter: hue-rotate(90deg) invert(0); } 50% { transform: translate(-8px, 5px); filter: invert(1); } 100% { transform: translate(3px, 2px); filter: saturate(4) hue-rotate(-60deg); } }
+body.hacked #screen-desktop { animation: glitch .4s steps(2) infinite; }
+.hack-warn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center;
+  background: #300c; color: #f00; font: 900 8vw/1.1 "Courier New", monospace; animation: blink .3s steps(1) infinite; }
+.hack-warn small { font-size: 3vw; color: #fff; }
+.hack-cmd { position: absolute; height: 260px; background: #000; border: 1px solid #888; box-shadow: 0 8px 30px #000; animation: pop .1s; }
+.hack-cmd pre { height: calc(100% - 24px); overflow: hidden; padding: 6px; color: #ccc; font: 13px "Courier New", monospace; white-space: pre-wrap; }
+.hack-bar { height: 24px; padding: 3px 8px; background: #fff; color: #000; font: 12px "Segoe UI", sans-serif; display: flex; justify-content: space-between; }
+.hack-bar.red { background: #c00; color: #fff; }
+.hack-err { position: absolute; width: 340px; background: #f0f0f0; color: #000; border: 1px solid #c00; box-shadow: 0 8px 30px #000a; animation: pop .1s; font-family: "Segoe UI", sans-serif; }
+.hack-err-body { display: flex; gap: 12px; align-items: center; padding: 16px; font-size: 14px; }
+.hack-err-body b { width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%; background: #d00; color: #fff; display: flex; align-items: center; justify-content: center; }
+.hack-err-btn { text-align: right; padding: 0 12px 10px; }
+.hack-err-btn button { padding: 3px 22px; }
+@keyframes pop { from { transform: scale(.6); opacity: 0; } }
+.hack-scare { position: absolute; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; animation: scare 1.7s; }
+.hack-scare svg, .hack-scare img { height: 100vh; max-width: 100vw; object-fit: cover; animation: scareShake .06s infinite; }
+@keyframes scare { 0% { transform: scale(2.5); } 8% { transform: scale(1); } 100% { transform: scale(1.15); } }
+@keyframes scareShake { 0% { translate: -8px 4px; } 50% { translate: 8px -6px; } 100% { translate: -4px -2px; } }

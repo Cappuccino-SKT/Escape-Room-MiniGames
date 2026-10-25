@@ -1,38 +1,18 @@
-// ===== MINIGAME: BIOS — RECONEXÃO DE COMPONENTES =====
-// Ligue os pontos de mesma cor. As paredes do labirinto estão ocultas:
-// ao bater em uma, ela aparece por um instante.
+// ===== MINIGAME: BIOS — JOGO DO LABIRINTO =====
+// Um labirinto por componente. O ponto anda sozinho; WASD/setas mudam a direção.
+// Bater na parede = erro (volta ao início do labirinto atual).
+// Interferência do hacker: uma única vez, no que vier primeiro — tempo, erros ou fim do jogo.
+
+// Estado da fase 3 (sobrevive a fechar/abrir a janela)
+window.MazeState = { started: false, level: 0, errors: 0, interfered: false, done: false, timer: null, paused: false };
+
 window.BiosGame = function (el, api) {
-  const CFG = window.CONFIG.bios;
-  const G = CFG.grid.map((row) => [...row]);
-  const R = G.length, Cn = G[0].length;
-  const key = (r, c) => r + "," + c;
-  const colorOf = (r, c) => G[r][c].toUpperCase();
-
-  // ---------- Paredes (entre células de cores diferentes) ----------
-  const walls = new Set();
-  const wallId = (a, b) => [key(...a), key(...b)].sort().join("|");
-  const between = [];
-  for (let r = 0; r < R; r++) for (let c = 0; c < Cn; c++) {
-    [[r, c + 1], [r + 1, c]].forEach(([r2, c2]) => {
-      if (r2 < R && c2 < Cn && colorOf(r, c) !== colorOf(r2, c2)) between.push(wallId([r, c], [r2, c2]));
-    });
-  }
-  // passagens falsas com sorteio fixo (sempre as mesmas)
-  let seed = 1337;
-  const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280);
-  const decoys = new Set();
-  while (decoys.size < Math.min(CFG.decoyOpenings || 0, between.length)) decoys.add(between[Math.floor(rnd() * between.length)]);
-  between.forEach((w) => !decoys.has(w) && walls.add(w));
-
-  // ---------- Pontos ----------
-  const ends = {}; // cor -> [[r,c],[r,c]]
-  for (let r = 0; r < R; r++) for (let c = 0; c < Cn; c++) {
-    const ch = G[r][c];
-    if (ch === ch.toUpperCase()) (ends[ch] = ends[ch] || []).push([r, c]);
-  }
-  const endAt = (r, c) => Object.keys(ends).find((k) => ends[k].some(([a, b]) => a === r && b === c));
-  const paths = {}; // cor -> [[r,c], ...]
-  Object.keys(ends).forEach((k) => (paths[k] = []));
+  const CFG = window.CONFIG.maze, MS = window.MazeState, LV = CFG.levels;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const lvl = () => LV[Math.min(MS.level, LV.length - 1)]; // componente atual
+  const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+  const KEYS = { ArrowUp: "up", w: "up", W: "up", ArrowDown: "down", s: "down", S: "down",
+                 ArrowLeft: "left", a: "left", A: "left", ArrowRight: "right", d: "right", D: "right" };
 
   el.innerHTML = `
     <div class="bios">
@@ -40,160 +20,284 @@ window.BiosGame = function (el, api) {
       <div class="bios-tabs"><span>Main</span><span class="on">Advanced</span><span>Boot</span><span>Security</span><span>Exit</span></div>
       <div class="bios-body">
         <div class="bios-main">
-          <div class="bios-title">▶ Reconexão de barramentos da placa-mãe</div>
-          <div class="bios-gridwrap"><div class="bios-grid" style="--c:${Cn};--r:${R}"><svg class="bios-svg" viewBox="0 0 ${Cn} ${R}" preserveAspectRatio="none"></svg></div></div>
+          <div class="bios-title">▶ Reconexão de componentes: <b class="mz-name"></b></div>
+          <div class="mz-wrap"><canvas></canvas><div class="mz-overlay hidden"></div></div>
         </div>
         <div class="bios-side">
           <b>Ajuda do item</b>
-          <p>Ligue cada componente ao seu par de mesma cor arrastando a conexão.</p>
-          <p class="bios-red">ERRO 0x666: o mapa de trilhas da placa foi APAGADO pelo invasor. As paredes estão invisíveis.</p>
-          <p>Bater em uma trilha bloqueada causa curto.</p>
+          <p>Leve o sinal até o ponto colorido do componente.</p>
+          <p>Use <b>W A S D</b> ou as <b>setas</b> para mudar a direção.</p>
+          <p class="bios-red">Não encoste nas paredes.</p>
           <div class="bios-status"></div>
         </div>
       </div>
-      <div class="bios-foot"><span>Arrastar: Conectar</span><span>Clique no ponto: Limpar</span><span class="bios-shorts">Curtos: 0</span></div>
+      <div class="bios-foot"><span>↑↓←→ / WASD: Direção</span><span class="mz-errors"></span></div>
     </div>`;
 
-  const grid = el.querySelector(".bios-grid"), svg = el.querySelector(".bios-svg");
-  const status = el.querySelector(".bios-status");
-  const cells = {};
-  for (let r = 0; r < R; r++) for (let c = 0; c < Cn; c++) {
-    const d = document.createElement("div");
-    d.className = "bios-cell";
-    d.dataset.r = r; d.dataset.c = c;
-    const k = endAt(r, c);
-    if (k) {
-      const col = CFG.colors[k] || { color: "#fff", label: k };
-      d.innerHTML = `<span class="bios-dot" style="background:${col.color}">${col.label}</span>`;
-    }
-    grid.appendChild(d);
-    cells[key(r, c)] = d;
-  }
+  const canvas = el.querySelector("canvas"), g = canvas.getContext("2d");
+  const wrap = el.querySelector(".mz-wrap"), overlay = el.querySelector(".mz-overlay");
+  const statusEl = el.querySelector(".bios-status");
 
-  const owner = (r, c) => Object.keys(paths).find((k) => paths[k].some(([a, b]) => a === r && b === c));
-  const done = (k) => {
-    const p = paths[k];
-    if (p.length < 2) return false;
-    const [a, b] = [p[0], p[p.length - 1]];
-    return endAt(...a) === k && endAt(...b) === k && key(...a) !== key(...b);
-  };
-
-  function draw() {
-    svg.innerHTML = "";
-    Object.keys(paths).forEach((k) => {
-      const p = paths[k];
-      if (p.length < 2) return;
-      const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      line.setAttribute("points", p.map(([r, c]) => `${c + 0.5},${r + 0.5}`).join(" "));
-      line.setAttribute("stroke", (CFG.colors[k] || {}).color || "#fff");
-      line.setAttribute("class", "bios-line" + (done(k) ? " ok" : ""));
-      svg.appendChild(line);
-    });
-    Object.entries(cells).forEach(([kk, d]) => {
-      const [r, c] = kk.split(",").map(Number);
-      const o = owner(r, c);
-      d.style.setProperty("--fill", o ? (CFG.colors[o] || {}).color : "transparent");
-      d.classList.toggle("filled", !!o);
-    });
-    const n = Object.keys(paths).filter(done).length, total = Object.keys(paths).length;
-    status.innerHTML = Object.keys(paths).map((k) =>
-      `<div><i style="background:${CFG.colors[k].color}"></i>${CFG.colors[k].label.padEnd(4, " ")} ${done(k) ? "<span class='ok'>[CONECTADO]</span>" : "<span class='bad'>[FALHA]</span>"}</div>`).join("");
-    if (n === total) win();
-  }
-
-  // ---------- Desenho com o mouse/dedo ----------
-  let cur = null; // cor sendo desenhada
-  const cellFromPoint = (x, y) => {
-    const b = grid.getBoundingClientRect();
-    const c = Math.floor(((x - b.left) / b.width) * Cn), r = Math.floor(((y - b.top) / b.height) * R);
-    return r >= 0 && r < R && c >= 0 && c < Cn ? [r, c] : null;
-  };
-
-  grid.addEventListener("pointerdown", (e) => {
-    if (finished) return;
-    const pos = cellFromPoint(e.clientX, e.clientY);
-    if (!pos) return;
-    e.preventDefault();
-    const k = endAt(...pos);
-    if (k) { paths[k] = [pos]; cur = k; }
-    else {
-      const o = owner(...pos);
-      if (!o) return;
-      const i = paths[o].findIndex(([a, b]) => a === pos[0] && b === pos[1]);
-      paths[o] = paths[o].slice(0, i + 1);
-      cur = o;
-    }
-    draw();
-    const move = (ev) => {
-      const t = cellFromPoint(ev.clientX, ev.clientY);
-      if (!t || !cur) return;
-      // anda célula por célula até o alvo (movimentos rápidos)
-      let guard = 20;
-      while (cur && guard--) {
-        const last = paths[cur][paths[cur].length - 1];
-        if (last[0] === t[0] && last[1] === t[1]) break;
-        const dr = t[0] - last[0], dc = t[1] - last[1];
-        const next = Math.abs(dr) >= Math.abs(dc) ? [last[0] + Math.sign(dr), last[1]] : [last[0], last[1] + Math.sign(dc)];
-        if (!step(next)) break;
+  // ---------- Geração do labirinto (sorteio fixo) ----------
+  function makeMaze(i) {
+    const { w, cols, rows } = LV[i];
+    let seed = CFG.seed * 31 + i * 7919;
+    const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    const TW = cols * (w + 1) + 1, TH = rows * (w + 1) + 1;
+    const wall = Array.from({ length: TH }, () => Array(TW).fill(true));
+    const x0 = (cx) => 1 + cx * (w + 1), y0 = (cy) => 1 + cy * (w + 1);
+    const open = (cx, cy) => { for (let y = 0; y < w; y++) for (let x = 0; x < w; x++) wall[y0(cy) + y][x0(cx) + x] = false; };
+    const seen = new Set(["0,0"]), stack = [[0, 0]];
+    open(0, 0);
+    while (stack.length) {
+      const [cx, cy] = stack[stack.length - 1];
+      const nb = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [cx + dx, cy + dy, dx, dy])
+        .filter(([x, y]) => x >= 0 && y >= 0 && x < cols && y < rows && !seen.has(x + "," + y));
+      if (!nb.length) { stack.pop(); continue; }
+      const [nx, ny, dx, dy] = nb[Math.floor(rnd() * nb.length)];
+      open(nx, ny);
+      // derruba a parede entre as duas salas
+      for (let k = 0; k < w; k++) {
+        if (dx) wall[y0(cy) + k][dx > 0 ? x0(cx) + w : x0(cx) - 1] = false;
+        else wall[dy > 0 ? y0(cy) + w : y0(cy) - 1][x0(cx) + k] = false;
       }
-      draw();
-    };
-    const up = () => { cur = null; removeEventListener("pointermove", move); removeEventListener("pointerup", up); draw(); };
-    addEventListener("pointermove", move);
-    addEventListener("pointerup", up);
-  });
-
-  // Tenta avançar a conexão atual para a célula "next". Retorna false se bloqueou.
-  function step(next) {
-    const p = paths[cur], last = p[p.length - 1];
-    // voltar sobre o próprio caminho = apagar
-    const back = p.findIndex(([a, b]) => a === next[0] && b === next[1]);
-    if (back >= 0) { paths[cur] = p.slice(0, back + 1); return true; }
-    if (done(cur)) return false;
-    if (walls.has(wallId(last, next))) { shortCircuit(last, next); return false; }
-    const e = endAt(...next);
-    if (e && e !== cur) return false;
-    const o = owner(...next);
-    if (o && o !== cur) {
-      // corta a conexão da outra cor
-      const i = paths[o].findIndex(([a, b]) => a === next[0] && b === next[1]);
-      paths[o] = paths[o].slice(0, i);
+      seen.add(nx + "," + ny); stack.push([nx, ny]);
     }
-    p.push(next);
-    if (e === cur) { cur = null; api.play && api.play("unlock"); }
-    return true;
+    const center = (cx, cy) => [x0(cx) + w / 2, y0(cy) + w / 2];
+    const start = center(0, 0);
+    const dir = !wall[y0(0) + Math.floor(w / 2)][x0(0) + w] ? "right" : "down";
+    return { wall, TW, TH, w, start, dir, end: [x0(cols - 1), y0(rows - 1)], r: 0.3 + 0.1 * (w - 1) };
   }
 
-  // Parede invisível: aparece por um instante + curto
-  let shorts = 0;
-  function shortCircuit(a, b) {
-    shorts++;
-    el.querySelector(".bios-shorts").textContent = `Curtos: ${shorts}`;
-    const w = document.createElement("div");
-    w.className = "bios-wall";
-    const vertical = a[0] === b[0];
-    const r = Math.max(a[0], b[0]), c = Math.max(a[1], b[1]);
-    Object.assign(w.style, vertical
-      ? { left: `calc(${c} * 100% / ${Cn})`, top: `calc(${a[0]} * 100% / ${R})`, height: `calc(100% / ${R})` }
-      : { top: `calc(${r} * 100% / ${R})`, left: `calc(${a[1]} * 100% / ${Cn})`, width: `calc(100% / ${Cn})` });
-    w.classList.add(vertical ? "v" : "h");
-    grid.appendChild(w);
-    setTimeout(() => w.remove(), 1200);
-    grid.classList.remove("zap"); void grid.offsetWidth; grid.classList.add("zap");
+  let M = null, pos = null, dir = null, want = null, trail = [];
+  let mode = "idle"; // idle | run | crash | between | win
+  let tile = 10, offX = 0, offY = 0;
+
+  function loadLevel() {
+    M = makeMaze(Math.min(MS.level, LV.length - 1));
+    pos = [...M.start]; dir = M.dir; want = null; trail = [];
+    el.querySelector(".mz-name").textContent = lvl().label;
+    resize(); updateSide();
+  }
+
+  // ---------- Colisão ----------
+  function hits(x, y) {
+    const r = M.r;
+    for (let ty = Math.floor(y - r); ty <= Math.floor(y + r); ty++)
+      for (let tx = Math.floor(x - r); tx <= Math.floor(x + r); tx++) {
+        const isWall = ty < 0 || tx < 0 || ty >= M.TH || tx >= M.TW || M.wall[ty][tx];
+        if (!isWall) continue;
+        const nx = Math.max(tx, Math.min(x, tx + 1)), ny = Math.max(ty, Math.min(y, ty + 1));
+        if ((x - nx) ** 2 + (y - ny) ** 2 < r * r) return true;
+      }
+    return false;
+  }
+  const inEnd = ([x, y]) => x >= M.end[0] && x <= M.end[0] + M.w && y >= M.end[1] && y <= M.end[1] + M.w;
+
+  // ---------- Loop ----------
+  let last = 0;
+  function frame(t) {
+    if (!el.isConnected) return;
+    const dt = Math.min(0.05, (t - last) / 1000 || 0);
+    last = t;
+    if (mode === "run" && !MS.paused) {
+      let move = lvl().speed * dt;
+      while (move > 0 && mode === "run") {
+        const s = Math.min(0.04, move); move -= s;
+        // curva "guardada": vira assim que houver espaço
+        if (want && want !== dir) {
+          const [wx, wy] = DIRS[want];
+          if (!hits(pos[0] + wx * 0.06, pos[1] + wy * 0.06)) { dir = want; want = null; }
+        }
+        const [dx, dy] = DIRS[dir];
+        pos = [pos[0] + dx * s, pos[1] + dy * s];
+        if (hits(...pos)) crash();
+        else if (inEnd(pos)) levelDone();
+      }
+      trail.push([...pos]); if (trail.length > 25) trail.shift();
+    }
+    draw(t);
+    requestAnimationFrame(frame);
+  }
+
+  function draw(t) {
+    const W = canvas.width / devicePixelRatio, H = canvas.height / devicePixelRatio;
+    g.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    g.fillStyle = "#000040"; g.fillRect(0, 0, W, H);
+    if (!M) return;
+    const col = lvl().color;
+    g.save(); g.translate(offX, offY);
+    // paredes
+    for (let y = 0; y < M.TH; y++) for (let x = 0; x < M.TW; x++) if (M.wall[y][x]) {
+      g.fillStyle = "#3d3dc4"; g.fillRect(x * tile, y * tile, tile + 0.5, tile + 0.5);
+    }
+    g.strokeStyle = "#8f8fff"; g.lineWidth = 1;
+    for (let y = 0; y < M.TH; y++) for (let x = 0; x < M.TW; x++) if (M.wall[y][x]) {
+      const free = (xx, yy) => yy >= 0 && xx >= 0 && yy < M.TH && xx < M.TW && !M.wall[yy][xx];
+      g.beginPath();
+      if (free(x, y - 1)) { g.moveTo(x * tile, y * tile); g.lineTo((x + 1) * tile, y * tile); }
+      if (free(x, y + 1)) { g.moveTo(x * tile, (y + 1) * tile); g.lineTo((x + 1) * tile, (y + 1) * tile); }
+      if (free(x - 1, y)) { g.moveTo(x * tile, y * tile); g.lineTo(x * tile, (y + 1) * tile); }
+      if (free(x + 1, y)) { g.moveTo((x + 1) * tile, y * tile); g.lineTo((x + 1) * tile, (y + 1) * tile); }
+      g.stroke();
+    }
+    // largada
+    g.strokeStyle = "#ffffff55"; g.lineWidth = 2;
+    g.beginPath(); g.arc(M.start[0] * tile, M.start[1] * tile, M.r * tile * 1.8, 0, 7); g.stroke();
+    // chegada (pulsando)
+    const pulse = 0.6 + 0.4 * Math.sin(t / 200);
+    g.globalAlpha = pulse; g.fillStyle = col;
+    g.fillRect(M.end[0] * tile, M.end[1] * tile, M.w * tile, M.w * tile);
+    g.globalAlpha = 1; g.fillStyle = "#000"; g.font = `bold ${Math.max(9, tile * M.w * 0.32)}px Courier New`;
+    g.textAlign = "center"; g.textBaseline = "middle";
+    g.fillText(lvl().label, (M.end[0] + M.w / 2) * tile, (M.end[1] + M.w / 2) * tile);
+    // rastro + ponto
+    trail.forEach(([x, y], i) => {
+      g.globalAlpha = (i / trail.length) * 0.4; g.fillStyle = col;
+      g.beginPath(); g.arc(x * tile, y * tile, M.r * tile * 0.8, 0, 7); g.fill();
+    });
+    g.globalAlpha = 1;
+    g.shadowColor = mode === "crash" ? "#fff" : col; g.shadowBlur = 16;
+    g.fillStyle = mode === "crash" ? "#fff" : col;
+    g.beginPath(); g.arc(pos[0] * tile, pos[1] * tile, M.r * tile, 0, 7); g.fill();
+    g.shadowBlur = 0;
+    g.restore();
+  }
+
+  function resize() {
+    const b = wrap.getBoundingClientRect();
+    canvas.width = b.width * devicePixelRatio; canvas.height = b.height * devicePixelRatio;
+    canvas.style.width = b.width + "px"; canvas.style.height = b.height + "px";
+    if (!M) return;
+    tile = Math.min(b.width / M.TW, b.height / M.TH);
+    offX = (b.width - tile * M.TW) / 2; offY = (b.height - tile * M.TH) / 2;
+  }
+  new ResizeObserver(resize).observe(wrap);
+
+  // ---------- Eventos do jogo ----------
+  function crash() {
+    mode = "crash";
+    MS.errors++;
+    updateSide();
     api.play && api.play("loginError");
-    cur = null;
+    wrap.classList.add("zap");
+    setTimeout(() => wrap.classList.remove("zap"), 800);
+    if (MS.errors >= CFG.interferenceErrors) interfere();
+    setTimeout(() => {
+      if (mode !== "crash") return;
+      pos = [...M.start]; dir = M.dir; want = null; trail = [];
+      countdown();
+    }, 900);
   }
 
-  let finished = false;
-  function win() {
-    if (finished) return;
-    finished = true;
+  async function levelDone() {
+    mode = "between";
+    api.play && api.play("unlock");
+    MS.level++;
+    updateSide();
+    if (MS.level >= LV.length) return finish();
+    await message(`✔ ${LV[MS.level - 1].label} RECONECTADO<br><small>Próximo: ${LV[MS.level].label}</small>`, 1500);
+    loadLevel();
+    countdown();
+  }
+
+  async function countdown() {
+    mode = "between";
+    for (const n of ["3", "2", "1"]) await message(n, 350);
+    if (MS.paused) return;
+    mode = "run";
+  }
+
+  function message(html, ms) {
+    overlay.innerHTML = `<div class="mz-msg">${html}</div>`;
+    overlay.classList.remove("hidden");
+    return sleep(ms).then(() => { if (!MS.paused) overlay.classList.add("hidden"); });
+  }
+
+  function ask(text) {
+    return new Promise((resolve) => {
+      overlay.innerHTML = `<div class="mz-ask"><p>${text}</p><div><button class="no">Não</button><button class="yes">Sim</button></div></div>`;
+      overlay.classList.remove("hidden");
+      overlay.querySelector(".no").onclick = () => { const a = overlay.querySelector(".mz-ask"); a.classList.remove("shake"); void a.offsetWidth; a.classList.add("shake"); };
+      overlay.querySelector(".yes").onclick = () => { overlay.classList.add("hidden"); resolve(); };
+      overlay.querySelector(".yes").focus();
+    });
+  }
+
+  // ---------- Interferência (uma única vez) ----------
+  async function interfere() {
+    if (MS.interfered) return;
+    MS.interfered = true;
+    clearTimeout(MS.timer);
+    MS.paused = true;
+    await Interference.run();
+    MS.paused = false;
+    if (!MS.done && window.MazeState.resume) window.MazeState.resume();
+  }
+  window.MazeState.interfere = interfere;
+
+  // Retomar depois da interferência
+  MS.resume = async () => {
+    if (!el.isConnected) return;
+    mode = "idle";
+    pos = [...M.start]; dir = M.dir; trail = [];
+    await ask("O sistema se recuperou.<br>Podemos continuar?");
+    countdown();
+  };
+
+  async function finish() {
+    MS.done = true;
+    clearTimeout(MS.timer);
+    mode = "win";
     el.querySelector(".bios-main").classList.add("powered");
-    status.insertAdjacentHTML("beforeend", "<p class='ok'>Todos os barramentos reconectados.<br>Salvando configuração...</p>");
-    setTimeout(() => api.win(el.querySelector(".bios")), 2000);
+    overlay.innerHTML = `<div class="mz-msg">✔ TODOS OS COMPONENTES<br>RECONECTADOS</div>`;
+    overlay.classList.remove("hidden");
+    await sleep(1500);
+    if (!MS.interfered) {
+      MS.interfered = true;
+      await Interference.run();
+    }
+    overlay.classList.add("hidden");
+    api.win(el.querySelector(".bios"));
   }
 
-  draw();
-};
+  function updateSide() {
+    statusEl.innerHTML = LV.map((l, i) => {
+      const st = i < MS.level ? "<span class='ok'>[OK]</span>" : i === MS.level ? "<span class='cur'>[>>]</span>" : "<span class='bad'>[--]</span>";
+      return `<div><i style="background:${l.color}"></i>${l.label.padEnd(4, " ")} ${st}</div>`;
+    }).join("");
+    el.querySelector(".mz-errors").textContent = `Erros: ${MS.errors}`;
+  }
 
-// O diagrama para imprimir (pista física da sala) está em diagrama.html
+  // ---------- Teclado ----------
+  const onKey = (e) => {
+    if (!el.isConnected) return removeEventListener("keydown", onKey);
+    // Atalho do mestre do jogo: Ctrl+Shift+N pula o componente atual
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "n" && mode !== "win" && mode !== "idle") return levelDone();
+    const d = KEYS[e.key];
+    if (!d || mode === "idle" || mode === "win") return;
+    e.preventDefault();
+    if (mode !== "run") { want = d; return; }
+    const [dx, dy] = DIRS[d];
+    if (DIRS[dir][0] === -dx && DIRS[dir][1] === -dy) dir = d; // meia-volta sempre pode
+    else want = d;
+  };
+  addEventListener("keydown", onKey);
+
+  // ---------- Início ----------
+  (async () => {
+    if (MS.done) {
+      loadLevel(); mode = "win";
+      requestAnimationFrame(frame);
+      return api.win(el.querySelector(".bios"));
+    }
+    loadLevel();
+    requestAnimationFrame(frame);
+    await ask(MS.started ? "Podemos continuar?" : "Podemos iniciar?");
+    if (!MS.started) {
+      MS.started = true;
+      MS.timer = setTimeout(interfere, CFG.interferenceMinutes * 60000);
+    }
+    countdown();
+  })();
+};

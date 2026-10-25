@@ -1,7 +1,7 @@
 // ===== NÍVEL 1 =====
 // Fase 1: todo app pede ADMINISTRADOR → aparece "cadastro_adm" → jogador cria usuário.
 // Fase 2: alerta do hacker → aparece "gerenciador_usuarios" → excluir o hacker em X minutos.
-// Fase 3: aparece "bios_setup" → reconectar os componentes no labirinto de paredes ocultas.
+// Fase 3: aparece "bios_setup" → jogo do labirinto (6 componentes) + interferência do hacker.
 (() => {
   const C = window.CONFIG;
   const LEVELS = [

@@ -20,29 +20,30 @@ window.CONFIG = {
   hackerMinutes: 5,            // tempo para excluir o hacker antes que ele exclua você
   // Lista do Gerenciador de Usuários. Marque o hacker com hacker: true.
   // O usuário criado pelo jogador é inserido em uma posição aleatória.
-  // ===== FASE 3: BIOS (labirinto de conexões) =====
-  // Desenhe a SOLUÇÃO: cada letra é uma cor. MAIÚSCULA = ponto (componente), minúscula = caminho.
-  // As paredes ocultas ficam entre células de letras diferentes (ou seja, só a solução passa).
-  // Todas as linhas precisam ter o mesmo tamanho. Cada letra precisa ter exatamente 2 maiúsculas.
-  bios: {
-    grid: [
-      "RrrrGgg",
-      "BbbrYyg",
-      "oobrryg",
-      "oObBryg",
-      "oPpprYG",
-      "ooOPrrR"
+  // ===== FASE 3: BIOS — JOGO DO LABIRINTO =====
+  // Cada componente é um labirinto. O ponto anda sozinho; o jogador muda a direção com WASD ou setas.
+  // w = largura dos corredores (em blocos; 1 = estreito), cols/rows = tamanho do labirinto em "salas",
+  // speed = velocidade (blocos por segundo). seed = sorteio fixo (mesmos labirintos em todas as partidas).
+  maze: {
+    seed: 666,
+    levels: [
+      { label: "CPU", color: "#ff3b3b", w: 3, cols: 4,  rows: 3, speed: 3.5 },
+      { label: "RAM", color: "#2ee86a", w: 3, cols: 5,  rows: 3, speed: 4 },
+      { label: "GPU", color: "#3b8bff", w: 2, cols: 6,  rows: 4, speed: 4 },
+      { label: "SSD", color: "#ffe03b", w: 2, cols: 7,  rows: 4, speed: 4.5 },
+      { label: "PSU", color: "#ff9a1f", w: 1, cols: 9,  rows: 5, speed: 4 },
+      { label: "FAN", color: "#c45cff", w: 1, cols: 11, rows: 6, speed: 4.5 }
     ],
-    colors: {
-      R: { color: "#ff3b3b", label: "CPU" },
-      G: { color: "#2ee86a", label: "RAM" },
-      B: { color: "#3b8bff", label: "GPU" },
-      Y: { color: "#ffe03b", label: "SSD" },
-      O: { color: "#ff9a1f", label: "PSU" },
-      P: { color: "#c45cff", label: "FAN" }
-    },
-    decoyOpenings: 3   // nº de "passagens falsas" abertas entre cores diferentes (0 = labirinto exato)
+    // Interferência do hacker (acontece UMA vez na fase 3, no que vier primeiro):
+    interferenceMinutes: 5,   // tempo jogando sem terminar
+    interferenceErrors: 30,   // erros acumulados
+    // ...ou, garantido, ao terminar o último labirinto.
   },
+
+  // Jump scare: imagem e volume. Deixe scareImage "" para usar o rosto desenhado no código.
+  // Para usar um som próprio, preencha sounds.scare (senão um grito é gerado pelo navegador).
+  scareImage: "",
+  scareVolume: 1.0,           // 0.0 a 1.0
 
   users: [
     { name: "a.souza", level: "Editor", last: "ontem, 18:41" },
