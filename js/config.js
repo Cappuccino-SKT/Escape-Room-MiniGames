@@ -1,8 +1,10 @@
 // ===== CONFIGURAÇÃO DO JOGO =====
 // Edite aqui sem precisar mexer no resto do código.
 window.CONFIG = {
-  // Nível do jogo: abra index.html?nivel=2 para o Nível 2 (sem nada = Nível 1).
+  // Nível do jogo: ao abrir o index.html, o jogo pergunta qual nível (ou use index.html?nivel=1 / ?nivel=2).
+  // Atalhos do mestre do jogo: Ctrl+Shift+1 / Ctrl+Shift+2 trocam de nível a qualquer momento.
   level: Number(new URLSearchParams(location.search).get("nivel")) || 1,
+  levelChosen: !!Number(new URLSearchParams(location.search).get("nivel")),
 
   userName: "Convidado",
   password: "",                // senha da tela de login. "" = sem login (começa direto na área de trabalho)

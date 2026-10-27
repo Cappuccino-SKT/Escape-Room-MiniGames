@@ -13,7 +13,7 @@ Este repositório é o **jogo no notebook da sala**: uma simulação de computad
 ## Estrutura
 | Arquivo | O que é |
 |---|---|
-| `index.html` | Telas: ligar → boot → (login opcional) → área de trabalho |
+| `index.html` | Telas: escolha do nível (se não houver `?nivel=`) → ligar → boot → (login opcional) → área de trabalho. Ctrl+Shift+1/2 trocam de nível |
 | `js/config.js` | **Tudo configurável**: senhas, lista de usuários, labirintos, susto, sons |
 | `js/os.js` | "Sistema operacional": janelas, ícones, diálogos (`OS.dialog`), notificações, `OS.showIcon`, `GATE` (regra para abrir apps), revelar senha (`api.win`) |
 | `js/level1.js` | Lógica do Nível 1 (fases 1 a 5) + dicas + apps `cadastro_adm`, `gerenciador_usuarios`, `log_seguranca.txt`, `dicas.txt`, `bios_setup` e `cmd.exe` |

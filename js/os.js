@@ -14,6 +14,14 @@
     $("#screen-" + id).classList.add("active");
   }
 
+  // ---------- Escolha do nível ----------
+  const goLevel = (n) => { location.search = "?nivel=" + n; };
+  show(C.levelChosen ? "power" : "level");
+  document.querySelectorAll("#screen-level [data-level]").forEach((b) => (b.onclick = () => goLevel(b.dataset.level)));
+  addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.shiftKey && (e.code === "Digit1" || e.code === "Digit2")) { e.preventDefault(); goLevel(e.code.slice(-1)); }
+  });
+
   // ---------- Ligar ----------
   $("#power-btn").onclick = () => {
     if (C.fullscreenOnStart && document.documentElement.requestFullscreen) {

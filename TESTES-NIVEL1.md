@@ -8,7 +8,7 @@ Todos os valores abaixo são os atuais do `js/config.js`. Se alguém mudar o con
 
 ## 1. Como rodar
 
-1. Abra `index.html` no **Chrome**. Não precisa de internet.
+1. Abra `index.html` no **Chrome** e escolha **Nível 1**. Não precisa de internet. Para trocar de nível a qualquer momento: Ctrl + Shift + 1 ou Ctrl + Shift + 2.
 2. Clique no botão de ligar. O jogo entra em tela cheia, mostra o boot e vai direto para a área de trabalho, sem tela de login.
 3. Antes de cada partida de teste, reinicie com **Ctrl + Shift + X**.
 

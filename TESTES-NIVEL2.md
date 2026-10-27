@@ -10,7 +10,7 @@ Todos os valores abaixo vêm de `js/level2-data.js`. Se alguém mudar esse arqui
 
 | O quê | Onde | Como |
 |---|---|---|
-| Jogo | Notebook da sala | Abrir **`index.html?nivel=2`** no Chrome |
+| Jogo | Notebook da sala | Abrir **`index.html`** no Chrome e escolher **Nível 2** (ou Ctrl + Shift + 2) |
 | Projetor | PC do mestre do jogo, ligado ao projetor | Abrir **`projetor.html`** e apertar **F** (tela cheia) |
 | Papéis | Sala | Imprimir **`imprimir-nivel2.html`** (Ctrl + P, A4) |
 

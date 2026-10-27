@@ -7,8 +7,18 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <!-- 00. Escolha do nível (só aparece quando o index.html é aberto sem ?nivel=) -->
+  <section id="screen-level" class="screen">
+    <h1>Qual nível vai ser jogado?</h1>
+    <div class="level-btns">
+      <button data-level="1"><b>NÍVEL 1</b><small>Sistema invadido</small></button>
+      <button data-level="2"><b>NÍVEL 2</b><small>O Cúmplice</small></button>
+    </div>
+    <p class="power-hint">Para trocar depois: Ctrl + Shift + 1 ou Ctrl + Shift + 2</p>
+  </section>
+
   <!-- 0. Tela de "ligar" (necessária para liberar tela cheia e áudio) -->
-  <section id="screen-power" class="screen active">
+  <section id="screen-power" class="screen">
     <button id="power-btn" title="Ligar">⏻</button>
     <p class="power-hint">Clique para ligar o computador</p>
   </section>
