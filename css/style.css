@@ -455,3 +455,14 @@ table.pl td, table.pl th { padding: 3px 10px; border-bottom: 1px solid #333; tex
 .level-btns button:hover { border-color: #f22; box-shadow: 0 0 30px #f004; color: #fff; }
 .level-btns b { display: block; font-size: 28px; color: #f33; letter-spacing: .1em; }
 .level-btns small { display: block; margin-top: 6px; color: #999; font-size: 14px; }
+
+/* ---------- Susto em vídeo e efeitos leves dos erros ---------- */
+.hack-scare.video { animation: none; }
+.hack-scare.video video { width: 100vw; height: 100vh; object-fit: cover; }
+.mini-fx { position: fixed; inset: 0; z-index: 99985; pointer-events: none; }
+.mini-fx.flash { background: #f00; animation: miniFlash .45s forwards; }
+.mini-fx.glitch { background: repeating-linear-gradient(0deg, #0000 0 3px, #f002 3px 5px); animation: glitch .1s steps(2) infinite; backdrop-filter: invert(.15) hue-rotate(40deg); }
+.mini-fx.whisper { display: flex; align-items: center; justify-content: center; font: bold 46px "Courier New", monospace; color: #f22;
+  text-shadow: 0 0 18px #f00; animation: miniWhisper 1.8s forwards; }
+@keyframes miniFlash { from { opacity: .55; } to { opacity: 0; } }
+@keyframes miniWhisper { 0% { opacity: 0; letter-spacing: .6em; } 20%, 70% { opacity: .9; } 100% { opacity: 0; letter-spacing: .1em; } }

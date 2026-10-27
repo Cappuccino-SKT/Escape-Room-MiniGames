@@ -65,9 +65,9 @@ O notebook abre pedindo senha. Depois de 3 erros, aparece o botão de dica: "As 
 | `caso.txt` | Regras do J | – |
 | `suspeitos` | Fichas: curso, ano de ingresso e observações | – |
 | `depoimentos` | O que cada suspeito disse | – |
-| `fechadura.exe` | O grupo escolhe as portas G1 e G2 olhando o registro do dia e depois confirma A e B das 23:03 | Reparo errado ou A/B errados: **jump scare** |
+| `fechadura.exe` | O grupo escolhe as portas G1 e G2 olhando o registro do dia e depois confirma A e B das 23:03 | Reparo errado ou A/B errados: **erro** |
 | `limpeza.c` | O código em C. "Compilar e executar" só mostra "compilador corrompido" | – |
-| `chat_monitores` | Trancado com a senha `MNTRA9`. Mostra a saída do Rafael (20:15) e a senha nova (21:00) | Cada senha errada: **jump scare** |
+| `chat_monitores` | Trancado com a senha `MNTRA9`. Mostra a saída do Rafael (20:15) e a senha nova (21:00) | Cada senha errada: **erro** |
 
 **Como sai `MNTRA9`:** o `for` percorre "MONITORIA" e o `if (i % 2 == 0)` imprime as letras nas posições pares: 0 = M, 2 = N, 4 = T, 6 = R e 8 = A. Quando o laço termina, `i` vale 9, e o programa imprime o 9.
 
@@ -75,14 +75,21 @@ O notebook abre pedindo senha. Depois de 3 erros, aparece o botão de dica: "As 
 - As linhas com C = 0 mostram que G1(1,1) = 1, G1(1,0) = 0 e G1(0,1) = 0. Logo, **G1 é AND**.
 - A linha das 19:20 (A = 1, B = 1, C = 1, porta aberta) separa OR de XOR, porque 1 XOR 1 daria 0. Logo, **G2 é OR**.
 
+**O que acontece num erro:** o jogo **nem sempre** dá jump scare, para o grupo não se acostumar.
+- O 1º erro da partida nunca vira susto.
+- Depois de qualquer susto, há 90 s de descanso.
+- Passado o descanso, cada erro aumenta a chance: 30%, 60%, 90% e 100%.
+- Nos erros sem susto aparece um efeito leve e variado: a tela falha, um sussurro ("Eu vi isso.") ou um clarão vermelho.
+- As regras ficam em `scareRules`, no `js/config.js`.
+
 ### Opcionais (pistas extras, nenhum é obrigatório)
 | App | Como resolver | Pista extra | Erro |
 |---|---|---|---|
-| `terminal.exe` | `help`, `dir /a` (mostra a pasta oculta `.backup`) e `type rascunho.txt` | "Ninguém desconfia de uma **monitora**." Das 3 pessoas que têm crachá, a única mulher é a Elisa | `jigsaw.exe` (em Downloads) ou `del`: **jump scare** |
+| `terminal.exe` | `help`, `dir /a` (mostra a pasta oculta `.backup`) e `type rascunho.txt` | "Ninguém desconfia de uma **monitora**." Das 3 pessoas que têm crachá, a única mulher é a Elisa | `jigsaw.exe` (em Downloads): **jump scare sempre** (é uma armadilha). `del`: **erro** |
 | `terminal.exe` | `cd Usuarios\bruno`, depois `type lembrete.txt` | Como montar a senha do e-mail (gato + ano de ingresso) | – |
-| `cameras.exe` | Digitar um horário HH:MM tirado de outras pistas | 23:03: pessoa com crachá e **tubo de projeto**. A ficha da Elisa diz que ela é de Arquitetura e anda com tubo | Horário sem gravação: **jump scare** |
-| `email_bruno` | Senha `bit2024`: o gato Bit, da ficha e do terminal, mais o ingresso em 2024, da ficha | Recibo do ônibus das 22:58 com o Rafael, que confirma o álibi do Bruno. Também tem um e-mail suspeito da Elisa | As 2 primeiras senhas erradas só avisam. **Da 3ª em diante: jump scare** |
-| `rede.exe` | O log mostra os 2 últimos blocos em **decimal**; é preciso converter para **hexadecimal**: 164 = A4 e 94 = 5E | O celular da Elisa conectou às **23:02** e desconectou às 23:09 | MAC em hexadecimal que não existe: **jump scare**. Formato errado, como "164", só avisa |
+| `cameras.exe` | Digitar um horário HH:MM tirado de outras pistas | 23:03: pessoa com crachá e **tubo de projeto**. A ficha da Elisa diz que ela é de Arquitetura e anda com tubo | Horário sem gravação: **erro** |
+| `email_bruno` | Senha `bit2024`: o gato Bit, da ficha e do terminal, mais o ingresso em 2024, da ficha | Recibo do ônibus das 22:58 com o Rafael, que confirma o álibi do Bruno. Também tem um e-mail suspeito da Elisa | Cada senha errada: **erro** |
+| `rede.exe` | O log mostra os 2 últimos blocos em **decimal**; é preciso converter para **hexadecimal**: 164 = A4 e 94 = 5E | O celular da Elisa conectou às **23:02** e desconectou às 23:09 | MAC em hexadecimal que não existe: **erro**. Formato errado, como "164", só avisa |
 
 ---
 
@@ -138,9 +145,9 @@ OS.openApp('fechadura')    // abrir qualquer app pelo id: caso, suspeitos, depoi
 - **Tempo:** a meta é terminar perto dos 30 min. Use o Ctrl + Shift + L no notebook e anote o tempo do projetor.
 - **Dificuldade:** onde o grupo mais pede dica? A dedução final (Bruno × Elisa) fica clara?
 - **Opcionais:** o grupo tenta os minijogos opcionais? Eles atrapalham por gastar tempo ou ajudam?
-- **Sustos:** são sustos demais? O mais fácil de cair em sequência é o do cameras.exe, se o grupo começar a chutar horários.
+- **Sustos:** a frequência está boa? Se estiver demais ou de menos, ajuste `scareRules` (descanso e chance).
 
 ## 9. Ainda provisório
 
 - Nomes dos suspeitos e a sala **N112**: a sala real do evento ainda não foi decidida. Se mudar, substitua todos os "N112" em `js/level2-data.js` e reimprima os papéis.
-- Sons: todos ainda vazios. O grito do susto é gerado pelo navegador.
+- Vídeos dos sustos: ainda não existem. Enquanto isso, aparecem o rosto desenhado e o grito gerado pelo navegador (veja `videos/LEIA-ME.txt` e `scareMedia` no config).

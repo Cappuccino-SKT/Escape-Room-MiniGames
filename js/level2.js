@@ -1,7 +1,8 @@
 // ===== NÍVEL 2 — "O CÚMPLICE" =====
 // Ativo com index.html?nivel=2. Investigação: descobrir quem instalou o vírus no N112.
 // Trilha principal: caso.txt → suspeitos/depoimentos → fechadura.exe (portas lógicas) → limpeza.c → chat_monitores.
-// Opcionais (pistas extras): terminal.exe, cameras.exe, email do Bruno, rede.exe (Wi-Fi). Erro nos minijogos = jump scare.
+// Opcionais (pistas extras): terminal.exe, cameras.exe, email do Bruno, rede.exe (Wi-Fi).
+// Erros nos minijogos passam por Interference.error: só às vezes viram jump scare (CONFIG.scareRules).
 // A acusação é falada ao mestre do jogo; cronômetro, punição e vitória ficam no projetor.html.
 (() => {
   const C = window.CONFIG, D = window.L2;
@@ -9,7 +10,7 @@
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const scare = () => Interference.scare();
+  const scare = () => Interference.error("nivel2");
   const solved = new Set();
   function done(id, label) {
     if (solved.has(id)) return;
@@ -141,8 +142,8 @@
   }
 
   // ---------- Senha com susto (chat e e-mail) ----------
-  function passwordGate(el, { title, sub, check, scareFrom = 1, onOk }) {
-    let errors = 0, busy = false;
+  function passwordGate(el, { title, sub, check, onOk }) {
+    let busy = false;
     el.innerHTML = `
       <form class="lock-screen">
         <div class="lock-ico">🔒</div><h3>${title}</h3><p>${sub}</p>
@@ -157,11 +158,10 @@
       input.value = "";
       if (!v) return;
       if (check(v)) return onOk();
-      errors++;
       OS.play("loginError");
-      msg.textContent = errors >= scareFrom ? "Senha incorreta." : `Senha incorreta. (${scareFrom - errors} tentativa(s) antes de eu ficar irritado)`;
+      msg.textContent = "Senha incorreta.";
       form.classList.remove("shake"); void form.offsetWidth; form.classList.add("shake");
-      if (errors >= scareFrom) { busy = true; await scare(); busy = false; input.focus(); }
+      busy = true; await scare(); busy = false; input.focus();
     };
   }
   const same = (a, b) => a.toUpperCase().replace(/\s/g, "") === b.toUpperCase();
@@ -241,7 +241,8 @@
       async del() { print("del: VOCÊ NÃO VAI APAGAR NADA AQUI.", "err"); await scare(); }
     };
     cmds.ls = cmds.dir; cmds.cat = cmds.type; cmds.clear = cmds.cls; cmds.erase = cmds.del; cmds.rm = cmds.del;
-    async function trap() { print("Executando jigsaw.exe ...", "err"); await sleep(400); await scare(); print("Não toque no que não é seu.", "err"); }
+    // A armadilha não é um erro: sempre assusta
+    async function trap() { print("Executando jigsaw.exe ...", "err"); await sleep(400); await Interference.scare("nivel2_armadilha"); print("Não toque no que não é seu.", "err"); }
 
     form.onsubmit = async (e) => {
       e.preventDefault();
@@ -322,7 +323,7 @@
       }));
     };
     if (mailOpen) return show();
-    passwordGate(el, { title: "JIGSAW MAIL", sub: "Conta: <b>bruno.sato</b>", scareFrom: 3,
+    passwordGate(el, { title: "JIGSAW MAIL", sub: "Conta: <b>bruno.sato</b>",
       check: (v) => same(v, D.emailPassword), onOk: show });
   }
 

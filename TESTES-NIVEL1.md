@@ -180,6 +180,7 @@ Ao pular fases pelo console, a numeração das dicas e o tempo por fase ficam in
 | Correções, comandos e comandos falsos da fase 4 | `reconfig` (depois, **imprima os papéis de novo**) |
 | Chave, tempo e código do cadeado da fase 5 | `ransom` (mudou a chave? **imprima a página 3 de novo**) |
 | Sons, imagem do susto e da máscara, volume | `sounds`, `scareImage`, `mockImage`, `scareVolume` |
+| Vídeos dos sustos, por lugar | `scareMedia` (arquivos na pasta `videos/`) |
 
 ---
 

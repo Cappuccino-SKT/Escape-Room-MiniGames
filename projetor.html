@@ -93,7 +93,7 @@
 
   async function punish() {
     if (over || Interference.running) return;
-    await Interference.scare();
+    await Interference.scare("projetor_punicao");
     left = Math.max(0, left - PEN * 60000);
     message("ACUSAÇÃO ERRADA", `Vocês acusaram um inocente. Isso custou <b>${PEN} minutos</b>.<br>Mais uma chance.`, "", 5000);
   }
@@ -105,7 +105,7 @@
   async function timeUp() {
     if (over) return;
     over = true; running = false;
-    await Interference.scare();
+    await Interference.scare("projetor_tempo");
     message("TEMPO ESGOTADO", "Meu cúmplice continua livre.<br>E vocês continuam aqui.<br><br>— J");
   }
 

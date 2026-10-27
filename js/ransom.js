@@ -72,7 +72,7 @@ window.Ransom = (() => {
       if (left > 0 || busy) return;
       clearInterval(timer);
       busy = true;
-      await Interference.scare();
+      await Interference.scare("ransomware");
       msg.textContent = "O tempo acabou... mas eu ainda não terminei de brincar com vocês. Mais uma chance.";
       busy = false;
       startTimer();

@@ -1,7 +1,9 @@
 // ===== INTERFERÊNCIA DO HACKER + JUMP SCARE =====
 // Uso: Interference.run().then(() => ...)  — janelas de cmd e erros se sobrepondo,
 // tela falhando, silêncio e, por fim, o susto com som alto.
-// Interference.scare() — só o susto (tela preta + rosto + grito).
+// Interference.scare(lugar) — só o susto (tela preta + vídeo/imagem do lugar, ou rosto desenhado + grito).
+// Interference.error(lugar) — para ERROS: só às vezes vira susto (CONFIG.scareRules); nas outras, um efeito leve.
+// Lugares e vídeos: CONFIG.scareMedia (pasta videos/).
 // Interference.mock(texto) — máscara neutra com uma frase, sem susto.
 window.Interference = (() => {
   const C = window.CONFIG;
@@ -159,9 +161,7 @@ window.Interference = (() => {
     await sleep(1600);
 
     // 4. Susto
-    l.innerHTML = `<div class="hack-scare">${scareFace()}</div>`;
-    scream();
-    await sleep(1700);
+    await showScare(l, "interferencia");
 
     // 5. Volta ao normal
     l.remove();
@@ -169,19 +169,74 @@ window.Interference = (() => {
     running = false;
   }
 
+  // ---------- Mídia do susto: sorteia um vídeo/imagem do lugar, sem repetir o último ----------
+  const lastMedia = {};
+  function pickMedia(slot) {
+    const M = C.scareMedia || {};
+    const list = (M[slot] && M[slot].length ? M[slot] : M.padrao) || [];
+    if (!list.length) return C.scareImage || "";
+    const pool = list.length > 1 ? list.filter((m) => m !== lastMedia[slot]) : list;
+    return (lastMedia[slot] = pool[Math.floor(Math.random() * pool.length)]);
+  }
+  async function showScare(l, slot) {
+    lastScareAt = Date.now();
+    const src = pickMedia(slot);
+    if (/\.(mp4|webm|ogg|mov)$/i.test(src)) {
+      l.innerHTML = `<div class="hack-scare video"><video src="${src}" playsinline></video></div>`;
+      const v = l.querySelector("video");
+      v.volume = C.scareVolume;
+      if (await v.play().then(() => true, () => false)) {
+        await new Promise((r) => {
+          const t = setTimeout(r, (C.scareMaxSeconds || 8) * 1000);
+          v.onended = v.onerror = () => { clearTimeout(t); r(); };
+        });
+        return;
+      }
+    }
+    // Imagem (ou rosto desenhado) + grito
+    l.innerHTML = `<div class="hack-scare">${src && !/\.(mp4|webm|ogg|mov)$/i.test(src) ? `<img src="${src}" alt="">` : scareFace()}</div>`;
+    scream();
+    await sleep(1700);
+  }
+
   // Só o susto, sem as janelas de erro
-  async function scare() {
+  async function scare(slot = "padrao") {
     if (running) return;
     running = true;
     document.activeElement && document.activeElement.blur();
     const l = layer();
     l.classList.add("dark");
     await sleep(500);
-    l.innerHTML = `<div class="hack-scare">${scareFace()}</div>`;
-    scream();
-    await sleep(1700);
+    await showScare(l, slot);
     l.remove();
     running = false;
+  }
+
+  // ---------- Erros: o susto só acontece às vezes ----------
+  // Nunca no 1º erro da partida; depois de um susto, há um tempo de descanso; passado o descanso,
+  // cada erro aumenta a chance. Nos erros sem susto, um efeito leve e variado (tela falha, sussurro, clarão).
+  let lastScareAt = 0, errors = 0, armed = 0;
+  async function error(slot = "padrao") {
+    if (running) return;
+    const R = Object.assign({ firstAfterErrors: 2, cooldownSeconds: 90, chanceStep: 0.3 }, C.scareRules);
+    errors++;
+    const rested = Date.now() - lastScareAt >= R.cooldownSeconds * 1000;
+    if (errors >= R.firstAfterErrors && rested) {
+      armed++;
+      if (Math.random() < Math.min(1, R.chanceStep * armed)) { armed = 0; return scare(slot); }
+    }
+    return minor();
+  }
+  const WHISPERS = ["Eu vi isso.", "Errado.", "Continuem errando...", "Tic... tac...", "Eu estou bem aqui.", "Tem certeza?"];
+  async function minor() {
+    const kind = Math.floor(Math.random() * 3);
+    const f = document.createElement("div");
+    f.className = "mini-fx " + ["glitch", "whisper", "flash"][kind];
+    if (kind === 1) f.textContent = WHISPERS[Math.floor(Math.random() * WHISPERS.length)];
+    document.body.appendChild(f);
+    if (kind !== 1) staticSound(0.35);
+    await sleep(kind === 1 ? 1800 : 450);
+    f.remove();
   }
 
   // Máscara neutra (easter egg): sem susto, só a cara e uma pergunta
@@ -210,5 +265,5 @@ window.Interference = (() => {
   // Atalho do mestre do jogo para testar
   addEventListener("keydown", (e) => { if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "h") run(); });
 
-  return { run, scare, mock, get running() { return running; } };
+  return { run, scare, error, mock, get running() { return running; } };
 })();

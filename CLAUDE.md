@@ -83,7 +83,9 @@ Partida separada de 30 min (cada grupo escolhe o nível na inscrição). Mesmo h
 - **Pistas físicas da fase 1** (senha em 2 etapas): o usuário prepara na sala.
 - **Dificuldade dos labirintos**: o usuário vai testar e pedir ajustes (`speed`, `w`, `cols`, `rows`).
 - **Nomes definitivos** (senha admin `KRAMER`, hacker `t.hoffman`): vão mudar depois; manter por enquanto.
-- **Sons e imagem do susto**: ainda sem arquivos. Quando chegarem: pasta `sounds/` + `CONFIG.sounds.*`, `CONFIG.scareImage`, `CONFIG.scareVolume`.
+- **Vídeos dos sustos**: o usuário vai gerar vídeos com IA. Cada lugar de susto tem sua lista em `CONFIG.scareMedia` (arquivos em `videos/`); com vários, sorteia sem repetir. Lugares: interferencia, cmd_n, ransomware, nivel2, nivel2_armadilha, projetor_punicao, projetor_tempo (vazio = `padrao` → rosto SVG + grito).
+- **Sustos por erro são condicionais** (`Interference.error` + `CONFIG.scareRules`): nunca no 1º erro, descanso de 90 s após qualquer susto, chance crescente (30% por erro). Sem susto = efeito leve (falha/sussurro/clarão). Sustos de história (interferência, 1º N, ransomware, armadilha, projetor) continuam fixos.
+- **Sons**: ainda sem arquivos (pasta `sounds/` + `CONFIG.sounds.*`).
 - **Níveis 2 e 3**: não definidos. Candidatos já prontos: terminal hacker (`apps/terminal.js`) e painel de fios ATX (`apps/wires.js`). Para usar, tire o `hidden: true` em `apps/apps.js`.
 - O documento original do projeto (PDF "escape-room-jogos-mortais-v4") traz ideias de minigames por nível: memória de hardware, C com lacuna, portas lógicas, cifras, binário/hex, Base64, arquivos ocultos.
 

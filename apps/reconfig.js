@@ -102,7 +102,7 @@ window.ReconfigGame = function (el, api) {
         if (c === "y" || c === "s") await begin();
         else if (c === "n") {
           const n = ++RS.noCount;
-          if (n === 1) await Interference.scare();
+          if (n === 1) await Interference.scare("cmd_n");
           else if (n === 2) await Interference.mock("Você é burro?<br>Apertou N <b>de novo</b>?");
           else print("Aperte Y logo.", "err");
           askStart();

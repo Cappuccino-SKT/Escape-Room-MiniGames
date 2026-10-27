@@ -1,0 +1,9 @@
+Coloque aqui os vídeos (ou imagens) dos jump scares.
+
+Formatos: .mp4 (recomendado), .webm; imagens .jpg, .png, .gif também funcionam.
+Duração ideal: 1 a 4 segundos. O vídeo toca com o som dele, no volume de CONFIG.scareVolume.
+Depois de copiar os arquivos, liste cada um em CONFIG.scareMedia (js/config.js), no lugar onde ele deve aparecer.
+Exemplo:
+  nivel2: ["videos/susto_mascara.mp4", "videos/susto_corredor.mp4"],
+
+Dica de nomes: sem espaços e sem acentos (ex.: susto_01.mp4).

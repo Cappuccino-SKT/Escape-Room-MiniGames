@@ -106,6 +106,27 @@ window.CONFIG = {
   // Para usar um som próprio, preencha sounds.scare (senão um grito é gerado pelo navegador).
   scareImage: "",
   scareVolume: 1.0,           // 0.0 a 1.0
+
+  // Vídeos (ou imagens) do susto, por lugar. Coloque os arquivos na pasta videos/ e liste aqui.
+  // Com vários arquivos num lugar, o jogo sorteia um (sem repetir o último). Lista vazia = usa "padrao";
+  // "padrao" vazio = rosto desenhado + grito gerado pelo navegador. Vídeo toca com o som dele.
+  scareMedia: {
+    padrao: [],              // ex.: ["videos/susto1.mp4", "videos/susto2.mp4"]
+    interferencia: [],       // Nível 1, fase 3: fim da interferência do hacker
+    cmd_n: [],               // Nível 1, fase 4: 1º "N" no cmd
+    ransomware: [],          // Nível 1, fase 5: tempo do ransomware acabou
+    nivel2: [],              // Nível 2: erros nos minijogos (quando o erro vira susto)
+    nivel2_armadilha: [],    // Nível 2: abrir o jigsaw.exe no terminal
+    projetor_punicao: [],    // projetor: acusação errada (tecla P)
+    projetor_tempo: []       // projetor: tempo esgotado
+  },
+  scareMaxSeconds: 8,        // corta o vídeo do susto depois desse tempo
+
+  // Erros nem sempre dão susto (para os jogadores não se acostumarem):
+  // nunca antes do erro nº firstAfterErrors; depois de qualquer susto, cooldownSeconds de descanso;
+  // passado o descanso, cada erro soma chanceStep à chance (0.3 → 30%, 60%, 90%, 100%).
+  // Nos erros sem susto aparece um efeito leve (tela falha, sussurro ou clarão vermelho).
+  scareRules: { firstAfterErrors: 2, cooldownSeconds: 90, chanceStep: 0.3 },
   mockImage: "",              // máscara neutra do easter egg da fase 4 ("" = desenhada no código)
 
   // ===== FASE 5: RANSOMWARE =====
