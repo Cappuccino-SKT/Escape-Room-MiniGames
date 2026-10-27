@@ -1,330 +1,246 @@
-// ===== NÍVEL 1 =====
-// Fase 1: todo app pede ADMINISTRADOR → aparece "cadastro_adm" → jogador cria usuário.
-// Fase 2: alerta do hacker → aparece "gerenciador_usuarios" → excluir o hacker em X minutos.
-// Fase 3: aparece "bios_setup" → jogo do labirinto (6 componentes) + interferência do hacker.
-// Fase 4: a BIOS perdeu a configuração → aparece "cmd.exe" → reconfigurar com os comandos dos papéis da sala.
-// Fase 5: ransomware (js/ransom.js) → chave rasgada na sala → código do cadeado da caixa.
-// Cada fase de 1 a 4 desbloqueia uma dica (CONFIG.hints), guardada em "dicas.txt".
+// ===== NÍVEL 1 — "AS NOTAS" =====
+// Ativo com index.html?nivel=1 (ou escolhendo "Nível 1"). O J trocou a senha do Sistema de Notas do professor;
+// a senha = nome da filha + ano da formatura + número da sorte. O grupo investiga o PC e a sala e FALA a senha
+// ao mestre do jogo (cronômetro, punição e vitória no projetor.html).
+// Trilha principal: LEIA-ME → Sistema de Notas ("Esqueci a senha") → E-mail + Fotos (filha) → formatura.c (ano) → aula_binario (sorte).
+// Opcionais: anotacoes.docx (Ctrl+A), memoria.exe (foto da formatura), Navegador, Lixeira (armadilha).
 (() => {
-  const C = window.CONFIG;
+  const C = window.CONFIG, D = window.L1;
   if (C.level !== 1) return;
-  const LEVELS = [
-    { id: "Espectador",    icon: "👁", desc: "Apenas visualizar arquivos" },
-    { id: "Editor",        icon: "✏️", desc: "Visualizar e editar arquivos" },
-    { id: "Administrador", icon: "🛡️", desc: "Controle total do sistema" }
-  ];
-  const S = { phase: 1, user: null, deleted: new Set(), timerEnd: 0, timerId: null, playerPos: 0, hints: 0 };
-  const isAdmin = () => S.user && S.user.level === "Administrador";
-
-  // ---------- Senha de administrador (repete até acertar ou cancelar) ----------
-  async function askAdminPassword() {
-    let msg = "";
-    for (;;) {
-      const v = await OS.dialog({
-        title: "Permissão de administrador", icon: "🛡️", input: true, msg,
-        text: "Para conceder o nível <b>ADMINISTRADOR</b> é necessária a senha de permissão.",
-        buttons: [{ label: "Cancelar" }, { label: "Confirmar", primary: true }]
-      });
-      if (v === null) return false;
-      if (v.toUpperCase() === String(C.adminPassword).toUpperCase()) return true;
-      OS.play("loginError");
-      msg = "Senha de permissão incorreta.";
-    }
-  }
-
-  // ---------- Regras de abertura dos apps ----------
-  let shownCadastro = false;
-  window.GATE = (app) => {
-    if (["cadastro", "log", "dicas"].includes(app.id)) return true;
-    if (app.id === "gerenciador") { gateManager(); return false; }
-    if (S.phase >= 3 && isAdmin()) return true;
-
-    if (S.phase === 2) {
-      OS.dialog({ type: "danger", icon: "☠", title: "Sistema comprometido",
-        text: "Um <b>intruso</b> está ativo no sistema.<br>Remova-o pelo <b>Gerenciador de Usuários</b> antes que ele remova você." });
-    } else {
-      OS.dialog({ type: "danger", icon: "⛔", title: "Acesso negado",
-        text: "Este aplicativo exige um usuário com nível <b>ADMINISTRADOR</b>.<br><br>Torne-se um administrador para continuar." })
-        .then(() => {
-          if (shownCadastro) return;
-          shownCadastro = true;
-          OS.showIcon("cadastro");
-          OS.notify("📥 Novo aplicativo instalado: cadastro_adm");
-        });
-    }
-    return false;
-  };
-
-  // Gerenciador: exige usuário e nível de administrador
-  let opening = false;
-  async function gateManager() {
-    if (opening) return;
-    opening = true;
-    try {
-      if (!S.user) {
-        await OS.dialog({ type: "danger", icon: "👤", title: "Gerenciador de usuários",
-          text: "Nenhum usuário ativo.<br>Crie seu usuário no <b>cadastro_adm</b>." });
-        return;
-      }
-      if (!isAdmin()) {
-        await OS.dialog({ type: "danger", icon: "⛔", title: "Gerenciador de usuários",
-          text: `Seu usuário <b>${esc(S.user.name)}</b> não possui nível de <b>ADMINISTRADOR</b>.` });
-        await OS.dialog({ icon: "🛡️", title: "Gerenciador de usuários", text: "Você quer se tornar administrador?",
-          buttons: [{ label: "Não", dead: true }, { label: "Sim", primary: true, value: true }] });
-        if (!(await askAdminPassword())) return;
-        S.user.level = "Administrador";
-        OS.notify(`🛡️ ${S.user.name} agora é ADMINISTRADOR`);
-      }
-      const g = window.GATE; window.GATE = null;
-      OS.openApp("gerenciador");
-      window.GATE = g;
-    } finally { opening = false; }
-  }
-
-  // ---------- Cronômetro do hacker ----------
-  function startHackerTimer() {
-    clearInterval(S.timerId);
-    S.timerEnd = Date.now() + C.hackerMinutes * 60000;
-    S.timerId = setInterval(tick, 250);
-    tick();
-  }
-  function stopHackerTimer() {
-    clearInterval(S.timerId);
-    const t = document.querySelector("#timer");
-    t.textContent = ""; t.classList.remove("danger");
-  }
-  function tick() {
-    const left = Math.max(0, S.timerEnd - Date.now());
-    const m = Math.floor(left / 60000), s = Math.floor((left % 60000) / 1000);
-    const txt = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-    const t = document.querySelector("#timer");
-    t.textContent = `☠ Exclusão do seu usuário em ${txt}`;
-    t.classList.toggle("danger", left < 60000);
-    document.querySelectorAll(".um-timer").forEach((e) => (e.textContent = txt));
-    if (left === 0) { stopHackerTimer(); userDeleted("hacker"); }
-  }
-
-  async function userDeleted(by) {
-    S.user = null;
-    OS.closeWin("gerenciador");
-    OS.closeWin("cadastro");
-    OS.play("scare");
-    await OS.dialog({ type: "danger", icon: "💀", title: "Usuário excluído",
-      text: by === "hacker"
-        ? "O tempo acabou. O intruso <b>excluiu seu usuário</b>.<br><br>Seu usuário não existe mais. Você terá que criá-lo de novo no <b>cadastro_adm</b>."
-        : "Você <b>excluiu o seu próprio usuário</b>.<br><br>Ele não existe mais. Você terá que criá-lo de novo no <b>cadastro_adm</b>." });
-  }
-
-  // ---------- Usuário criado ----------
-  async function userCreated() {
-    if (S.phase === 1) {
-      PhaseLog.mark("Fase 1 – Administrador");
-      await sleep(1000);
-      await giveHint();
-      await sleep(800);
-      await OS.dialog({ type: "danger", icon: "👁", title: "ALERTA DE SEGURANÇA",
-        text: "Um usuário descobriu a sua existência e está tomando medidas para <b>excluir o seu usuário</b>.<br><br>" +
-              `Exclua o usuário dele antes que ele exclua o seu.<br>Você tem <b>${C.hackerMinutes} minutos</b>.<br><br>` +
-              "O <b>log_seguranca.txt</b> registrou a invasão. Cuidado: excluir um inocente dá tempo a ele.",
-        buttons: [{ label: "Entendido", primary: true }] });
-      S.phase = 2;
-      OS.showIcon("gerenciador");
-      OS.showIcon("log");
-      OS.notify("📥 Novos aplicativos: gerenciador_usuarios e log_seguranca.txt");
-      startHackerTimer();
-    } else if (S.phase === 2) {
-      await sleep(800);
-      await OS.dialog({ type: "danger", icon: "👁", title: "ALERTA DE SEGURANÇA",
-        text: `O intruso ainda está no sistema e vai excluir você de novo.<br>Você tem <b>${C.hackerMinutes} minutos</b>.` });
-      startHackerTimer();
-    }
-  }
-
-  // ---------- App: cadastro_adm ----------
-  function Cadastro(el, api) {
-    if (S.user) {
-      el.innerHTML = `<div class="ca"><div class="ca-done">✔<h3>Usuário ativo</h3>
-        <p><b>${esc(S.user.name)}</b> — nível ${S.user.level}</p></div></div>`;
-      return;
-    }
-    el.innerHTML = `
-      <form class="ca">
-        <h3>👤 Cadastro de usuário</h3>
-        <div class="ca-step s1">
-          <label>Nome de usuário</label>
-          <input class="ca-name" maxlength="20" placeholder="ex.: jogador1" autocomplete="off">
-          <button class="primary">Próximo ➜</button>
-        </div>
-        <div class="ca-step s2 hidden">
-          <label>Nível de acesso de <b class="ca-who"></b></label>
-          ${LEVELS.map((l) => `
-            <label class="ca-level"><input type="radio" name="lvl" value="${l.id}">
-              <span class="ca-ico">${l.icon}</span><span><b>${l.id}</b><small>${l.desc}</small></span></label>`).join("")}
-          <button class="primary">Criar usuário</button>
-        </div>
-        <p class="ca-msg"></p>
-      </form>`;
-    const f = el.querySelector("form"), msg = el.querySelector(".ca-msg");
-    const name = el.querySelector(".ca-name");
-    setTimeout(() => name.focus(), 50);
-    let step = 1;
-
-    f.onsubmit = async (e) => {
-      e.preventDefault();
-      msg.textContent = "";
-      if (step === 1) {
-        const n = name.value.trim();
-        if (n.length < 3) return (msg.textContent = "O nome precisa ter pelo menos 3 caracteres.");
-        if (C.users.some((u) => u.name.toLowerCase() === n.toLowerCase())) return (msg.textContent = "Este nome de usuário já existe.");
-        el.querySelector(".ca-who").textContent = n;
-        el.querySelector(".s1").classList.add("hidden");
-        el.querySelector(".s2").classList.remove("hidden");
-        step = 2;
-        return;
-      }
-      const lvl = el.querySelector("input[name=lvl]:checked");
-      if (!lvl) return (msg.textContent = "Escolha um nível de acesso.");
-      if (lvl.value === "Administrador" && !(await askAdminPassword())) return;
-
-      f.querySelectorAll("button, input").forEach((b) => (b.disabled = true));
-      msg.className = "ca-msg ok";
-      for (const t of ["Criando usuário...", "Configurando permissões...", "Usuário criado com sucesso!"]) {
-        msg.textContent = t; await sleep(700);
-      }
-      S.user = { name: name.value.trim(), level: lvl.value, self: true };
-      S.playerPos = Math.floor(Math.random() * (C.users.length + 1));
-      OS.notify(`✔ Usuário ${S.user.name} criado (${S.user.level})`);
-      await sleep(600);
-      api.close();
-      userCreated();
-    };
-  }
-
-  // ---------- App: gerenciador_usuarios ----------
-  function Gerenciador(el, api) {
-    el.innerHTML = `
-      <div class="um">
-        <div class="um-head"><span>👥 Usuários do sistema</span>
-          <span class="um-alert">⚠ Seu usuário será excluído em <b class="um-timer">--:--</b></span></div>
-        <div class="um-list"></div>
-      </div>`;
-    const list = el.querySelector(".um-list");
-    tick();
-
-    function render() {
-      const rows = C.users.filter((u) => !S.deleted.has(u.name));
-      if (S.user) rows.splice(Math.min(S.playerPos, rows.length), 0, S.user);
-      list.innerHTML = `<table><tr><th>Usuário</th><th>Nível</th><th>Último acesso</th><th></th></tr>
-        ${rows.map((u, i) => `<tr data-i="${i}"><td>👤 ${esc(u.name)}</td><td>${u.level}</td><td>${u.self ? "agora" : u.last}</td>
-          <td><button class="um-del">🗑 Excluir</button></td></tr>`).join("")}</table>`;
-      list.querySelectorAll(".um-del").forEach((b) => (b.onclick = () => del(rows[b.closest("tr").dataset.i], b.closest("tr"))));
-    }
-
-    let busy = false;
-    async function del(u, tr) {
-      if (busy) return;
-      if (u.self) {
-        const ok = await OS.dialog({ icon: "❓", title: "Excluir usuário", text: "Você quer mesmo apagar você próprio?",
-          buttons: [{ label: "Não", value: false }, { label: "Sim", primary: true, value: true }] });
-        if (!ok) return;
-        stopHackerTimer();
-        return userDeleted("self");
-      }
-      busy = true;
-      tr.classList.add("deleting");
-      tr.querySelector("button").textContent = "Excluindo...";
-      await sleep(1200);
-      busy = false;
-      S.deleted.add(u.name);
-      if (u.hacker) return hackerDeleted();
-      S.timerEnd -= C.wrongDeletePenalty * 1000;
-      OS.play("denied");
-      OS.notify(`⚠ ${u.name} era inocente! O intruso ganhou ${C.wrongDeletePenalty} segundos.`);
-      const t = document.querySelector("#timer");
-      t.classList.remove("penalty"); void t.offsetWidth; t.classList.add("penalty");
-      tick();
-      render();
-    }
-
-    async function hackerDeleted() {
-      stopHackerTimer();
-      S.phase = 3;
-      PhaseLog.mark("Fase 2 – Hacker");
-      api.close();
-      OS.closeWin("log");
-      OS.play("unlock");
-      await OS.dialog({ icon: "✔", title: "Ameaça eliminada",
-        text: "O usuário que estava te vigiando <b>foi excluído</b>." });
-      await giveHint();
-      OS.play("denied");
-      await OS.dialog({ type: "danger", icon: "🧬", title: "FALHA CRÍTICA NA BIOS",
-        text: "Antes de ser excluído, o intruso <b>danificou a BIOS</b> deste computador.<br><br>" +
-              "Componentes corrompidos: <b>CPU, RAM, GPU, SSD, PSU e FAN</b>.<br><br>" +
-              "Se a BIOS não for reparada, o sistema não vai sobreviver ao próximo reinício. " +
-              "Abra o <b>bios_setup</b> e conserte cada componente." });
-      OS.showIcon("bios");
-      OS.notify("📥 Novo aplicativo instalado: bios_setup");
-    }
-
-    render();
-  }
-
-  // ---------- Fase 4: BIOS reparada, mas sem configuração ----------
-  window.MazeState.onDone = async () => {
-    S.phase = 4;
-    PhaseLog.mark("Fase 3 – BIOS");
-    OS.closeWin("bios");
-    OS.play("unlock");
-    await OS.dialog({ icon: "✔", title: "BIOS reparada",
-      text: "Todos os componentes foram <b>reconectados</b>." });
-    await giveHint();
-    OS.play("denied");
-    await OS.dialog({ type: "danger", icon: "⚙", title: "CONFIGURAÇÃO PERDIDA",
-      text: "Os danos causados pelo intruso <b>apagaram a configuração</b> da BIOS.<br><br>" +
-            "A área de trabalho não pode ser carregada até que o sistema seja <b>reconfigurado</b>.<br><br>" +
-            "Abra o <b>cmd.exe</b> e reconfigure o sistema." });
-    OS.showIcon("reconfig");
-    OS.notify("📥 Novo aplicativo instalado: cmd.exe");
-  };
-
-  // ---------- Fase 5: sistema reconfigurado → ransomware ----------
-  window.ReconfigState.onDone = async () => {
-    S.phase = 5;
-    PhaseLog.mark("Fase 4 – cmd");
-    await sleep(1000);
-    OS.closeWin("reconfig");
-    await giveHint();
-    Ransom.start(() => PhaseLog.mark("Fase 5 – Ransomware"));
-  };
-
-  // ---------- Dicas ----------
-  async function giveHint() {
-    const n = ++S.hints;
-    OS.closeWin("dicas"); // reabre atualizado
-    OS.play("unlock");
-    await OS.dialog({ icon: "🧩", title: `DICA ${n} DESBLOQUEADA`,
-      text: `<b>${esc(C.hints[n - 1] || "")}</b><br><br><small>Esta dica fica guardada em <b>dicas.txt</b>.</small>` });
-    OS.showIcon("dicas");
-  }
-  function Dicas(el) {
-    const list = C.hints.slice(0, S.hints).map((h, i) => `DICA ${i + 1}: ${esc(h)}`).join("\n\n");
-    el.innerHTML = `<div class="notepad">${list || "Nenhuma dica ainda."}\n\n\n<i>A última dica não está neste computador.</i></div>`;
-  }
-  function LogSeguranca(el) {
-    el.innerHTML = `<div class="notepad">${C.securityLog.map(esc).join("\n")}</div>`;
-  }
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const prof = (t) => t.replace(/\{prof\}/g, D.professor);
+  const S = { photoUnlocked: false, solved: new Set() };
+  function done(id, label) {
+    if (S.solved.has(id)) return;
+    S.solved.add(id);
+    PhaseLog.mark(label);
+  }
 
-  window.APPS.push(
-    { id: "dicas", title: "dicas.txt", icon: "🧩", hidden: true, width: 460, height: 360, render: Dicas },
-    { id: "log", title: "log_seguranca.txt", icon: "📜", hidden: true, width: 620, height: 440, render: LogSeguranca },
-    { id: "cadastro", title: "cadastro_adm", icon: "🪪", hidden: true, width: 440, height: 470, render: Cadastro },
-    { id: "gerenciador", title: "gerenciador_usuarios", icon: "👥", hidden: true, width: 640, height: 520, render: Gerenciador },
-    { id: "bios", title: "bios_setup", icon: "🧬", hidden: true, width: 860, height: 560,
-      render: (el, api) => BiosGame(el, api) },
-    { id: "reconfig", title: "cmd.exe", icon: "⌨️", hidden: true, width: 760, height: 480,
-      render: (el, api) => ReconfigGame(el, api) }
+  C.password = "";
+  C.userName = "Convidado";
+  C.timerMinutes = 0; // o cronômetro oficial fica no projetor
+  window.GATE = null;
+  window.onDesktopReady = () => OS.openApp("leia");
+
+  // ---------- LEIA-ME (recado do J) ----------
+  function Leia(el) {
+    el.innerHTML = `<div class="notepad">${D.intro.map((l) => esc(prof(l))).join("\n")}</div>`;
+  }
+
+  // ---------- Sistema de Notas (bloqueado: a senha é falada ao J) ----------
+  function Notas(el) {
+    const alunos = ["Ana C.", "Bruno L.", "Carla M.", "Diego S.", "Eduarda P.", "Fábio O.", "Gabriel R.", "Heloísa T."];
+    el.innerHTML = `
+      <div class="l1-notas">
+        <div class="l1-notas-h"><b>🎓 Sistema de Notas</b><span>${esc(D.professor)} — Notas finais 2026</span></div>
+        <div class="l1-notas-body">
+          <table class="l2-tab"><tr><th>Aluno</th><th>Nota final</th></tr>
+            ${alunos.map((a) => `<tr><td>${a}</td><td class="l1-blur">██,█</td></tr>`).join("")}</table>
+          <div class="l1-lock">
+            <div class="l1-lock-ico">🔒</div>
+            <h3>BLOQUEADO PELO J</h3>
+            <form><input placeholder="Senha" autocomplete="off"><button>Entrar</button></form>
+            <p class="l2-msg"></p>
+            <button class="l1-forgot">Esqueci a senha</button>
+            <p class="l1-hint hidden"></p>
+          </div>
+        </div>
+      </div>`;
+    const form = el.querySelector("form"), input = form.querySelector("input"), msg = el.querySelector(".l2-msg");
+    let busy = false;
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      if (busy || !input.value.trim()) return;
+      input.value = "";
+      msg.textContent = "Este campo está bloqueado. A senha só vale se for dita para mim. — J";
+      busy = true;
+      await Interference.error("nivel1");
+      busy = false;
+    };
+    el.querySelector(".l1-forgot").onclick = () => {
+      const h = el.querySelector(".l1-hint");
+      h.classList.remove("hidden");
+      h.innerHTML = `Dica cadastrada pelo professor:<br><b>“${esc(D.passwordHint)}”</b>`;
+      done("hint", "Dica da senha");
+    };
+  }
+
+  // ---------- E-mail do professor ----------
+  function Email(el) {
+    el.innerHTML = `<div class="l2-mail"><div class="l2-mail-list">${D.emails.map((m, i) => `
+        <div class="l2-mail-i" data-i="${i}"><b>${esc(m.from)}</b><span>${esc(m.subject)}${m.attach ? " 📎" : ""}</span><small>${esc(m.time)}</small></div>`).join("")}</div>
+      <div class="l2-mail-body"><p class="muted">Selecione um e-mail.</p></div></div>`;
+    el.querySelectorAll(".l2-mail-i").forEach((it) => (it.onclick = () => {
+      el.querySelectorAll(".l2-mail-i").forEach((x) => x.classList.remove("sel"));
+      it.classList.add("sel");
+      const m = D.emails[it.dataset.i], body = el.querySelector(".l2-mail-body");
+      body.innerHTML = `<h3>${esc(m.subject)}</h3><small>De: ${esc(m.from)} · ${esc(m.time)}</small><pre>${m.body.map(esc).join("\n")}</pre>
+        ${m.attach ? `<button class="l1-attach">📎 ${esc(m.attach.name)}</button><pre class="l1-att hidden">${m.attach.lines.map(esc).join("\n")}</pre>` : ""}`;
+      const b = body.querySelector(".l1-attach");
+      if (b) b.onclick = () => { body.querySelector(".l1-att").classList.toggle("hidden"); done("turma", "Lista da turma 3B"); };
+    }));
+  }
+
+  // ---------- Fotos ----------
+  const PHOTOS = {
+    familia: `<svg viewBox="0 0 320 200"><rect width="320" height="200" fill="#8ec5e8"/><rect y="140" width="320" height="60" fill="#e8d39a"/>
+      <circle cx="270" cy="40" r="22" fill="#ffd54a"/>
+      <g><circle cx="150" cy="70" r="18" fill="#e0b48c"/><rect x="132" y="88" width="36" height="58" rx="8" fill="#2d5d8a"/></g>
+      <g><circle cx="105" cy="105" r="13" fill="#e0b48c"/><path d="M90 98 q-10 14 2 22 M120 98 q10 14 -2 22" stroke="#6b3e1f" stroke-width="5" fill="none"/>
+        <path d="M92 118 h26 l6 34 h-38 z" fill="#e2557a"/></g>
+      <g><circle cx="200" cy="105" r="13" fill="#e0b48c"/><rect x="188" y="118" width="24" height="32" rx="5" fill="#3e9b54"/></g>
+      <text x="160" y="190" text-anchor="middle" font-size="11" fill="#555">praia — férias de julho</text></svg>`,
+    gato: `<svg viewBox="0 0 320 200"><rect width="320" height="200" fill="#3b3b44"/><rect x="40" y="120" width="240" height="40" rx="6" fill="#222"/>
+      <ellipse cx="160" cy="118" rx="58" ry="26" fill="#d98c3a"/><circle cx="208" cy="100" r="20" fill="#d98c3a"/>
+      <path d="M196 84 l4 -14 l8 12 M214 82 l8 -12 l2 15" fill="#d98c3a"/><path d="M200 100 q4 3 8 0 M212 100 q4 3 8 0" stroke="#222" stroke-width="2" fill="none"/>
+      <text x="160" y="190" text-anchor="middle" font-size="11" fill="#bbb">dormindo no teclado de novo</text></svg>`,
+    formatura: `<svg viewBox="0 0 320 200"><rect width="320" height="200" fill="#5a4a3a"/>
+      <rect x="40" y="18" width="240" height="34" fill="#f4ecd6"/><text x="160" y="41" text-anchor="middle" font-size="16" font-weight="bold" fill="#7a0000">FORMANDOS ENG. COMPUTAÇÃO 1998</text>
+      ${[60, 110, 160, 210, 260].map((x) => `<g><circle cx="${x}" cy="105" r="15" fill="#e0b48c"/><rect x="${x - 18}" y="120" width="36" height="60" rx="8" fill="#111"/>
+        <path d="M${x - 20} 92 h40 l-20 -9 z" fill="#111"/></g>`).join("")}
+      <text x="160" y="196" text-anchor="middle" font-size="10" fill="#ddd">colação de grau</text></svg>`
+  };
+  function Fotos(el) {
+    const items = [["familia", "familia.jpg"], ["gato", "gato.jpg"], ["formatura", "formatura.jpg"]];
+    el.innerHTML = `<div class="l1-fotos">
+      <div class="l1-thumbs">${items.map(([k, n]) => `<button data-k="${k}">${k === "formatura" && !S.photoUnlocked ? "⚠️" : "🖼️"} ${n}</button>`).join("")}</div>
+      <div class="l1-view"><p class="muted">Selecione uma foto.</p></div></div>`;
+    el.querySelectorAll(".l1-thumbs button").forEach((b) => (b.onclick = () => {
+      const v = el.querySelector(".l1-view");
+      if (b.dataset.k === "formatura" && !S.photoUnlocked)
+        return (v.innerHTML = `<p class="err">Arquivo corrompido.<br><small>Recupere os componentes do computador para restaurar esta foto.</small></p>`);
+      v.innerHTML = PHOTOS[b.dataset.k];
+    }));
+  }
+
+  // ---------- formatura.c (lacuna) ----------
+  function Formatura(el) {
+    el.innerHTML = `
+      <div class="l2-code">
+        <div class="l2-code-bar"><span>📄 formatura.c</span><button class="l2-run">▶ Compilar e executar</button></div>
+        <pre><span class="ln"> 1</span>#include &lt;stdio.h&gt;
+<span class="ln"> 2</span>
+<span class="ln"> 3</span>/* Ano em que me formei. A duração está no meu diploma. */
+<span class="ln"> 4</span>int main() {
+<span class="ln"> 5</span>    int ingresso = ${D.cIngresso};
+<span class="ln"> 6</span>    int duracao  = <input class="l1-gap" maxlength="3" placeholder="___" spellcheck="false">;   /* anos de curso */
+<span class="ln"> 7</span>
+<span class="ln"> 8</span>    printf("Me formei em %d\\n", ingresso + duracao);
+<span class="ln"> 9</span>    return 0;
+<span class="ln">10</span>}</pre>
+        <div class="l2-console">$ <span class="l2-con"></span></div>
+      </div>`;
+    const gap = el.querySelector(".l1-gap"), con = el.querySelector(".l2-con");
+    el.querySelector(".l2-run").onclick = async () => {
+      const v = gap.value.trim();
+      con.textContent = "gcc formatura.c -o formatura ...";
+      await sleep(700);
+      if (!/^\d+$/.test(v)) {
+        con.innerHTML = `<span class="err">formatura.c:6: erro: esperado um número antes de ';'</span>`;
+        return;
+      }
+      con.innerHTML = `./formatura<br>Me formei em ${D.cIngresso + Number(v)}`;
+      if (Number(v) === D.cDuracao) done("ano", "Ano da formatura (formatura.c)");
+    };
+  }
+
+  // ---------- aula_binario (slides) ----------
+  function Aula(el) {
+    let i = 0;
+    const render = () => {
+      const s = D.slides[i];
+      el.innerHTML = `<div class="l1-slides"><div class="l1-slide"><h2>${esc(s.title)}</h2><pre>${s.lines.map(esc).join("\n")}</pre></div>
+        <div class="l1-slide-nav"><button class="p" ${i ? "" : "disabled"}>◀</button><span>${i + 1} / ${D.slides.length}</span><button class="n" ${i < D.slides.length - 1 ? "" : "disabled"}>▶</button></div></div>`;
+      el.querySelector(".p").onclick = () => { i--; render(); };
+      el.querySelector(".n").onclick = () => { i++; render(); if (i === D.slides.length - 1) done("aula", "Aula de binário"); };
+    };
+    render();
+  }
+
+  // ---------- Opcional: anotacoes.docx (texto em branco — aparece com Ctrl+A) ----------
+  function Anotacoes(el) {
+    el.innerHTML = `<div class="l1-doc"><div class="l1-doc-bar">📄 anotacoes.docx</div>
+      <div class="l1-page" tabindex="0"><div class="l1-white">${D.hiddenNote.map(esc).join("<br>")}</div></div></div>`;
+    const page = el.querySelector(".l1-page"), txt = el.querySelector(".l1-white");
+    setTimeout(() => page.focus(), 50);
+    page.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key.toLowerCase() === "a") {
+        e.preventDefault();
+        const r = document.createRange(); r.selectNodeContents(txt);
+        const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      }
+    });
+    const onSel = () => {
+      if (!el.isConnected) return document.removeEventListener("selectionchange", onSel);
+      const sel = getSelection();
+      if (sel.rangeCount && !sel.isCollapsed && txt.contains(sel.anchorNode)) done("nota", "Anotação escondida (Ctrl+A)");
+    };
+    document.addEventListener("selectionchange", onSel);
+  }
+
+  // ---------- Opcional: memoria.exe (hardware) ----------
+  function Memoria(el) {
+    const cards = D.memory.flatMap((m, i) => [{ id: i, face: `<span class="big">${m.icon}</span>` }, { id: i, face: `<b>${esc(m.name)}</b>` }]);
+    for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cards[i], cards[j]] = [cards[j], cards[i]]; }
+    el.innerHTML = `<div class="l1-mem"><p>Ligue cada componente ao seu nome para recuperar os arquivos corrompidos.</p>
+      <div class="l1-grid">${cards.map((c, i) => `<button class="l1-card" data-i="${i}"><span class="back">?</span><span class="front">${c.face}</span></button>`).join("")}</div>
+      <p class="l2-msg ok"></p></div>`;
+    const btns = [...el.querySelectorAll(".l1-card")];
+    let open = [], lock = false, pairs = 0;
+    btns.forEach((b) => (b.onclick = async () => {
+      if (lock || b.classList.contains("up")) return;
+      b.classList.add("up");
+      open.push(b);
+      if (open.length < 2) return;
+      const [x, y] = open; open = [];
+      if (cards[x.dataset.i].id === cards[y.dataset.i].id) {
+        x.classList.add("ok"); y.classList.add("ok");
+        if (++pairs === D.memory.length) {
+          S.photoUnlocked = true;
+          el.querySelector(".l2-msg").textContent = "✔ " + D.memoryReward;
+          OS.notify("🖼️ " + D.memoryReward);
+          done("memoria", "Jogo da memória");
+        }
+      } else {
+        lock = true; await sleep(800);
+        x.classList.remove("up"); y.classList.remove("up"); lock = false;
+      }
+    }));
+  }
+
+  // ---------- Opcional: Navegador (histórico) ----------
+  function Navegador(el) {
+    el.innerHTML = `<div class="l1-nav"><div class="l1-nav-bar">🌐 Histórico</div>
+      ${D.history.map((h) => `<div class="l1-nav-i"><small>${esc(h.t)}</small><span>🔍 ${esc(h.q)}</span></div>`).join("")}</div>`;
+  }
+
+  // ---------- Lixeira (com armadilha) ----------
+  function Lixeira(el) {
+    el.innerHTML = `<div class="l1-trash">${D.trash.map((f, i) => `<button data-i="${i}">${f.trap ? "⚙️" : "📄"} ${esc(f.name)}</button>`).join("")}
+      <pre class="l1-trash-view"></pre></div>`;
+    el.querySelectorAll("button").forEach((b) => (b.onclick = async () => {
+      const f = D.trash[b.dataset.i], v = el.querySelector(".l1-trash-view");
+      if (!f.trap) return (v.textContent = f.lines.join("\n"));
+      v.textContent = "Executando NAO_ABRA.exe ...";
+      await sleep(400);
+      await Interference.scare("nivel1_armadilha");
+      v.textContent = "Eu avisei.";
+    }));
+  }
+
+  APPS.length = 0;
+  APPS.push(
+    { id: "leia", title: "LEIA-ME.txt", icon: "📄", width: 620, height: 460, render: Leia },
+    { id: "notas", title: "Sistema de Notas", icon: "🎓", width: 720, height: 480, render: Notas },
+    { id: "email", title: "E-mail", icon: "✉️", width: 780, height: 500, render: Email },
+    { id: "fotos", title: "Fotos", icon: "🖼️", width: 620, height: 460, render: Fotos },
+    { id: "formatura", title: "formatura.c", icon: "📝", width: 640, height: 440, render: Formatura },
+    { id: "aula", title: "aula_binario.pptx", icon: "📊", width: 640, height: 440, render: Aula },
+    { id: "anotacoes", title: "anotacoes.docx", icon: "📃", width: 560, height: 420, render: Anotacoes },
+    { id: "memoria", title: "memoria.exe", icon: "🧠", width: 620, height: 520, render: Memoria },
+    { id: "navegador", title: "Navegador", icon: "🌐", width: 620, height: 420, render: Navegador },
+    { id: "lixeira", title: "Lixeira", icon: "🗑️", width: 480, height: 320, render: Lixeira }
   );
 })();

@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>JIGSAW – Projetor</title>
-<!-- Tela do PROJETOR (Nível 2). Abra no computador do mestre do jogo que está ligado ao projetor.
-     Cronômetro oficial, punição por acusação errada (jump scare + perde minutos), dicas usadas e vitória.
+<!-- Tela do PROJETOR (Níveis 1 e 2). Abra no computador do mestre do jogo que está ligado ao projetor.
+     Pergunta o nível ao abrir (ou projetor.html?nivel=1 / ?nivel=2).
+     Cronômetro oficial, punição por resposta errada (jump scare + perde minutos), dicas usadas e vitória.
      Teclas: veja o painel (H mostra/esconde). -->
 <link rel="stylesheet" href="css/style.css">
 <style>
@@ -24,6 +25,8 @@
   #pj-msg.win h1 { color: #3f6; text-shadow: 0 0 30px #0f0; }
   #pj-help { position: fixed; left: 16px; bottom: 16px; padding: 12px 16px; background: #111d; border: 1px solid #400; color: #aaa; font-size: 14px; line-height: 1.7; }
   #pj-help b { color: #fff; display: inline-block; min-width: 92px; }
+  #pj-choose { position: fixed; inset: 0; z-index: 9500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; background: #000; }
+  #pj-choose h1 { color: #ddd; font-size: 26px; }
 </style>
 </head>
 <body>
@@ -35,29 +38,54 @@
       <circle cx="42" cy="155" r="18" fill="#c00"/><circle cx="158" cy="155" r="18" fill="#c00"/>
       <path d="M76 188 L124 188" stroke="#900" stroke-width="6" stroke-linecap="round"/>
     </svg>
-    <div class="pj-sub">TEMPO RESTANTE</div>
+    <div class="pj-sub" id="pj-sub">TEMPO RESTANTE</div>
     <div class="pj-time paused" id="pj-time">30:00</div>
     <div class="pj-hints">Dicas usadas: <b id="pj-hints">0</b> / <span id="pj-max">5</span></div>
   </div>
 
   <div id="pj-help">
     <div><b>Espaço</b> iniciar / pausar</div>
-    <div><b>P</b> punição: acusação errada (susto + −<span class="pen"></span> min)</div>
-    <div><b>V</b> vitória (acusação certa)</div>
+    <div><b>P</b> punição: resposta errada (susto + −<span class="pen"></span> min)</div>
+    <div><b>V</b> vitória (resposta certa)</div>
     <div><b>D / Shift+D</b> +1 / −1 dica usada</div>
     <div><b>↑ / ↓</b> +1 / −1 minuto</div>
     <div><b>R (2x)</b> reiniciar tudo · <b>F</b> tela cheia · <b>H</b> esconder este painel</div>
+    <div><b>Ctrl+Shift+1/2</b> trocar de nível</div>
   </div>
 
 <script src="js/config.js"></script>
 <script src="js/interference.js"></script>
+<script src="js/final-scare.js"></script>
+<script src="js/level1-data.js"></script>
 <script src="js/level2-data.js"></script>
 <script>
-  // Ajustes: projetor.html?min=30&punicao=5&dicas=5
+  // Ajustes: projetor.html?nivel=1&min=30&punicao=2&dicas=5
   const Q = new URLSearchParams(location.search);
-  const MIN = Number(Q.get("min")) || 30, PEN = Number(Q.get("punicao")) || 5, MAXH = Number(Q.get("dicas")) || 5;
+  const LEVEL = Number(Q.get("nivel"));
   const $ = (s) => document.querySelector(s);
+  if (!LEVEL) {
+    const ch = document.createElement("div");
+    ch.id = "pj-choose";
+    ch.innerHTML = `<h1>Qual nível vai ser jogado?</h1><div class="level-btns">
+      <button data-level="1"><b>NÍVEL 1</b><small>As Notas</small></button>
+      <button data-level="2"><b>NÍVEL 2</b><small>O Cúmplice</small></button></div>`;
+    document.body.appendChild(ch);
+    ch.querySelectorAll("button").forEach((b) => (b.onclick = () => (location.search = "?nivel=" + b.dataset.level)));
+  }
+  // Textos e punição de cada nível
   const culprit = L2.suspects.find((s) => s.name.startsWith(L2.culprit)).name;
+  const TXT = {
+    1: { pen: 2, sub: "NOTAS ZERADAS EM",
+      wrong: ["SENHA ERRADA", (p) => `As notas estão caindo. Isso custou <b>${p} minutos</b>.<br>Tentem de novo.`],
+      win: ["CORRETO.", `A senha era <b>${L1.password}</b>.<br>As notas foram salvas... por enquanto.<br><br>— J`],
+      lose: ["TEMPO ESGOTADO", "As notas de vocês foram ZERADAS.<br><br>— J"] },
+    2: { pen: 5, sub: "TEMPO RESTANTE",
+      wrong: ["ACUSAÇÃO ERRADA", (p) => `Vocês acusaram um inocente. Isso custou <b>${p} minutos</b>.<br>Mais uma chance.`],
+      win: ["CORRETO.", `Meu cúmplice era <b>${culprit}</b>.<br>Vocês sobreviveram... desta vez.<br><br>— J`],
+      lose: ["TEMPO ESGOTADO", "Meu cúmplice continua livre.<br>E vocês continuam aqui.<br><br>— J"] }
+  }[LEVEL === 1 ? 1 : 2];
+  const MIN = Number(Q.get("min")) || 30, PEN = Number(Q.get("punicao")) || TXT.pen, MAXH = Number(Q.get("dicas")) || 5;
+  $("#pj-sub").textContent = TXT.sub;
   let left = MIN * 60000, running = false, last = 0, hints = 0, over = false, resetArm = 0;
 
   $("#pj-max").textContent = MAXH;
@@ -92,24 +120,28 @@
   }
 
   async function punish() {
-    if (over || Interference.running) return;
-    await Interference.scare("projetor_punicao");
+    if (over || Interference.running || FinalScare.running) return;
+    // Nível 1 (senha final errada): cena própria em HTML/CSS; Nível 2: susto normal (ou vídeo de projetor_punicao)
+    if (LEVEL === 1) await FinalScare.play();
+    else await Interference.scare("projetor_punicao");
     left = Math.max(0, left - PEN * 60000);
-    message("ACUSAÇÃO ERRADA", `Vocês acusaram um inocente. Isso custou <b>${PEN} minutos</b>.<br>Mais uma chance.`, "", 5000);
+    message(TXT.wrong[0], TXT.wrong[1](PEN), "", 5000);
   }
   function victory() {
     if (over) return;
     over = true; running = false;
-    message("CORRETO.", `Meu cúmplice era <b>${culprit}</b>.<br>Vocês sobreviveram... desta vez.<br><br>— J`, "win");
+    message(TXT.win[0], TXT.win[1], "win");
   }
   async function timeUp() {
     if (over) return;
     over = true; running = false;
     await Interference.scare("projetor_tempo");
-    message("TEMPO ESGOTADO", "Meu cúmplice continua livre.<br>E vocês continuam aqui.<br><br>— J");
+    message(TXT.lose[0], TXT.lose[1]);
   }
 
   addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.shiftKey && (e.code === "Digit1" || e.code === "Digit2")) return (location.search = "?nivel=" + e.code.slice(-1));
+    if (!LEVEL) return;
     const k = e.key.toLowerCase();
     if (k !== "r") resetArm = 0;
     if (e.key === " ") { e.preventDefault(); if (!over) running = !running; }

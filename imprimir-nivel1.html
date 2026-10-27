@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Papéis do Nível 1 – imprimir</title>
+<!-- Papéis da sala do Nível 1 ("As Notas"), gerados a partir de js/level1-data.js. Abra no Chrome e use Ctrl+P (A4).
+     Página 1 = desenhos das crianças (recorte; cole na parede, como num mural de professor)
+     Página 2 = diploma com o ano rasgado (rasgue o canto do ano ANTES de colocar na sala)
+     Página 3 = post-it do número da sorte (recorte e cole no monitor ou na mesa)
+     Página 4 = cartaz da tabela binária (cole na parede, como material de aula) -->
+<style>
+  @page { size: A4; margin: 12mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, sans-serif; color: #111; background: #888; }
+  .page { width: 210mm; min-height: 297mm; margin: 10mm auto; padding: 14mm; background: #fff; position: relative; page-break-after: always; overflow: hidden; }
+  @media print { body { background: none; } .page { margin: 0; width: auto; min-height: 270mm; } }
+  h1 { margin: 0 0 6mm; font-size: 24px; text-align: center; }
+  .sub { text-align: center; color: #555; margin-bottom: 6mm; }
+
+  .drawings { display: flex; flex-direction: column; gap: 6mm; }
+  .drawing { height: 74mm; border: 2px dashed #888; position: relative; background: #fffdf5; }
+  .drawing svg { width: 100%; height: 100%; }
+
+  .diploma { margin-top: 10mm; padding: 14mm; border: 10px double #8a6d1f; background: #fbf6e6; text-align: center; font-family: Georgia, serif; position: relative; }
+  .diploma h2 { font-size: 34px; letter-spacing: .1em; color: #5a4310; margin: 0 0 8mm; }
+  .diploma p { font-size: 18px; line-height: 1.7; margin: 3mm 0; }
+  .diploma .name { font-size: 28px; font-style: italic; }
+  .diploma .year { font-size: 22px; font-weight: bold; }
+  .tear { position: absolute; right: 8mm; bottom: 8mm; width: 62mm; height: 26mm; border: 2px dashed #b00; color: #b00; font-size: 12px;
+    display: flex; align-items: center; justify-content: center; font-family: Arial, sans-serif; }
+
+  .postit { width: 90mm; height: 90mm; margin: 30mm auto 0; padding: 10mm; background: #ffef7a; box-shadow: 3px 4px 10px #0004; transform: rotate(-3deg);
+    font-family: "Comic Sans MS", cursive; text-align: center; }
+  .postit b { display: block; font-size: 64px; letter-spacing: .1em; margin: 6mm 0; }
+  .postit p { font-size: 18px; margin: 0; }
+
+  .bin { width: 100%; border-collapse: collapse; font-size: 22px; }
+  .bin th, .bin td { border: 2px solid #1f4e79; padding: 3mm; text-align: center; }
+  .bin th { background: #1f4e79; color: #fff; }
+  .bin td.b { font-family: "Courier New", monospace; font-weight: bold; letter-spacing: .2em; }
+  .cols { display: flex; gap: 8mm; }
+  .cols table { flex: 1; }
+</style>
+</head>
+<body>
+  <section class="page">
+    <h1>DESENHOS DAS CRIANÇAS</h1>
+    <div class="sub">Recorte nas linhas tracejadas e cole na parede (mural do professor)</div>
+    <div class="drawings" id="drawings"></div>
+  </section>
+
+  <section class="page">
+    <h1>DIPLOMA (rasgar o canto do ano)</h1>
+    <div class="diploma">
+      <h2>DIPLOMA</h2>
+      <p>Conferimos a</p>
+      <p class="name" id="dip-name"></p>
+      <p>o grau de <b>Bacharel em Engenharia da Computação</b>,<br>por ter concluído o curso de <b>4 (quatro) anos</b><br>com todas as exigências cumpridas.</p>
+      <p class="year">Colação de grau: ____ de dezembro de 19<span style="letter-spacing:.3em">██</span></p>
+      <div class="tear">✂ rasgue esta parte (o ano) fora ✂</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h1>POST-IT (recortar)</h1>
+    <div class="postit"><p>meu número da sorte,<br>em binário:</p><b id="lucky"></b><p>os alunos nunca entendem :)</p></div>
+  </section>
+
+  <section class="page">
+    <h1>NÚMEROS BINÁRIOS — TABELA DE CONVERSÃO</h1>
+    <div class="sub">Material de aula</div>
+    <div class="cols" id="bin"></div>
+  </section>
+
+<script src="js/level1-data.js"></script>
+<script>
+  document.getElementById("dip-name").textContent = L1.professor.replace(/^Prof\.?\s*/, "");
+  document.getElementById("lucky").textContent = L1.luckyBinary;
+
+  // Tabela binária 0–15 em duas colunas
+  const row = (n) => `<tr><td>${n}</td><td class="b">${n.toString(2).padStart(4, "0")}</td></tr>`;
+  const table = (a, b) => `<table class="bin"><tr><th>Decimal</th><th>Binário</th></tr>${Array.from({ length: b - a + 1 }, (_, i) => row(a + i)).join("")}</table>`;
+  document.getElementById("bin").innerHTML = table(0, 7) + table(8, 15);
+
+  // Desenhos infantis (traço de giz de cera)
+  const art = {
+    family: `<path d="M120 200 q10 -60 40 -60 q30 0 40 60" fill="#e2557a"/><circle cx="160" cy="120" r="22" fill="#f5c9a0"/>
+      <path d="M250 200 v-80" stroke="#2d5d8a" stroke-width="30"/><circle cx="250" cy="90" r="24" fill="#f5c9a0"/>
+      <path d="M340 200 v-55" stroke="#3e9b54" stroke-width="24"/><circle cx="340" cy="128" r="18" fill="#f5c9a0"/>
+      <circle cx="560" cy="60" r="34" fill="#ffd54a"/>`,
+    rocket: `<path d="M300 40 q40 60 30 140 h-60 q-10 -80 30 -140z" fill="#c33"/><circle cx="300" cy="110" r="14" fill="#8ec5e8"/>
+      <path d="M270 180 l-30 30 h30z M330 180 l30 30 h-30z" fill="#e8a33d"/><path d="M285 185 q15 40 30 0" fill="#ffcf3a"/>
+      <circle cx="120" cy="60" r="5" fill="#333"/><circle cx="480" cy="90" r="5" fill="#333"/><circle cx="520" cy="40" r="4" fill="#333"/>`,
+    heart: `<path d="M300 210 C180 130 200 50 260 60 Q290 65 300 95 Q310 65 340 60 C400 50 420 130 300 210z" fill="#e2557a"/>
+      <circle cx="140" cy="80" r="20" fill="#ffd54a"/><circle cx="470" cy="150" r="16" fill="#7ac36a"/>`
+  };
+  document.getElementById("drawings").innerHTML = L1.drawings.map((d) => `
+    <div class="drawing"><svg viewBox="0 0 640 260" font-family="Comic Sans MS, cursive">
+      ${art[d.kind]}
+      <text x="40" y="44" font-size="30" fill="#2b3bb0">${d.text}</text>
+      <text x="600" y="240" font-size="34" fill="#2b3bb0" text-anchor="end">— ${d.name}</text></svg></div>`).join("");
+</script>
+</body>
+</html>

@@ -11,7 +11,7 @@ Todos os valores abaixo vêm de `js/level2-data.js`. Se alguém mudar esse arqui
 | O quê | Onde | Como |
 |---|---|---|
 | Jogo | Notebook da sala | Abrir **`index.html`** no Chrome e escolher **Nível 2** (ou Ctrl + Shift + 2) |
-| Projetor | PC do mestre do jogo, ligado ao projetor | Abrir **`projetor.html`** e apertar **F** (tela cheia) |
+| Projetor | PC do mestre do jogo, ligado ao projetor | Abrir **`projetor.html`**, escolher **Nível 2** e apertar **F** (tela cheia) |
 | Papéis | Sala | Imprimir **`imprimir-nivel2.html`** (Ctrl + P, A4) |
 
 O que fazer com cada papel:
@@ -20,7 +20,7 @@ O que fazer com cada papel:
 - **Página 3, livro de chaves:** deixar numa pasta ou sobre uma mesa.
 - **Página 4, bilhete de ônibus:** recortar e esconder, por exemplo numa mochila ou num casaco.
 
-O `projetor.html` aceita ajustes pelo endereço: `projetor.html?min=30&punicao=5&dicas=5`.
+O `projetor.html` aceita ajustes pelo endereço: `projetor.html?nivel=2&min=30&punicao=5&dicas=5`.
 
 ---
 

@@ -1,201 +1,156 @@
-# Nível 1 – Guia de testes (debug)
+# Nível 1 – "As Notas" – Guia de testes e do mestre do jogo
 
 > ⚠ **SPOILER.** Este documento tem todas as respostas. É só para testadores e para o mestre do jogo, nunca deixe os jogadores verem.
 
-Todos os valores abaixo são os atuais do `js/config.js`. Se alguém mudar o config, este guia precisa ser atualizado.
+Todos os valores abaixo vêm de `js/level1-data.js`. Se alguém mudar esse arquivo, este guia precisa ser atualizado.
+
+> **Professor real:** só o **nome** (Prof. Muriel Godoi) é real; a filha, o filho, a sobrinha, a formatura, o número da sorte, as fotos e os e-mails são **inventados**. **O professor ainda não autorizou o uso do nome.** Se ele não autorizar, troque `professor` em `js/level1-data.js` e reimprima os papéis.
 
 ---
 
-## 1. Como rodar
+## 1. Montagem
 
-1. Abra `index.html` no **Chrome** e escolha **Nível 1**. Não precisa de internet. Para trocar de nível a qualquer momento: Ctrl + Shift + 1 ou Ctrl + Shift + 2.
-2. Clique no botão de ligar. O jogo entra em tela cheia, mostra o boot e vai direto para a área de trabalho, sem tela de login.
-3. Antes de cada partida de teste, reinicie com **Ctrl + Shift + X**.
-
-Para imprimir os papéis da sala, abra `imprimir.html` e use Ctrl + P (A4):
-- **Página 1:** Manual de comandos (fase 4).
-- **Página 2:** Tabela de correções (fase 4).
-- **Página 3:** Chave de recuperação (fase 5). Esta página sai em paisagem e deve ser rasgada nas linhas tracejadas.
-
----
-
-## 2. Resumo rápido (cola do mestre do jogo)
-
-| Fase | O que fazer | Resposta |
+| O quê | Onde | Como |
 |---|---|---|
-| 1. Administrador | Criar usuário com nível Administrador | Senha **`KRAMER`** (maiúscula ou minúscula, tanto faz) |
-| 2. Hacker | Excluir o hacker no gerenciador | Usuário **`t.hoffman`** |
-| 3. BIOS | Completar os 6 labirintos | – |
-| 4. cmd | `Y`, depois 6 comandos sorteados | Veja a tabela da seção 4 |
-| 5. Ransomware | Digitar a chave de recuperação | **`K7RX-M3Q9-ZT4H-W8PL-6NFD`** |
-| Caixa | Código do cadeado | **`0000`** (provisório) |
+| Jogo | Notebook da sala | Abrir `index.html` no Chrome e escolher **Nível 1** (ou Ctrl + Shift + 1) |
+| Projetor | PC do mestre do jogo, ligado ao projetor | Abrir `projetor.html`, escolher **Nível 1** e apertar **F** (tela cheia) |
+| Papéis | Sala | Imprimir **`imprimir-nivel1.html`** (Ctrl + P, A4) |
+
+O que fazer com cada papel:
+- **Página 1, desenhos das crianças:** recortar os 3 desenhos (Alice, Pedro e Sofia) e colar na parede, como um mural.
+- **Página 2, diploma:** **rasgar o canto do ano** antes de colocar na sala. Pode ir numa moldura ou ser colado na parede.
+- **Página 3, post-it "111":** recortar e colar no monitor ou na mesa.
+- **Página 4, tabela binária:** colar na parede, como material de aula.
 
 ---
 
-## 3. Atalhos do mestre do jogo
+## 2. Resposta e cola rápida
 
-| Atalho | O que faz |
-|---|---|
-| **Ctrl + Shift + X** | Reinicia tudo (recarrega a página, e o progresso é perdido) |
-| **Ctrl + Shift + S** | Pula o labirinto atual (fase 3), completa a correção atual (fase 4) ou preenche a chave (fase 5) |
-| **Ctrl + Shift + H** | Dispara a interferência do hacker (para testar) |
-| **Ctrl + Shift + L** | Mostra o tempo de cada fase e o total. Fica salvo no navegador mesmo depois de reiniciar |
+**Resposta final: `ALICE19987`.** O grupo fala a senha para o mestre do jogo pela câmera. Maiúscula ou minúscula, tanto faz.
 
-Não use Ctrl + Shift + N, T ou W: o Chrome reserva esses atalhos (janela anônima, reabrir aba, fechar janela).
-
----
-
-## 4. Fluxo completo, fase por fase
-
-### Fase 1 – Acesso de administrador
-1. Qualquer ícone que o jogador tentar abrir mostra **"Acesso negado"** e exige ADMINISTRADOR.
-2. Depois do OK, aparece o ícone **cadastro_adm**.
-3. Para criar o usuário:
-   - O nome precisa ter pelo menos 3 letras e não pode repetir um nome da lista do gerenciador.
-   - Os níveis são Espectador, Editor ou Administrador.
-   - **Administrador** pede a senha **`KRAMER`**. Senha errada mostra "Senha de permissão incorreta" e deixa tentar de novo.
-   - Com Espectador ou Editor, o jogo segue normalmente, e a senha é cobrada depois, na fase 2.
-4. Ao criar o usuário, aparece **DICA 1**, e o ícone **dicas.txt** surge na área de trabalho.
-5. Na sala, a senha é achada em **2 etapas**: uma pista física leva à outra.
-
-### Fase 2 – Remover o hacker (cronômetro de 5 min)
-1. Aparece o **ALERTA DE SEGURANÇA**, e surgem os ícones **gerenciador_usuarios** e **log_seguranca.txt**.
-2. O cronômetro começa na barra de tarefas ("Exclusão do seu usuário em 05:00").
-3. Se o usuário não for administrador:
-   - Ao abrir o gerenciador, o jogo pergunta "Você quer se tornar administrador?".
-   - O botão **"Não" não funciona**, só treme. O **"Sim"** pede a senha `KRAMER`.
-4. **Pista:** o `log_seguranca.txt` mostra um login **REMOTO**, **hoje às 23:59**, com nível **ADMINISTRADOR**, mas com o nome apagado.
-5. Na lista de 40 usuários, só **`t.hoffman`** (Administrador, hoje 23:59) bate com tudo. As iscas são:
-
-| Usuário | Por que não é ele |
-|---|---|
-| h.costa | Hoje 23:59, mas é **Editor**, e o log mostra login **local** |
-| s.freitas | Hoje 23:59, mas é **Espectador**, e o log mostra login **local** |
-| d.rocha | Administrador, mas entrou às **23:58** |
-| j.farias | Administrador às 23:59, mas **ontem** |
-| i.ribeiro | Administrador, mas entrou às **23:41** |
-
-6. Regras e pegadinhas:
-   - **Excluir um inocente** tira **30 segundos** do cronômetro. O relógio pisca e aparece a notificação "era inocente!".
-   - **O próprio usuário do jogador** aparece numa posição aleatória da lista. Se o jogador tentar excluí-lo, o jogo pergunta "Você quer mesmo apagar você próprio?". Se ele confirmar, o usuário é apagado e precisa ser criado de novo no cadastro_adm.
-   - **Se o tempo acabar**, o hacker exclui o usuário do jogador. Ele cria de novo e o cronômetro recomeça com 5 min. Os inocentes já excluídos continuam excluídos.
-7. Ao excluir o `t.hoffman`, aparecem em sequência: **"Ameaça eliminada"**, **DICA 2** e **"FALHA CRÍTICA NA BIOS"**. Por fim, surge o ícone **bios_setup**.
-
-### Fase 3 – BIOS / labirintos
-1. O jogo pergunta "Podemos iniciar?". O "Não" não funciona.
-2. São 6 labirintos em sequência: CPU, RAM, GPU, SSD, PSU e FAN.
-3. O ponto anda sozinho, e o jogador muda a direção com **WASD ou as setas**. É preciso levar o ponto até o ponto colorido.
-4. Bater na parede conta um erro e faz o ponto voltar ao início do **labirinto atual**.
-5. A **interferência do hacker** acontece **uma única vez**: janelas de erro se sobrepõem, a tela fica preta e vem o jump scare com grito. Ela dispara no que vier primeiro:
-   - 5 min jogando;
-   - 30 erros somados;
-   - o fim do último labirinto (nesse caso, é garantida).
-6. Depois da interferência, se ainda houver labirinto, o jogo pergunta "Podemos continuar?".
-7. Ao terminar, aparecem **"BIOS reparada"**, **DICA 3** e **"CONFIGURAÇÃO PERDIDA"**. Por fim, surge o ícone **cmd.exe**.
-
-### Fase 4 – Reconfiguração pelo cmd (trabalho em grupo)
-1. O cmd pergunta **"Iniciar reconfiguração? (Y/N)"**. O easter egg do **N** funciona assim:
-   - **1º N:** jump scare (tela preta e grito).
-   - **2º N:** máscara neutra com a frase "Você é burro? Apertou N de novo?", sem grito.
-   - **Do 3º N em diante:** só a mensagem "Aperte Y logo.".
-   - A contagem vale para a partida toda, mesmo se o cmd for fechado.
-2. Ao digitar **Y** (ou S), o jogo sorteia **6** das 12 correções e mostra uma por vez.
-3. Para descobrir cada comando, o grupo cruza a tabela de correções (correção → número) com o manual de comandos (número → comando):
-
-| Correção na tela | Nº (Tabela de correções) | Comando (Manual de comandos) |
+| Peça | Resposta | De onde vem |
 |---|---|---|
-| Formatar Windows | 1 | `fw` |
-| Atualizar registro do sistema | 2 | `arg` |
-| Ativar antivírus | 3 | `atv` |
-| Recriar ícones | 4 | `ric` |
-| Recuperar arquivos do usuário | 6 | `rau` |
-| Restaurar área de trabalho | 7 | `rad` |
-| Montar disco C: | 8 | `mdc` |
-| Configurar data e hora | 9 | `cdh` |
-| Restaurar papel de parede | 11 | `rpp` |
-| Reinstalar drivers de vídeo | 12 | `rdv` |
-| Reiniciar serviços do sistema | 14 | `rss` |
-| Reconectar à rede | 15 | `rcn` |
+| Nome da filha | **ALICE** | Desenhos na sala + e-mail da escola ("sua filha, da turma 3B") + lista da turma 3B (anexo do e-mail) |
+| Ano da formatura | **1998** | Diploma na sala ("curso de 4 anos") + `formatura.c` (1994 + 4) |
+| Número da sorte | **7** | Post-it "111" na sala + tabela binária ou `aula_binario.pptx` |
 
-4. O manual também traz **comandos falsos**, que nunca são a resposta: `wf` (5), `dar` (10), `rvd` (13), `ncr` (16), `tva` (17) e `pps` (18).
-5. Regras:
-   - **Comando certo:** aparece uma barra de progresso, depois "OK", e o jogo vai para a próxima correção.
-   - **Comando que existe, mas é o errado** (incluindo os falsos): a reconfiguração **recomeça do zero**, com um novo sorteio.
-   - **Comando que não existe** (por exemplo, erro de digitação): só aparece "não é reconhecido", sem penalidade.
-   - **`help`:** o cmd responde para procurar o manual. `cls` limpa a tela.
-   - Maiúsculas e minúsculas tanto faz. Não há cronômetro.
-6. Ao terminar, aparece **DICA 4**.
-
-### Fase 5 – Ransomware (final, cronômetro de 8 min)
-1. Primeiro vem um reinício falso: "Reiniciando..." e depois "✔ Sistema restaurado. Bem-vindo de volta."
-2. Em seguida, a tela vermelha **"SEUS ARQUIVOS FORAM SEQUESTRADOS"**.
-3. A chave de recuperação, rasgada em **5 pedaços** escondidos na sala, é:
-
-   **`K7RX` – `M3Q9` – `ZT4H` – `W8PL` – `6NFD`**
-
-   - São 5 caixas de 4 caracteres, e o cursor pula sozinho para a próxima.
-   - Maiúsculas e minúsculas tanto faz.
-   - As linhas desenhadas no papel atravessam os pedaços e ajudam a montar a ordem.
-4. Regras:
-   - **Chave errada ou fora de ordem:** aparece só uma provocação, sem penalidade.
-   - **Se o tempo acabar:** vem o jump scare e o cronômetro recomeça com 8 min.
-5. Com a chave certa, aparece a **tela final**. Ela mostra:
-   - o **código do cadeado: `0000`** (provisório);
-   - as 4 dicas, mais a observação "DICA 5: está dentro da caixa";
-   - o recado: "digam a resposta final em voz alta. Eu estou ouvindo."
-
-   Essa tela fica até alguém apertar Ctrl + Shift + X.
-
-### Final
-O grupo abre a caixa com o cadeado e encontra a **5ª dica**, que é física. Com as 5 dicas, os jogadores falam a **resposta final** para o mestre do jogo, que na história é o hacker.
+A ordem das peças está na dica do professor, que aparece no Sistema de Notas ao clicar em "Esqueci a senha": *"O nome da minha filha + o ano em que me formei + o meu número da sorte."*
 
 ---
 
-## 5. Pular para uma fase (console do navegador)
+## 3. A lógica do caso
 
-Abra o console com **F12**, aba Console. A primeira linha serve para tudo; as outras são alternativas, conforme a fase desejada.
+1. **O objetivo é claro desde o começo:** o `LEIA-ME.txt` (o J) diz que a senha do Sistema de Notas foi trocada, e o "Esqueci a senha" mostra a fórmula. O grupo pode se dividir em 3, um para cada peça.
+2. **Filha:** há 3 desenhos na parede, de Alice, Pedro e Sofia.
+   - O e-mail da escola fala da "sua **filha**, da turma **3B**", e o anexo `lista_turma_3B.txt` tem a **Alice** (e não a Sofia).
+   - O Pedro é o filho: outro e-mail fala do "seu **filho**, da turma 5A", e ele aparece no desenho da Alice e no histórico do navegador.
+   - O desenho da Sofia diz "Para o **tio**": ela é sobrinha.
+3. **Ano:** o diploma está com o ano rasgado, mas diz "curso de **4** anos". O `formatura.c` tem `ingresso = 1994` e uma **lacuna** na duração; preenchendo com 4 e clicando em "Compilar e executar", o programa imprime "Me formei em **1998**".
+4. **Número da sorte:** o post-it diz "111 — meu número da sorte, em binário". A tabela na parede (ou os slides da `aula_binario`) mostra que **111 = 4 + 2 + 1 = 7**.
+
+---
+
+## 4. O jogo, app por app
+
+O jogo começa direto na área de trabalho, sem senha, e o `LEIA-ME.txt` abre sozinho.
+
+### Trilha principal
+| App | O que tem |
+|---|---|
+| `LEIA-ME.txt` | Recado do J: as notas serão zeradas; digam a senha para mim |
+| `Sistema de Notas` | Notas borradas e o cadeado "BLOQUEADO PELO J". **"Esqueci a senha"** mostra a fórmula. O campo de senha não aceita nada: digitar qualquer coisa conta como **erro** e mostra "a senha só vale se for dita para mim" |
+| `E-mail` | E-mail da escola (filha, turma 3B) com o anexo **lista_turma_3B.txt**; e-mail sobre o filho (turma 5A); e-mail do J ("sua senha foi alterada") |
+| `Fotos` | `familia.jpg` (pai, menina e menino, sem nomes), `gato.jpg` e `formatura.jpg` (**corrompida** até o grupo completar o `memoria.exe`) |
+| `formatura.c` | Programa em C com a lacuna `duracao = ___`. Com 4, imprime 1998. Com outro número, imprime outro ano. Com texto, dá erro de compilação |
+| `aula_binario.pptx` | 3 slides sobre binário. O último diz que o número da sorte está colado no monitor |
+
+### Opcionais (pistas extras, nenhum é obrigatório)
+| App | Como resolver | Pista extra |
+|---|---|---|
+| `anotacoes.docx` | Parece vazio. **Ctrl + A** (ou arrastar o mouse) revela o texto em branco | Confirma a ordem: nome dela, depois o ano, depois o número da sorte, tudo junto |
+| `memoria.exe` | Jogo da memória: ligar cada ícone ao nome (CPU, RAM, SSD, Mouse, Teclado, GPU) | Recupera a `formatura.jpg`, com a faixa "FORMANDOS ENG. COMPUTAÇÃO **1998**". É um atalho para a peça 2 |
+| `Navegador` | Só ler o histórico | "presente para menina de 8 anos", "turma 3B", "como explicar binário", "feira de ciências do Pedro" |
+| `Lixeira` | `senha_antiga.txt` | Isca: "pedro2020 (não serve mais)" |
+| `Lixeira` | `NAO_ABRA.exe` | **Armadilha:** dá jump scare sempre |
+
+**O que acontece num erro:** o jogo **nem sempre** dá jump scare (`scareRules` no `js/config.js`).
+- O 1º erro da partida nunca vira susto.
+- Depois de qualquer susto, há 90 s de descanso.
+- Passado o descanso, cada erro aumenta a chance: 30%, 60%, 90% e 100%.
+- Nos erros sem susto aparece um efeito leve: a tela falha, um sussurro ou um clarão vermelho.
+
+No Nível 1, o erro mais comum é tentar digitar a senha no Sistema de Notas.
+
+---
+
+## 5. Mestre do jogo: projetor e resposta
+
+| Tecla (`projetor.html`, Nível 1) | O que faz |
+|---|---|
+| **Espaço** | Inicia ou pausa o cronômetro ("NOTAS ZERADAS EM 30:00") |
+| **P** | **Senha errada:** toca a **cena do susto final** (cerca de 20 s, veja abaixo), depois tira **2 min** e mostra "Tentem de novo" |
+| **V** | **Senha certa:** "CORRETO. A senha era ALICE19987. As notas foram salvas... por enquanto." |
+| **D / Shift + D** | +1 / −1 dica usada (o contador aparece na parede) |
+| **↑ / ↓** | +1 / −1 minuto |
+| **R** (2 vezes seguidas) | Reinicia tudo |
+| **F / H** | Tela cheia / esconde o painel de teclas |
+| **Ctrl + Shift + 1/2** | Troca de nível |
+
+**A cena do susto final (tecla P)** é toda feita em HTML/CSS, com som gerado pelo navegador (`js/final-scare.js`):
+1. "PARABÉNS," e, alguns segundos depois, "VOCÊ ERROU.", com a tela em luz vermelha.
+2. Corte seco para o preto.
+3. Um cmd roda código, com som ambiente calmo.
+4. O código trava, vem a chuva de erros e o som e o alarme ficam mais intensos.
+5. Os erros correm para as bordas e formam um anel com o centro vazio.
+6. Dois olhos vermelhos abrem, depois aparece a boca brava, que vira um sorriso sinistro.
+7. A máscara pula para fora do projetor com um grito, e a tela fica preta.
+
+Aperte **H** antes de começar a partida para esconder o painel de teclas: senão ele aparece por trás da mensagem.
+
+Se o tempo acabar, o projetor mostra o susto e "TEMPO ESGOTADO — as notas de vocês foram ZERADAS" sozinho. Esse é o momento da mensagem falsa de reprovação, se a equipe usar.
+
+**Atalhos no notebook:**
+- **Ctrl + Shift + X:** reinicia o jogo, no mesmo nível.
+- **Ctrl + Shift + L:** mostra o tempo de cada pista encontrada.
+- **Ctrl + Shift + H:** dispara a interferência do hacker (janelas de erro e susto), quando o mestre do jogo quiser assustar.
+
+---
+
+## 6. Dicas prontas (1 por jogador, pedidas pela câmera)
+
+Comece pela dica mais leve. Aperte **D** no projetor a cada dica dada.
+
+| Onde o grupo travou | Dica leve | Dica direta |
+|---|---|---|
+| Não sabe por onde começar | "Todo sistema tem um botão para quem esquece a senha." | "Abram o Sistema de Notas e cliquem em 'Esqueci a senha'." |
+| Nome da filha | "O professor tem mais de uma criança na vida dele." | "A escola mandou um e-mail sobre a filha. Abram o anexo." |
+| Alice × Sofia | "Leiam com atenção para quem cada desenho foi feito." | "A Sofia chama o professor de 'tio'." |
+| Ano da formatura | "O diploma está rasgado, mas ainda diz quanto tempo durou o curso." | "Coloquem a duração do curso na lacuna do formatura.c e executem." |
+| Número da sorte | "Tem um recado colado perto do computador." | "111 em binário: cada posição vale 4, 2 e 1." |
+| Ordem da senha | "A dica do professor já está na ordem certa." | "Nome + ano + número, tudo junto." |
+
+---
+
+## 7. Pular etapas (console do navegador, F12)
 
 ```js
-CONFIG.bootSpeed = 20          // boot rápido (rodar ANTES de ligar o computador)
-window.GATE = null; OS.showIcon('bios')                                  // ir para a fase 3
-MazeState.onDone()                                                       // fim da fase 3 (avisos + DICA 3)
-window.GATE = null; OS.showIcon('reconfig'); OS.openApp('reconfig')      // ir para a fase 4
-Ransom.start()                                                           // ir para a fase 5
+CONFIG.bootSpeed = 20      // boot rápido (antes de ligar)
+OS.openApp('notas')        // abrir qualquer app pelo id: leia, notas, email, fotos, formatura, aula,
+                           // anotacoes, memoria, navegador, lixeira
 ```
 
-Ao pular fases pelo console, a numeração das dicas e o tempo por fase ficam incompletos. Para testar o tempo real, jogue do começo.
-
 ---
 
-## 6. Onde mudar cada coisa (`js/config.js`)
+## 8. O que observar nos testes
 
-| O quê | Campo |
-|---|---|
-| Senha de administrador | `adminPassword` |
-| Tempo para excluir o hacker / penalidade | `hackerMinutes` / `wrongDeletePenalty` |
-| Lista de usuários e quem é o hacker | `users` (`hacker: true`) |
-| Texto do log de segurança | `securityLog` |
-| Textos das 4 dicas | `hints` |
-| Labirintos (tamanho, velocidade) e interferência | `maze` |
-| Correções, comandos e comandos falsos da fase 4 | `reconfig` (depois, **imprima os papéis de novo**) |
-| Chave, tempo e código do cadeado da fase 5 | `ransom` (mudou a chave? **imprima a página 3 de novo**) |
-| Sons, imagem do susto e da máscara, volume | `sounds`, `scareImage`, `mockImage`, `scareVolume` |
-| Vídeos dos sustos, por lugar | `scareMedia` (arquivos na pasta `videos/`) |
+- **Tempo:** a meta é perto de 30 min (no mínimo 20). Use o Ctrl + Shift + L no notebook e anote o tempo do projetor.
+- **Todo mundo participa?** O grupo se divide nas 3 peças?
+- **Dificuldade:** em que peça o grupo mais trava? A ligação entre o diploma e o `formatura.c` fica clara?
+- **Opcionais:** o grupo encontra o truque do Ctrl + A? Joga a memória?
 
----
+## 9. Ainda provisório
 
-## 7. O que observar nos testes
-
-- **Tempo:** no fim de cada partida, aperte **Ctrl + Shift + L** e anote os tempos. A meta do Nível 1 é **pelo menos 20 min**.
-- **Fase 2:** os jogadores leem o log ou saem apagando na sorte? A penalidade de 30 s está justa?
-- **Fase 3:** algum labirinto está difícil ou fácil demais? Os ajustes ficam em `maze.levels` (`speed`, `w`, `cols`, `rows`).
-- **Fase 4:** o grupo se divide entre os dois papéis? Quantas vezes recomeça por causa dos comandos falsos?
-- **Fase 5:** quanto tempo levam para achar os 5 pedaços? Conseguem montar a ordem?
-- Anote também textos confusos, travamentos ou qualquer coisa que tenha exigido Ctrl + Shift + X.
-
-## 8. Ainda provisório
-
-- Textos das dicas 1 a 4 ("DICA n (a definir)") e a resposta final.
-- Código do cadeado (`0000`) e o tipo de cadeado.
-- Sons: todos ainda vazios. O grito do susto é gerado pelo navegador.
-- Nomes `KRAMER` e `t.hoffman`, que podem mudar.
+- **Autorização do professor** para usar o nome.
+- **Vídeos dos sustos:** ainda não existem (veja `videos/LEIA-ME.txt` e `scareMedia` no config).
+- **Sons:** todos ainda vazios.
+- **O Nível 1 antigo** (admin, hacker, labirinto, cmd e ransomware) foi removido. Ele está guardado no git, na tag **`nivel1-antigo`**.
