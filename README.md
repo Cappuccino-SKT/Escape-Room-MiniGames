@@ -40,3 +40,9 @@ Em `apps/apps.js`, adicione um item na lista `APPS` com uma função `render(con
 - **Jogo 3** (senha `BILLY`) – a fazer.
 
 Senhas dos arquivos: campo `password` em `apps/apps.js`. A senha revelada ao vencer é sempre a do arquivo indicado em `next`.
+
+## Nível 2 – "O Cúmplice"
+Abra **`index.html?nivel=2`**. Investigação: descobrir quem, entre 5 suspeitos, instalou o vírus do hacker. A resposta é falada ao mestre do jogo.
+- **`projetor.html`**, no PC do mestre do jogo ligado ao projetor: cronômetro, punição por acusação errada (tecla P), dicas usadas (D) e vitória (V).
+- **`imprimir-nivel2.html`**: papéis da sala (cartas da senha, lista de monitores, livro de chaves, bilhete).
+- Dados do caso em `js/level2-data.js`. Guia completo (spoiler) em `TESTES-NIVEL2.md`.

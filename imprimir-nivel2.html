@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Papéis do Nível 2 – imprimir</title>
+<!-- Papéis da sala do Nível 2, gerados a partir de js/level2-data.js. Abra no Chrome e use Ctrl+P (A4).
+     Página 1 = cartas da senha do notebook (recorte e espalhe pela sala)
+     Página 2 = lista de monitores (cole na parede)
+     Página 3 = livro de chaves (deixe sobre uma mesa ou numa pasta)
+     Página 4 = bilhete de ônibus (recorte e esconda, por exemplo num casaco ou numa mochila) -->
+<style>
+  @page { size: A4; margin: 12mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Courier New", monospace; color: #111; background: #888; }
+  .page { width: 210mm; min-height: 297mm; margin: 10mm auto; padding: 14mm; background: #fff; position: relative; page-break-after: always; overflow: hidden; }
+  @media print { body { background: none; } .page { margin: 0; width: auto; min-height: 270mm; } }
+  h1 { margin: 0 0 6mm; font-size: 28px; text-align: center; }
+  .sub { text-align: center; color: #555; margin-bottom: 8mm; }
+
+  /* Cartas da senha */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm; }
+  .card { height: 58mm; border: 2px dashed #777; display: flex; align-items: center; justify-content: center; position: relative; background: #f4f1ea; }
+  .card b { font-size: 100px; line-height: 1; color: #7a0000; }
+  .card i { position: absolute; right: 5mm; bottom: 3mm; font-size: 22px; font-style: normal; color: #333; }
+
+  /* Lista de monitores */
+  .poster { border: 4px solid #0a3d62; padding: 10mm; font-family: Arial, sans-serif; }
+  .poster h1 { color: #0a3d62; }
+  .poster li { font-size: 30px; margin: 5mm 0; }
+  .poster .note { margin-top: 10mm; font-size: 16px; color: #333; border-top: 1px solid #aaa; padding-top: 4mm; }
+
+  /* Livro de chaves */
+  .book { width: 100%; border-collapse: collapse; font-family: "Comic Sans MS", cursive; font-size: 18px; }
+  .book th { font-family: Arial, sans-serif; background: #eee; }
+  .book th, .book td { border: 1px solid #555; padding: 4mm; text-align: left; }
+  .book td.sig { font-style: italic; color: #1a3d8f; }
+
+  /* Bilhete */
+  .ticket { width: 120mm; margin: 20mm auto; border: 2px dashed #777; padding: 8mm; font-family: Arial, sans-serif; background: #fffbe6; }
+  .ticket h2 { margin: 0 0 4mm; color: #b35c00; }
+  .ticket p { margin: 2mm 0; font-size: 16px; }
+</style>
+</head>
+<body>
+  <section class="page">
+    <h1>CARTAS DA SENHA DO NOTEBOOK</h1>
+    <div class="sub">Recorte nas linhas tracejadas e esconda cada carta num ponto diferente da sala</div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section class="page">
+    <div class="poster">
+      <h1>MONITORES DO LABORATÓRIO <span class="room"></span> — 2026</h1>
+      <ul id="monitors"></ul>
+      <div class="note">Todos os monitores têm crachá de acesso ao laboratório.<br>Depois das 23h, a entrada só é liberada com crachá + senha da porta.</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h1>LIVRO DE CHAVES — LAB. <span class="room"></span></h1>
+    <div class="sub">Secretaria do Bloco N</div>
+    <table class="book"><tr><th>Data</th><th>Nome</th><th>Retirada</th><th>Devolução</th><th>Assinatura</th></tr><tbody id="book"></tbody></table>
+  </section>
+
+  <section class="page">
+    <h1>BILHETE (recortar)</h1>
+    <div class="ticket">
+      <h2>🚌 PASSE URBANO</h2>
+      <p><b>Linha 12</b> — Ponto Bloco N → Centro</p>
+      <p>Data: ontem · Embarque: <b>22:58</b></p>
+      <p>Passagens: <b>2</b></p>
+      <p>Titular: Bruno Sato</p>
+      <p>Acompanhante: Rafael Kuhn</p>
+    </div>
+  </section>
+
+<script src="js/level2-data.js"></script>
+<script>
+  document.querySelectorAll(".room").forEach((e) => (e.textContent = L2.room));
+  document.getElementById("cards").innerHTML = [...L2.loginPassword].map((c, i) => `<div class="card"><b>${c}</b><i>${i + 1}</i></div>`).join("");
+  document.getElementById("monitors").innerHTML = L2.monitors.map((m) => `<li>${m}</li>`).join("");
+  document.getElementById("book").innerHTML = L2.keyBook.map((r) => `<tr><td>${r.date}</td><td>${r.who}</td><td>${r.out}</td><td>${r.back}</td><td class="sig">${r.sign}</td></tr>`).join("");
+</script>
+</body>
+</html>

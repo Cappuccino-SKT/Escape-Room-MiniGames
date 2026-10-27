@@ -354,3 +354,95 @@ table.pl td, table.pl th { padding: 3px 10px; border-bottom: 1px solid #333; tex
 .hack-mock svg, .hack-mock img { height: 62vh; }
 .hack-mock p { margin: 18px 0 0; font: bold 40px "Courier New", monospace; color: #fff; text-align: center; text-shadow: 0 0 14px #f00; }
 .hack-mock p b { color: #f33; }
+
+/* ===================== NÍVEL 2 ===================== */
+.l2-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 14px; }
+.l2-card { background: #161616; border: 1px solid #400; padding: 12px; text-align: center; }
+.l2-card b { display: block; color: #fff; }
+.l2-card small { color: #f77; }
+.l2-card p { color: #bbb; font-size: 13px; margin: 8px 0 0; }
+.l2-ava { font-size: 44px; line-height: 1.2; }
+.l2-ava.sm { font-size: 32px; }
+.l2-dep { padding: 14px; }
+.l2-quote { display: flex; gap: 12px; align-items: flex-start; padding: 10px; margin-bottom: 10px; background: #151515; border-left: 3px solid #a00; }
+.l2-quote b { color: #fff; }
+.l2-quote p { margin: 4px 0 0; color: #ccc; font-style: italic; }
+.l2-rule { color: #f55; text-align: center; font-weight: bold; }
+.l2-msg { min-height: 20px; color: #ff6b6b; }
+.l2-msg.ok, .l2-after .ok { color: #3f6; }
+.l2-note { color: #999; font-size: 13px; }
+.l2-tab { border-collapse: collapse; width: 100%; font-family: "Courier New", monospace; font-size: 14px; }
+.l2-tab th, .l2-tab td { border-bottom: 1px solid #333; padding: 5px 8px; text-align: left; }
+.l2-tab th { color: #f66; }
+.l2-tab tr.bad td { color: #f33; }
+.l2-bit { display: inline-block; width: 18px; text-align: center; font-weight: bold; }
+.l2-bit.b1 { color: #3f6; } .l2-bit.b0 { color: #777; }
+
+/* fechadura.exe */
+.l2-lock { display: flex; gap: 18px; padding: 14px; height: 100%; box-sizing: border-box; overflow: auto; }
+.l2-lock-l { flex: 1.2; } .l2-lock-r { flex: 1; }
+.l2-lock h3 { margin: 0 0 10px; color: #f66; font-size: 15px; }
+.l2-circ { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto auto; gap: 10px; align-items: center;
+  padding: 12px; background: #0b0f0b; border: 1px solid #1f3a1f; font-family: "Courier New", monospace; }
+.l2-in { grid-column: 1; padding: 6px 8px; border: 1px solid #2a5; color: #3f6; font-weight: bold; }
+.l2-in small { display: block; color: #8a8; font-weight: normal; font-size: 11px; }
+.l2-in.c { grid-row: 3; }
+.l2-gate { padding: 8px; border: 2px dashed #a60; text-align: center; color: #fc6; }
+.l2-gate span { display: block; font-weight: bold; }
+.l2-gate select, .l2-after select { margin-top: 4px; background: #000; color: #fff; border: 1px solid #a60; padding: 4px; font: inherit; }
+.l2-gate.g1 { grid-column: 2; grid-row: 1 / 3; }
+.l2-gate.g2 { grid-column: 3; grid-row: 2 / 4; }
+.l2-out { grid-column: 3; grid-row: 1; text-align: center; font-size: 18px; color: #fff; }
+.l2-formula { font-family: "Courier New", monospace; color: #ccc; }
+.l2-after { margin-top: 10px; padding: 10px; background: #111; border: 1px solid #333; }
+.l2-after label { margin-right: 10px; }
+
+/* limpeza.c */
+.l2-code { height: 100%; display: flex; flex-direction: column; background: #1e1e1e; }
+.l2-code-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #2d2d2d; color: #ccc; font-size: 13px; }
+.l2-code-bar button { background: #0e639c; color: #fff; border: 0; padding: 5px 12px; cursor: pointer; }
+.l2-code pre { flex: 1; margin: 0; padding: 12px; overflow: auto; color: #d4d4d4; font: 15px Consolas, "Courier New", monospace; user-select: text; }
+.l2-code .ln { color: #6e7681; margin-right: 14px; user-select: none; }
+.l2-console { padding: 8px 12px; background: #000; color: #ccc; font: 13px Consolas, monospace; min-height: 40px; }
+.l2-console .err { color: #f55; }
+
+/* chat */
+.l2-chat { padding: 0 0 12px; background: #0f1418; height: 100%; overflow: auto; box-sizing: border-box; }
+.l2-chat-h { position: sticky; top: 0; padding: 10px 14px; background: #1c2a33; color: #fff; font-weight: bold; }
+.l2-chat-h small { display: block; color: #9ab; font-weight: normal; }
+.l2-msgc { margin: 8px 14px; padding: 8px 10px; background: #1f2c34; border-radius: 6px; color: #e6e6e6; max-width: 85%; }
+.l2-msgc small { color: #6fc3ff; }
+.l2-sys { margin: 10px auto; text-align: center; color: #fc6; font-size: 13px; }
+
+/* cameras.exe */
+.l2-cam { padding: 14px; }
+.l2-cam-screen { height: 220px; display: flex; align-items: center; justify-content: center; padding: 14px; text-align: center;
+  background: #050505; border: 2px solid #333; color: #9f9; font-family: "Courier New", monospace; box-shadow: inset 0 0 40px #000; }
+.l2-cam-screen small { color: #f33; }
+.l2-cam-screen .err { color: #f33; font-weight: bold; }
+.l2-cam-screen.noise { background: repeating-linear-gradient(0deg, #111 0 2px, #333 2px 4px); animation: glitch .12s steps(2) infinite; }
+.l2-cam-f, .l2-net-f { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.l2-cam-f input, .l2-net-f input { padding: 7px; background: #000; color: #fff; border: 1px solid #700; font: 16px "Courier New", monospace; }
+.l2-cam-f input { width: 80px; text-align: center; }
+.l2-net-f input { width: 230px; }
+.l2-cam-hist div, .l2-net-res div { padding: 4px 0; border-bottom: 1px solid #222; color: #ccc; font-size: 13px; }
+.l2-cam-hist b { color: #9f9; margin-right: 6px; }
+
+/* email */
+.l2-mail { display: flex; height: 100%; }
+.l2-mail-list { width: 260px; border-right: 1px solid #333; overflow: auto; }
+.l2-mail-i { padding: 10px; border-bottom: 1px solid #222; cursor: pointer; }
+.l2-mail-i:hover, .l2-mail-i.sel { background: #2a0a0a; }
+.l2-mail-i b, .l2-mail-i span, .l2-mail-i small { display: block; }
+.l2-mail-i span { color: #ccc; font-size: 13px; } .l2-mail-i small { color: #888; font-size: 11px; }
+.l2-mail-body { flex: 1; padding: 14px; overflow: auto; }
+.l2-mail-body h3 { margin: 0 0 4px; }
+.l2-mail-body pre { white-space: pre-wrap; font: 15px "Courier New", monospace; color: #ddd; }
+
+/* rede.exe */
+.l2-net { padding: 14px; }
+.l2-net h3 { margin: 0 0 10px; color: #6cf; font-size: 15px; }
+.l2-net code, .l2-net-res code { color: #fc6; }
+.l2-lock button.primary, .l2-cam button.primary, .l2-net button.primary { padding: 7px 16px; background: #700; color: #fff; border: 1px solid #a00; cursor: pointer; font: inherit; }
+.l2-lock button.primary:hover, .l2-cam button.primary:hover, .l2-net button.primary:hover { background: #a00; }
+.l2-lock button:disabled { opacity: .5; cursor: default; }

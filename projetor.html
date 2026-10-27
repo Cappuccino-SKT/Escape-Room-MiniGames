@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>JIGSAW – Projetor</title>
+<!-- Tela do PROJETOR (Nível 2). Abra no computador do mestre do jogo que está ligado ao projetor.
+     Cronômetro oficial, punição por acusação errada (jump scare + perde minutos), dicas usadas e vitória.
+     Teclas: veja o painel (H mostra/esconde). -->
+<link rel="stylesheet" href="css/style.css">
+<style>
+  body { display: flex; align-items: center; justify-content: center; background: radial-gradient(#200000, #000 70%); font-family: "Courier New", monospace; }
+  .pj { text-align: center; }
+  .pj svg { height: 34vh; filter: drop-shadow(0 0 30px #f003); }
+  .pj-time { font-size: 22vh; font-weight: bold; line-height: 1; color: #fff; text-shadow: 0 0 30px #f00; }
+  .pj-time.paused { opacity: .45; }
+  .pj-time.danger { color: #f33; animation: blink 1s steps(1) infinite; }
+  .pj-sub { color: #f55; letter-spacing: .4em; font-size: 2.4vh; }
+  .pj-hints { margin-top: 2vh; color: #bbb; font-size: 3vh; }
+  .pj-hints b { color: #fff; }
+  #pj-msg { position: fixed; inset: 0; z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: #000; text-align: center; }
+  #pj-msg h1 { font-size: 11vh; color: #f22; text-shadow: 0 0 30px #f00; letter-spacing: .05em; }
+  #pj-msg p { font-size: 4vh; color: #eee; margin-top: 2vh; }
+  #pj-msg.win h1 { color: #3f6; text-shadow: 0 0 30px #0f0; }
+  #pj-help { position: fixed; left: 16px; bottom: 16px; padding: 12px 16px; background: #111d; border: 1px solid #400; color: #aaa; font-size: 14px; line-height: 1.7; }
+  #pj-help b { color: #fff; display: inline-block; min-width: 92px; }
+</style>
+</head>
+<body>
+  <div class="pj">
+    <svg viewBox="0 0 200 240">
+      <ellipse cx="100" cy="120" rx="85" ry="110" fill="#f1ede2"/>
+      <ellipse cx="62" cy="95" rx="22" ry="24" fill="#000"/><ellipse cx="138" cy="95" rx="22" ry="24" fill="#000"/>
+      <circle cx="62" cy="97" r="5" fill="#f00"/><circle cx="138" cy="97" r="5" fill="#f00"/>
+      <circle cx="42" cy="155" r="18" fill="#c00"/><circle cx="158" cy="155" r="18" fill="#c00"/>
+      <path d="M76 188 L124 188" stroke="#900" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+    <div class="pj-sub">TEMPO RESTANTE</div>
+    <div class="pj-time paused" id="pj-time">30:00</div>
+    <div class="pj-hints">Dicas usadas: <b id="pj-hints">0</b> / <span id="pj-max">5</span></div>
+  </div>
+
+  <div id="pj-help">
+    <div><b>Espaço</b> iniciar / pausar</div>
+    <div><b>P</b> punição: acusação errada (susto + −<span class="pen"></span> min)</div>
+    <div><b>V</b> vitória (acusação certa)</div>
+    <div><b>D / Shift+D</b> +1 / −1 dica usada</div>
+    <div><b>↑ / ↓</b> +1 / −1 minuto</div>
+    <div><b>R (2x)</b> reiniciar tudo · <b>F</b> tela cheia · <b>H</b> esconder este painel</div>
+  </div>
+
+<script src="js/config.js"></script>
+<script src="js/interference.js"></script>
+<script src="js/level2-data.js"></script>
+<script>
+  // Ajustes: projetor.html?min=30&punicao=5&dicas=5
+  const Q = new URLSearchParams(location.search);
+  const MIN = Number(Q.get("min")) || 30, PEN = Number(Q.get("punicao")) || 5, MAXH = Number(Q.get("dicas")) || 5;
+  const $ = (s) => document.querySelector(s);
+  const culprit = L2.suspects.find((s) => s.name.startsWith(L2.culprit)).name;
+  let left = MIN * 60000, running = false, last = 0, hints = 0, over = false, resetArm = 0;
+
+  $("#pj-max").textContent = MAXH;
+  document.querySelectorAll(".pen").forEach((e) => (e.textContent = PEN));
+
+  function render() {
+    const s = Math.ceil(left / 1000);
+    $("#pj-time").textContent = `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+    $("#pj-time").classList.toggle("paused", !running);
+    $("#pj-time").classList.toggle("danger", running && left < 5 * 60000);
+    $("#pj-hints").textContent = hints;
+  }
+  // setInterval + Date.now: continua contando mesmo com a janela sem foco
+  last = Date.now();
+  setInterval(() => {
+    const now = Date.now();
+    if (running) {
+      left = Math.max(0, left - (now - last));
+      if (left === 0) timeUp();
+    }
+    last = now;
+    render();
+  }, 200);
+
+  function message(title, text, cls = "", ms = 0) {
+    $("#pj-msg") && $("#pj-msg").remove();
+    const m = document.createElement("div");
+    m.id = "pj-msg"; m.className = cls;
+    m.innerHTML = `<h1>${title}</h1><p>${text}</p>`;
+    document.body.appendChild(m);
+    if (ms) setTimeout(() => m.remove(), ms);
+  }
+
+  async function punish() {
+    if (over || Interference.running) return;
+    await Interference.scare();
+    left = Math.max(0, left - PEN * 60000);
+    message("ACUSAÇÃO ERRADA", `Vocês acusaram um inocente. Isso custou <b>${PEN} minutos</b>.<br>Mais uma chance.`, "", 5000);
+  }
+  function victory() {
+    if (over) return;
+    over = true; running = false;
+    message("CORRETO.", `Meu cúmplice era <b>${culprit}</b>.<br>Vocês sobreviveram... desta vez.<br><br>— J`, "win");
+  }
+  async function timeUp() {
+    if (over) return;
+    over = true; running = false;
+    await Interference.scare();
+    message("TEMPO ESGOTADO", "Meu cúmplice continua livre.<br>E vocês continuam aqui.<br><br>— J");
+  }
+
+  addEventListener("keydown", (e) => {
+    const k = e.key.toLowerCase();
+    if (k !== "r") resetArm = 0;
+    if (e.key === " ") { e.preventDefault(); if (!over) running = !running; }
+    else if (k === "p") punish();
+    else if (k === "v") victory();
+    else if (k === "d") hints = Math.max(0, Math.min(MAXH, hints + (e.shiftKey ? -1 : 1)));
+    else if (e.key === "ArrowUp") left += 60000;
+    else if (e.key === "ArrowDown") left = Math.max(0, left - 60000);
+    else if (k === "h") $("#pj-help").classList.toggle("hidden");
+    else if (k === "f") document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {});
+    else if (k === "r") {
+      if (Date.now() - resetArm < 1500) {
+        left = MIN * 60000; running = false; hints = 0; over = false; $("#pj-msg") && $("#pj-msg").remove();
+      } else resetArm = Date.now();
+    }
+    render();
+  });
+  render();
+</script>
+</body>
+</html>

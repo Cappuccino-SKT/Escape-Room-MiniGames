@@ -24,6 +24,11 @@ Este repositório é o **jogo no notebook da sala**: uma simulação de computad
 | `apps/bios.js` | Fase 3: jogo do labirinto |
 | `apps/reconfig.js` | Fase 4: reconfiguração pelo cmd |
 | `imprimir.html` | Papéis da sala para imprimir: manual e tabela da fase 4 + chave da fase 5 (gerados do config) |
+| `js/level2-data.js` | **Nível 2**: todos os dados do caso (suspeitos, depoimentos, fechadura, chat, arquivos, câmeras, e-mails, Wi-Fi, papéis) |
+| `js/level2.js` | **Nível 2**: apps do desktop (ativo com `index.html?nivel=2`) |
+| `projetor.html` | **Nível 2**: tela do projetor no PC do mestre do jogo (cronômetro, punição, dicas, vitória) |
+| `imprimir-nivel2.html` | **Nível 2**: papéis da sala |
+| `TESTES-NIVEL2.md` | Guia do Nível 2 (spoiler): respostas, lógica, dicas prontas para o mestre do jogo |
 | `TESTES-NIVEL1.md` | Guia para testadores (spoiler): fluxo, senhas, comandos, atalhos. **Atualize junto com o config** |
 | `apps/terminal.js`, `apps/wires.js` | Minigames prontos, mas **escondidos** (`hidden: true`), guardados para outros níveis |
 
@@ -63,6 +68,14 @@ O jogo começa direto na área de trabalho (login desativado: `password: ""`).
 - A chave `ransom.key` (5 blocos) é impressa na página 3 do `imprimir.html`, rasgada nas linhas tracejadas e os pedaços escondidos na sala. As linhas do desenho atravessam os pedaços para ajudar a montar na ordem.
 - Cronômetro `ransom.minutes` (8). Se acabar: jump scare e recomeça. Chave errada: só uma provocação.
 - Chave certa → tela final (fica até Ctrl+Shift+X): código do cadeado (`ransom.lockCode`, hoje provisório `0000`), as 4 dicas e "digam a resposta final em voz alta".
+
+## Nível 2 — "O Cúmplice" (`index.html?nivel=2`)
+Partida separada de 30 min (cada grupo escolhe o nível na inscrição). Mesmo hacker (J), história nova: descobrir quem instalou o vírus no Lab. N112. Detalhes e respostas em `TESTES-NIVEL2.md`.
+- Resposta: **Elisa**, falada ao mestre do jogo. Acusação errada = tecla P no `projetor.html` (jump scare + perde 5 min + segunda chance). Dicas: 1 por jogador, pedidas pela câmera.
+- Trilha principal: senha do notebook (cartas na sala) → `fechadura.exe` (deduzir AND/OR pelo registro) → lista de monitores (sala) → `chat_monitores` (senha = saída do `limpeza.c`) → depoimentos + bilhete de ônibus.
+- Opcionais com pistas extras: `terminal.exe` (arquivos ocultos), `cameras.exe` (horário), `email_bruno` (senha deduzida), `rede.exe` (MAC decimal → hex). Erros = jump scare.
+- O `level1.js` e o `level2.js` só rodam no seu nível (`CONFIG.level`, vindo de `?nivel=`). O Nível 2 troca a lista `APPS`.
+- Decisões do usuário: só um notebook na sala; projetor ligado ao PC do mestre do jogo; sem reviravolta no final; sala real ainda não definida.
 
 ## Pendências / decisões em aberto
 - **Resposta final e textos das dicas**: ainda não decididos. Quando decidir, preencher `CONFIG.hints` (4 dicas) e preparar a 5ª, física.

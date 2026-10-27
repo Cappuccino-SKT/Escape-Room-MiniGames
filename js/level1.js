@@ -7,6 +7,7 @@
 // Cada fase de 1 a 4 desbloqueia uma dica (CONFIG.hints), guardada em "dicas.txt".
 (() => {
   const C = window.CONFIG;
+  if (C.level !== 1) return;
   const LEVELS = [
     { id: "Espectador",    icon: "👁", desc: "Apenas visualizar arquivos" },
     { id: "Editor",        icon: "✏️", desc: "Visualizar e editar arquivos" },
