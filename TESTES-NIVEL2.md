@@ -79,7 +79,7 @@ O notebook abre pedindo senha. Depois de 3 erros, aparece o botão de dica: "As 
 - O 1º erro da partida nunca vira susto.
 - Depois de qualquer susto, há 90 s de descanso.
 - Passado o descanso, cada erro aumenta a chance: 30%, 60%, 90% e 100%.
-- Nos erros sem susto aparece um efeito leve e variado: a tela falha, um sussurro ("Eu vi isso.") ou um clarão vermelho.
+- Nos erros sem susto aparece um efeito leve e variado: a tela falha, um sussurro ("Eu vi isso."), um clarão vermelho ou um "rasgo" (faixas cortando a tela com um guincho curto, sem a máscara).
 - As regras ficam em `scareRules`, no `js/config.js`.
 
 ### Opcionais (pistas extras, nenhum é obrigatório)

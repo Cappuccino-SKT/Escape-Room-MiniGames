@@ -77,7 +77,7 @@ O jogo começa direto na área de trabalho, sem senha, e o `LEIA-ME.txt` abre so
 - O 1º erro da partida nunca vira susto.
 - Depois de qualquer susto, há 90 s de descanso.
 - Passado o descanso, cada erro aumenta a chance: 30%, 60%, 90% e 100%.
-- Nos erros sem susto aparece um efeito leve: a tela falha, um sussurro ou um clarão vermelho.
+- Nos erros sem susto aparece um efeito leve: a tela falha, um sussurro, um clarão vermelho ou um "rasgo" (faixas cortando a tela com um guincho curto, sem a máscara).
 
 No Nível 1, o erro mais comum é tentar digitar a senha no Sistema de Notas.
 
@@ -88,7 +88,7 @@ No Nível 1, o erro mais comum é tentar digitar a senha no Sistema de Notas.
 | Tecla (`projetor.html`, Nível 1) | O que faz |
 |---|---|
 | **Espaço** | Inicia ou pausa o cronômetro ("NOTAS ZERADAS EM 30:00") |
-| **P** | **Senha errada:** toca a **cena do susto final** (cerca de 20 s, veja abaixo), depois tira **2 min** e mostra "Tentem de novo" |
+| **P** | **Senha errada:** toca a **cena do susto final** (cerca de 30 s, veja abaixo), depois tira **2 min** e mostra "Tentem de novo" |
 | **V** | **Senha certa:** "CORRETO. A senha era ALICE19987. As notas foram salvas... por enquanto." |
 | **D / Shift + D** | +1 / −1 dica usada (o contador aparece na parede) |
 | **↑ / ↓** | +1 / −1 minuto |
@@ -100,10 +100,10 @@ No Nível 1, o erro mais comum é tentar digitar a senha no Sistema de Notas.
 1. "PARABÉNS," e, alguns segundos depois, "VOCÊ ERROU.", com a tela em luz vermelha.
 2. Corte seco para o preto.
 3. Um cmd roda código, com som ambiente calmo.
-4. O código trava, vem a chuva de erros e o som e o alarme ficam mais intensos.
-5. Os erros correm para as bordas e formam um anel com o centro vazio.
-6. Dois olhos vermelhos abrem, depois aparece a boca brava, que vira um sorriso sinistro.
-7. A máscara pula para fora do projetor com um grito, e a tela fica preta.
+4. O código trava, vem a chuva de erros (cerca de 7 s) e o som e o alarme ficam mais intensos. No fim, a chuva desacelera.
+5. Transição: o som do sistema "desliga" (desce de tom e escurece), o alarme some e o cmd se apaga. Os erros começam a voar em órbita em volta do centro, um depois do outro, e aos poucos se acomodam formando um círculo. Fica um zumbido grave bem baixo, e de vez em quando um erro do círculo dá um tranco e apita. Daqui até o fim, erros novos não param de surgir em volta (nunca no meio), cada vez mais rápido.
+6. Dois olhos de neon vermelho, com um pontinho branco no meio, abrem e ficam olhando por uns 5 segundos. Depois aparece um sorriso.
+7. Um som curto de "puxada" e, sem aviso, a máscara branca vem para cima da tela com um "BRAAAM" (a mesma serra do "VOCÊ ERROU", um pouco mais fina e bem mais forte, com um chiado de estática no fundo), com os erros ainda surgindo, e a tela fica preta.
 
 Aperte **H** antes de começar a partida para esconder o painel de teclas: senão ele aparece por trás da mensagem.
 
