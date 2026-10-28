@@ -1,6 +1,11 @@
 // ===== MINIGAME: PAINEL DE FIOS (fonte ATX) =====
 // Ligue cada fio colorido ao pino certo, consultando o manual do técnico.
+// api.options (opcional): { pinout: ["+5VSB", ...] } mostra os pinos só pelo número (pino 1 = pinout[0]);
+// { manualInRoom: true } tira o manual da tela (ele fica num papel na sala);
+// { resetOnShort: true } um curto desliga todos os fios; { onShort() } é chamado a cada curto.
 window.WiresGame = function (el, api) {
+  const O = api.options || {};
+  const pinLabel = (p) => (O.pinout ? "Pino " + (O.pinout.indexOf(p.pin) + 1) : p.pin);
   // Cores reais do padrão de fontes ATX de computador
   const WIRES = [
     { color: "#f2d21b", name: "Amarelo",  pin: "+12V" },
@@ -27,14 +32,16 @@ window.WiresGame = function (el, api) {
             <div class="w-port" data-i="${i}"><span class="w-label">${w.name}</span><span class="w-plug" style="background:${w.color}"></span></div>`).join("")}
           </div>
           <div class="w-col right">${pins.map((p) => `
-            <div class="w-pin" data-pin="${p.pin}"><span class="w-plug"></span><span class="w-label">${p.pin}</span></div>`).join("")}
+            <div class="w-pin" data-pin="${p.pin}"><span class="w-plug"></span><span class="w-label">${pinLabel(p)}</span></div>`).join("")}
           </div>
         </div>
         <div class="w-manual">
           <h4>📘 MANUAL DO TÉCNICO</h4>
+          ${O.manualInRoom ? `<p>O manual desta fonte está em algum lugar da sala.</p>
+          <p class="w-warn">⚠ Um curto-circuito desliga TODOS os fios.</p>` : `
           <p>Fonte padrão ATX. Ligue cada fio ao seu pino:</p>
           <table>${WIRES.map((w) => `<tr><td><i style="background:${w.color}"></i>${w.name}</td><td>${w.pin}</td></tr>`).join("")}</table>
-          <p class="w-warn">⚠ Ligação errada causa curto-circuito.</p>
+          <p class="w-warn">⚠ Ligação errada causa curto-circuito.</p>`}
         </div>
       </div>
       <div class="w-foot">
@@ -68,7 +75,7 @@ window.WiresGame = function (el, api) {
     svg.querySelectorAll(".w-wire.fixed").forEach((p) => {
       const port = el.querySelector(`.w-port[data-i="${p.dataset.i}"]`);
       const pin = el.querySelector(`.w-pin[data-pin="${CSS.escape(links[p.dataset.i])}"]`);
-      p.setAttribute("d", curve(center(port), center(pin)));
+      if (port && pin) p.setAttribute("d", curve(center(port), center(pin))); // a janela pode ter trocado de conteúdo
     });
   }
   new ResizeObserver(redraw).observe(board);
@@ -119,7 +126,20 @@ window.WiresGame = function (el, api) {
     el.querySelector(".wires").classList.add("shock");
     el.querySelector(".w-shorts").textContent = `⚡ Curtos-circuitos: ${shorts}`;
     api.play && api.play("loginError");
-    setTimeout(() => { path.remove(); pin.classList.remove("spark"); el.querySelector(".wires").classList.remove("shock"); }, 600);
+    setTimeout(() => {
+      path.remove(); pin.classList.remove("spark"); el.querySelector(".wires").classList.remove("shock");
+      if (O.resetOnShort) resetAll();
+    }, 600);
+    if (O.onShort) O.onShort();
+  }
+
+  function resetAll() {
+    Object.keys(links).forEach((k) => delete links[k]);
+    svg.querySelectorAll(".w-wire.fixed").forEach((p) => p.remove());
+    el.querySelectorAll(".w-port, .w-pin").forEach((n) => n.classList.remove("done"));
+    el.querySelectorAll(".w-pin .w-plug").forEach((p) => (p.style.background = ""));
+    el.querySelector(".w-count").textContent = `0 / ${WIRES.length} conexões`;
+    el.querySelector(".w-meter i").style.width = "0%";
   }
 
   function powerOn() {

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Papéis do Nível 3 – imprimir</title>
+<!-- Papéis da sala do Nível 3, gerados a partir de js/level3-data.js. Abra no Chrome e use Ctrl+P (A4).
+     Página 1 = cartões da lista encadeada (recorte e espalhe pela sala; 4 são iscas)
+     Página 2 = circuito do registrador (cole na parede)
+     Página 3 = tabela ASCII (cole na parede)
+     Página 4 = tabela do código Morse (cole na parede ou deixe numa mesa)
+     Página 5 = manual da fonte do energia.exe (esconda, por exemplo numa gaveta ou pasta) -->
+<style>
+  @page { size: A4; margin: 12mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Courier New", monospace; color: #111; background: #888; }
+  .page { width: 210mm; min-height: 297mm; margin: 10mm auto; padding: 14mm; background: #fff; position: relative; page-break-after: always; overflow: hidden; }
+  @media print { body { background: none; } .page { margin: 0; width: auto; min-height: 270mm; } }
+  h1 { margin: 0 0 6mm; font-size: 26px; text-align: center; }
+  .sub { text-align: center; color: #555; margin-bottom: 8mm; }
+
+  /* Cartões da lista */
+  .nodes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6mm; }
+  .node { border: 2px dashed #777; padding: 4mm; display: grid; grid-template-columns: 1fr 1fr; gap: 2mm; background: #f4f1ea; }
+  .node .addr { grid-column: 1 / 3; font-size: 15px; color: #555; }
+  .node .addr b { font-size: 22px; color: #000; }
+  .node .cell { border: 2px solid #333; padding: 2mm; text-align: center; background: #fff; }
+  .node .cell small { display: block; font-size: 12px; color: #666; }
+  .node .cell b { font-size: 34px; }
+  .node .cell.n b { font-size: 24px; line-height: 40px; }
+
+  /* Registrador */
+  .reg svg { width: 100%; }
+  .reg text { font-family: "Courier New", monospace; }
+  .reg .note { font-size: 16px; line-height: 1.6; margin-top: 6mm; }
+
+  /* ASCII */
+  .ascii { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .ascii td, .ascii th { border: 1px solid #999; padding: 1.2mm 2mm; text-align: center; }
+  .ascii th { background: #eee; }
+  .ascii td.c { font-weight: bold; font-size: 15px; }
+
+  /* Morse */
+  .morse { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm 8mm; font-size: 24px; }
+  .morse div { display: flex; justify-content: space-between; border-bottom: 1px solid #ccc; padding: 2mm 0; }
+  .morse b { width: 12mm; }
+  .legend { margin-top: 10mm; font-size: 16px; line-height: 1.6; }
+
+  /* Manual da fonte */
+  .manual { font-family: Arial, sans-serif; }
+  .manual h2 { font-size: 20px; margin: 8mm 0 3mm; }
+  .wtab { border-collapse: collapse; font-size: 20px; }
+  .wtab td { border: 1px solid #555; padding: 3mm 6mm; }
+  .wtab i { display: inline-block; width: 14mm; height: 6mm; margin-right: 4mm; vertical-align: middle; border: 1px solid #000; }
+  .conn { display: grid; grid-template-columns: repeat(3, 34mm); gap: 3mm; padding: 5mm; border: 3px solid #111; border-radius: 4mm; width: max-content; }
+  .conn div { height: 22mm; border: 2px solid #111; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 15px; }
+  .conn b { font-size: 24px; }
+</style>
+</head>
+<body>
+  <section class="page">
+    <h1>NÓS DA LISTA (recortar)</h1>
+    <div class="sub">Recorte cada cartão e esconda num ponto diferente da sala</div>
+    <div class="nodes" id="nodes"></div>
+  </section>
+
+  <section class="page reg">
+    <h1>REGISTRADOR DO VÍRUS</h1>
+    <div class="sub">3 flip-flops D · todos no mesmo clock</div>
+    <svg viewBox="0 0 800 420" fill="none" stroke="#111" stroke-width="3">
+      <!-- flip-flops -->
+      <g id="ffs"></g>
+      <!-- Q0 → D1, Q1 → D2 -->
+      <path d="M220 110 H330 M450 110 H560"/>
+      <!-- Q2 sai e volta para a XOR -->
+      <path d="M680 110 H740 V290 H448"/>
+      <!-- Q1 também vai para a XOR -->
+      <path d="M500 110 V310 H448"/><circle cx="500" cy="110" r="6" fill="#111"/>
+      <!-- XOR apontando para a esquerda -->
+      <g transform="translate(800 0) scale(-1 1)">
+        <path d="M352 270 Q372 300 352 330"/>
+        <path d="M362 270 Q382 300 362 330 Q420 330 440 300 Q420 270 362 270 Z" fill="#fff"/>
+      </g>
+      <text x="382" y="306" font-size="16" fill="#111" stroke="none">XOR</text>
+      <!-- saída da XOR → D0 -->
+      <path d="M360 300 H60 V110 H100"/>
+      <!-- clock -->
+      <path d="M30 240 H540 M80 170 H100 M80 170 V240 M310 170 H330 M310 170 V240 M540 170 H560 M540 170 V240"/>
+      <text x="10" y="270" font-size="20" fill="#111" stroke="none">CLK</text>
+      <circle cx="80" cy="240" r="5" fill="#111"/><circle cx="310" cy="240" r="5" fill="#111"/>
+    </svg>
+    <div class="note">
+      A cada pulso de clock, cada flip-flop copia a entrada <b>D</b> para a saída <b>Q</b>.<br>
+      O estado do registrador é lido como <b>Q2 Q1 Q0</b>.
+    </div>
+  </section>
+
+  <section class="page">
+    <h1>TABELA ASCII</h1>
+    <table class="ascii" id="ascii"></table>
+  </section>
+
+  <section class="page">
+    <h1>CÓDIGO MORSE</h1>
+    <div class="morse" id="morse"></div>
+    <div class="legend">· = sinal curto &nbsp;&nbsp; — = sinal longo<br>
+      Entre as letras há uma pausa maior.</div>
+  </section>
+
+  <section class="page manual">
+    <h1>MANUAL DO TÉCNICO — FONTE ATX</h1>
+    <h2>1. Cor do fio → sinal</h2>
+    <table class="wtab" id="wtab"></table>
+    <h2>2. Pinagem do conector (vista de frente)</h2>
+    <div class="conn" id="conn"></div>
+    <p class="legend">Ligue cada fio no pino do seu sinal. No painel, os pinos só mostram o número.<br>⚠ Um curto-circuito desliga todos os fios.</p>
+  </section>
+
+<script src="js/level3-data.js"></script>
+<script>
+  // Cartões em ordem embaralhada (fixa), para a ordem da folha não entregar a lista
+  const order = [4, 8, 1, 6, 3, 9, 0, 5, 7, 2];
+  document.getElementById("nodes").innerHTML = order.map((i) => L3.nodes[i]).map((n) => `
+    <div class="node"><div class="addr">endereço: <b>${n.addr}</b></div>
+      <div class="cell"><small>dado</small><b>'${n.data}'</b></div>
+      <div class="cell n"><small>next</small><b>${n.next}</b></div></div>`).join("");
+
+  // Flip-flops: FF0, FF1, FF2 (da esquerda para a direita)
+  document.getElementById("ffs").innerHTML = [100, 330, 560].map((x, i) => `
+    <rect x="${x}" y="80" width="120" height="120" fill="#fff"/>
+    <text x="${x + 10}" y="117" font-size="20" fill="#111" stroke="none">D</text>
+    <text x="${x + 92}" y="117" font-size="20" fill="#111" stroke="none">Q</text>
+    <path d="M${x} 160 L${x + 14} 170 L${x} 180" stroke-width="2"/>
+    <text x="${x + 22}" y="70" font-size="18" fill="#111" stroke="none">FF${i}  (Q${i})</text>`).join("");
+
+  // ASCII 0x20–0x7E em 4 colunas
+  const rows = [];
+  for (let r = 0; r < 24; r++) {
+    const cells = [];
+    for (let c = 0; c < 4; c++) {
+      const v = 0x20 + c * 24 + r;
+      if (v > 0x7e) { cells.push("<td></td><td></td><td></td>"); continue; }
+      cells.push(`<td>${v.toString(16).toUpperCase()}</td><td>${v}</td><td class="c">${v === 0x20 ? "espaço" : String.fromCharCode(v).replace("<", "&lt;")}</td>`);
+    }
+    rows.push(`<tr>${cells.join("")}</tr>`);
+  }
+  document.getElementById("ascii").innerHTML = `<tr>${"<th>Hex</th><th>Dec</th><th>Car.</th>".repeat(4)}</tr>` + rows.join("");
+
+  document.getElementById("wtab").innerHTML = L3.wires.map((w) => `<tr><td><i style="background:${w.color}"></i>${w.name}</td><td><b>${w.signal}</b></td></tr>`).join("");
+  // Conector: 2 fileiras de 3, pinos 1-3 em cima, 4-6 embaixo
+  document.getElementById("conn").innerHTML = L3.pinout.map((s, i) => `<div><b>${i + 1}</b>${s}</div>`).join("");
+
+  const M = { A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.", G: "--.", H: "....", I: "..", J: ".---", K: "-.-", L: ".-..", M: "--",
+    N: "-.", O: "---", P: ".--.", Q: "--.-", R: ".-.", S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-", Y: "-.--", Z: "--.." };
+  document.getElementById("morse").innerHTML = Object.entries(M).map(([k, v]) => `<div><b>${k}</b><span>${v.replace(/\./g, "·").replace(/-/g, "—")}</span></div>`).join("");
+</script>
+</body>
+</html>

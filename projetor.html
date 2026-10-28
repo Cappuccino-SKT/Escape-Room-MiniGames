@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>JIGSAW – Projetor</title>
-<!-- Tela do PROJETOR (Níveis 1 e 2). Abra no computador do mestre do jogo que está ligado ao projetor.
-     Pergunta o nível ao abrir (ou projetor.html?nivel=1 / ?nivel=2).
+<!-- Tela do PROJETOR (Níveis 1, 2 e 3). Abra no computador do mestre do jogo que está ligado ao projetor.
+     Pergunta o nível ao abrir (ou projetor.html?nivel=1, 2 ou 3).
      Cronômetro oficial, punição por resposta errada (jump scare + perde minutos), dicas usadas e vitória.
      Teclas: veja o painel (H mostra/esconde). -->
 <link rel="stylesheet" href="css/style.css">
@@ -50,7 +50,7 @@
     <div><b>D / Shift+D</b> +1 / −1 dica usada</div>
     <div><b>↑ / ↓</b> +1 / −1 minuto</div>
     <div><b>R (2x)</b> reiniciar tudo · <b>F</b> tela cheia · <b>H</b> esconder este painel</div>
-    <div><b>Ctrl+Shift+1/2</b> trocar de nível</div>
+    <div><b>Ctrl+Shift+1/2/3</b> trocar de nível</div>
   </div>
 
 <script src="js/config.js"></script>
@@ -58,6 +58,7 @@
 <script src="js/final-scare.js"></script>
 <script src="js/level1-data.js"></script>
 <script src="js/level2-data.js"></script>
+<script src="js/level3-data.js"></script>
 <script>
   // Ajustes: projetor.html?nivel=1&min=30&punicao=2&dicas=5
   const Q = new URLSearchParams(location.search);
@@ -68,7 +69,8 @@
     ch.id = "pj-choose";
     ch.innerHTML = `<h1>Qual nível vai ser jogado?</h1><div class="level-btns">
       <button data-level="1"><b>NÍVEL 1</b><small>As Notas</small></button>
-      <button data-level="2"><b>NÍVEL 2</b><small>O Cúmplice</small></button></div>`;
+      <button data-level="2"><b>NÍVEL 2</b><small>O Cúmplice</small></button>
+      <button data-level="3"><b>NÍVEL 3</b><small>A Prova Final</small></button></div>`;
     document.body.appendChild(ch);
     ch.querySelectorAll("button").forEach((b) => (b.onclick = () => (location.search = "?nivel=" + b.dataset.level)));
   }
@@ -82,8 +84,12 @@
     2: { pen: 5, sub: "TEMPO RESTANTE",
       wrong: ["ACUSAÇÃO ERRADA", (p) => `Vocês acusaram um inocente. Isso custou <b>${p} minutos</b>.<br>Mais uma chance.`],
       win: ["CORRETO.", `Meu cúmplice era <b>${culprit}</b>.<br>Vocês sobreviveram... desta vez.<br><br>— J`],
-      lose: ["TEMPO ESGOTADO", "Meu cúmplice continua livre.<br>E vocês continuam aqui.<br><br>— J"] }
-  }[LEVEL === 1 ? 1 : 2];
+      lose: ["TEMPO ESGOTADO", "Meu cúmplice continua livre.<br>E vocês continuam aqui.<br><br>— J"] },
+    3: { pen: 5, sub: "O VÍRUS APAGA TUDO EM",
+      wrong: ["KILL SWITCH ERRADO", (p) => `O vírus acelerou. Isso custou <b>${p} minutos</b>.<br>Tentem de novo.`],
+      win: ["CORRETO.", `O kill switch era <b>${L3.answer}</b>.<br>Vocês passaram na prova que eu não passei.<br><br>— J`],
+      lose: ["TEMPO ESGOTADO", "O vírus apagou tudo.<br>Vocês foram reprovados.<br><br>— J"] }
+  }[[1, 2, 3].includes(LEVEL) ? LEVEL : 2];
   const MIN = Number(Q.get("min")) || 30, PEN = Number(Q.get("punicao")) || TXT.pen, MAXH = Number(Q.get("dicas")) || 5;
   $("#pj-sub").textContent = TXT.sub;
   let left = MIN * 60000, running = false, last = 0, hints = 0, over = false, resetArm = 0;
@@ -121,8 +127,8 @@
 
   async function punish() {
     if (over || Interference.running || FinalScare.running) return;
-    // Nível 1 (senha final errada): cena própria em HTML/CSS; Nível 2: susto normal (ou vídeo de projetor_punicao)
-    if (LEVEL === 1) await FinalScare.play();
+    // Níveis 1 e 3 (resposta final errada): cena própria em HTML/CSS; Nível 2: susto normal (ou vídeo de projetor_punicao)
+    if (LEVEL !== 2) await FinalScare.play();
     else await Interference.scare("projetor_punicao");
     left = Math.max(0, left - PEN * 60000);
     message(TXT.wrong[0], TXT.wrong[1](PEN), "", 5000);
@@ -140,7 +146,7 @@
   }
 
   addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.shiftKey && (e.code === "Digit1" || e.code === "Digit2")) return (location.search = "?nivel=" + e.code.slice(-1));
+    if (e.ctrlKey && e.shiftKey && /^Digit[123]$/.test(e.code)) return (location.search = "?nivel=" + e.code.slice(-1));
     if (!LEVEL) return;
     const k = e.key.toLowerCase();
     if (k !== "r") resetArm = 0;

@@ -4,14 +4,14 @@ Simulação de computador para escape room: **escolha do nível → ligar → bo
 
 ## Como usar
 Abra `index.html` no navegador (Chrome recomendado). Não precisa de internet nem instalação.
-O jogo pergunta **qual nível** vai ser jogado (1 ou 2). Para trocar depois: **Ctrl + Shift + 1** ou **Ctrl + Shift + 2**.
+O jogo pergunta **qual nível** vai ser jogado (1, 2 ou 3). Para trocar depois: **Ctrl + Shift + 1**, **2** ou **3**.
 
 - Clique no botão de ligar (entra em tela cheia).
 - **Ctrl + Shift + X**: reinicia tudo (atalho do mestre do jogo).
 
 ## Configuração
 `js/config.js` – configuração geral: velocidade do boot, sustos (vídeos por lugar em `scareMedia`, regras em `scareRules`, volume) e sons (pasta `sounds/`).
-Os dados de cada nível ficam em `js/level1-data.js` e `js/level2-data.js`.
+Os dados de cada nível ficam em `js/level1-data.js`, `js/level2-data.js` e `js/level3-data.js`.
 
 ## Nível 1 – "As Notas"
 Abra `index.html` e escolha **Nível 1**. O hacker trocou a senha do Sistema de Notas do professor; o grupo investiga o computador e a sala para descobrir a senha (nome da filha + ano da formatura + número da sorte) e fala a resposta ao mestre do jogo.
@@ -25,6 +25,12 @@ Abra `index.html` e escolha **Nível 2** (ou abra direto `index.html?nivel=2`). 
 - **`imprimir-nivel2.html`**: papéis da sala (cartas da senha, lista de monitores, livro de chaves, bilhete).
 - Dados do caso em `js/level2-data.js`. Guia completo (spoiler) em `TESTES-NIVEL2.md`.
 
-## Minigames guardados (fora dos níveis atuais)
-`apps/terminal.js` (terminal hacker) e `apps/wires.js` (painel de fios ATX) estão prontos, mas não aparecem em nenhum nível. Podem ser usados num futuro Nível 3.
+## Nível 3 – "A Prova Final"
+Abra `index.html` e escolha **Nível 3**. O nível mais difícil: as questões principais exigem C, estruturas de dados e circuitos digitais (até o 3º semestre); cada uma tem um minijogo opcional que dá uma ajuda para quem não sabe. No final, o grupo conserta uma função em C de verdade (interpretador em `js/minic.js`) e fala o kill switch ao mestre do jogo.
+- **`projetor.html`** (escolha Nível 3): cronômetro, punição (P, −5 min), dicas (D) e vitória (V).
+- **`imprimir-nivel3.html`**: papéis da sala (nós da lista, circuito do registrador, tabela ASCII, código Morse).
+- Dados do caso em `js/level3-data.js`. Guia completo (spoiler) em `TESTES-NIVEL3.md`.
+
+## Minigames reaproveitados
+`apps/terminal.js` (terminal hacker) e `apps/wires.js` (painel de fios ATX) são opcionais do Nível 3 (`invasao.exe` e `energia.exe`).
 O Nível 1 antigo (admin, hacker, labirinto, cmd, ransomware) está guardado no git, na tag `nivel1-antigo`.

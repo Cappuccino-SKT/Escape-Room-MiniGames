@@ -1,9 +1,9 @@
 // ===== CONFIGURAÇÃO DO JOGO =====
 // Edite aqui sem precisar mexer no resto do código.
-// Os dados de cada nível ficam em js/level1-data.js e js/level2-data.js.
+// Os dados de cada nível ficam em js/level1-data.js, js/level2-data.js e js/level3-data.js.
 window.CONFIG = {
-  // Nível do jogo: ao abrir o index.html, o jogo pergunta qual nível (ou use index.html?nivel=1 / ?nivel=2).
-  // Atalhos do mestre do jogo: Ctrl+Shift+1 / Ctrl+Shift+2 trocam de nível a qualquer momento.
+  // Nível do jogo: ao abrir o index.html, o jogo pergunta qual nível (ou use index.html?nivel=1, 2 ou 3).
+  // Atalhos do mestre do jogo: Ctrl+Shift+1 / 2 / 3 trocam de nível a qualquer momento.
   level: Number(new URLSearchParams(location.search).get("nivel")) || 1,
   levelChosen: !!Number(new URLSearchParams(location.search).get("nivel")),
 
@@ -35,7 +35,9 @@ window.CONFIG = {
     nivel1_armadilha: [],    // Nível 1: abrir o NAO_ABRA.exe da Lixeira
     nivel2: [],              // Nível 2: erros nos minijogos (quando o erro vira susto)
     nivel2_armadilha: [],    // Nível 2: abrir o jigsaw.exe no terminal
-    projetor_punicao: [],    // projetor: acusação errada no Nível 2 (tecla P). No Nível 1 a tecla P toca a cena do js/final-scare.js
+    nivel3: [],              // Nível 3: erros nos minijogos (quando o erro vira susto)
+    nivel3_armadilha: [],    // Nível 3: executar o kill_switch.exe da Lixeira
+    projetor_punicao: [],    // projetor: acusação errada no Nível 2 (tecla P). Nos Níveis 1 e 3 a tecla P toca a cena do js/final-scare.js
     projetor_tempo: []       // projetor: tempo esgotado
   },
   scareMaxSeconds: 8,        // corta o vídeo do susto depois desse tempo

@@ -447,3 +447,133 @@ table.pl td, table.pl th { padding: 3px 10px; border-bottom: 1px solid #333; tex
 .fs-face.lunge .fs-brow { opacity: 0; transition: opacity .1s; }
 @keyframes fsLunge { from { transform: scale(1); } to { transform: scale(6.5) translateY(4%); } }
 #fs.shake { animation: scareShake .06s infinite; }
+
+/* ===================== NÍVEL 3 ===================== */
+.l3-dump { margin: 0 0 14px; padding: 10px 12px; background: #000; border: 1px solid #600; font-family: "Courier New", monospace; text-align: left; }
+.l3-dump small { display: block; color: #f55; font-size: 11px; margin-bottom: 6px; }
+.l3-dump code { color: #7fff7f; font-size: 17px; letter-spacing: .08em; word-spacing: .2em; }
+.l3-pad { padding: 14px; height: 100%; overflow: auto; background: #111; }
+.l3-help { margin: 12px 0; padding: 14px 16px; background: #0f1a10; border: 1px solid #2a5; border-radius: 6px; color: #d8eedd; text-align: left; font: 14px/1.5 Arial, sans-serif; }
+.l3-help h4 { margin: 0 0 6px; color: #6f6; font-size: 16px; }
+.l3-help code { padding: 1px 5px; background: #000; border: 1px solid #2a5; border-radius: 3px; color: #ffd84a; font: 13px Consolas, "Courier New", monospace; white-space: nowrap; }
+.l3-h-intro { margin: 0 0 10px; color: #fff; }
+.l3-h-body { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+.l3-h-side { flex: none; }
+.l3-h-main { flex: 1; min-width: 220px; }
+.l3-help ol { margin: 0; padding-left: 20px; }
+.l3-help li { margin-bottom: 6px; }
+.l3-help li::marker { color: #6f6; font-weight: bold; }
+.l3-h-not { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.l3-h-not span { padding: 3px 8px; background: #0a120b; border: 1px solid #234; border-radius: 4px; }
+.l3-h-ex { margin: 10px 0; padding: 8px 10px; background: #1a1708; border-left: 3px solid #ffd84a; }
+.l3-h-note { margin: 8px 0 0; color: #ffb3b3; }
+.l3-km { display: grid; grid-template-columns: auto auto; grid-template-areas: ". top" "side map" ". cap"; gap: 4px 6px; }
+.l3-km-top { grid-area: top; text-align: center; color: #8c8; font-weight: bold; padding-left: 40px; }
+.l3-km-side { grid-area: side; writing-mode: vertical-rl; transform: rotate(180deg); align-self: center; color: #8c8; font-weight: bold; padding-top: 30px; }
+.l3-km .l3-kmap { grid-area: map; }
+.l3-km small { grid-area: cap; max-width: 230px; color: #8a9; font-size: 11px; }
+.l3-kmap { border-collapse: collapse; font: 15px "Courier New", monospace; }
+.l3-kmap th, .l3-kmap td { border: 1px solid #2a5; width: 40px; height: 34px; text-align: center; }
+.l3-kmap th { color: #8c8; background: #0a120b; }
+.l3-kmap td.v1 { color: #fff; font-weight: bold; background: #1b3a1f; }
+.l3-kmap td.v0 { color: #575; }
+.l3-kmap tr.hi td { background: #3a3510; border-top: 3px solid #ffd84a; border-bottom: 3px solid #ffd84a; }
+.l3-kmap tr.hi td:first-of-type { border-left: 3px solid #ffd84a; }
+.l3-kmap tr.hi td:last-child { border-right: 3px solid #ffd84a; }
+.l3-h-tab { width: auto; }
+.l3-h-tab td, .l3-h-tab th { text-align: center; padding: 4px 10px; }
+.l3-h-tab td.q { color: #666; }
+.l3-files { padding: 12px; height: 100%; overflow: auto; background: #111; color: #ddd; }
+.l3-file { display: flex; flex-direction: column; gap: 4px; padding: 8px 10px; border-bottom: 1px solid #2a2a2a; }
+.l3-file code { color: #ffd84a; font-size: 15px; letter-spacing: .06em; word-break: break-all; }
+.l3-file small { color: #888; }
+.l3-trap { cursor: pointer; }
+.l3-trap:hover { background: #200; }
+
+/* display.exe */
+.l3-disp { display: flex; gap: 18px; height: 100%; padding: 14px; overflow: auto; background: #0d0d0d; color: #ddd; }
+.l3-disp-l { flex: 1.3; display: flex; flex-direction: column; gap: 10px; }
+.l3-disp-r { flex: 1; min-width: 220px; }
+.l3-disp h3 { margin: 0 0 6px; color: #f66; font-size: 15px; }
+.l3-panel { position: relative; display: flex; gap: 10px; justify-content: center; padding: 18px; background: #050505; border: 2px solid #222; border-radius: 6px; }
+.l3-panel.fixed { border-color: #2a5; box-shadow: 0 0 24px #0f03; }
+.l3-nosig { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #f33; font: bold 22px "Courier New", monospace; letter-spacing: .3em; animation: blink 1.2s steps(1) infinite; }
+.l3-seg { width: 70px; height: 110px; }
+.l3-seg polygon { fill: #1c0707; transition: fill .15s; }
+.l3-seg polygon.on { fill: #ff2a2a; filter: drop-shadow(0 0 4px #f00); }
+.l3-seg polygon.dead { fill: #050505; stroke: #333; stroke-dasharray: 2 2; }
+.l3-seg.ref { width: 40px; height: 62px; }
+.l3-gf { display: flex; gap: 8px; align-items: center; }
+.l3-gf label { font: bold 18px "Courier New", monospace; color: #ffd84a; }
+.l3-gf input { flex: 1; padding: 7px 10px; background: #000; color: #7fff7f; border: 1px solid #444; font: 16px "Courier New", monospace; }
+.l3-tt td, .l3-tt th { padding: 3px 8px; text-align: center; }
+.l3-mini { display: flex; gap: 10px; align-items: center; margin-top: 10px; color: #888; font-size: 12px; }
+.l3-disp button.primary, .l3-radio button.primary { padding: 7px 16px; background: #700; color: #fff; border: 1px solid #a00; cursor: pointer; font: inherit; }
+.l3-disp button.primary:hover, .l3-radio button.primary:hover { background: #a00; }
+.l3-disp button:disabled { opacity: .4; cursor: default; }
+
+/* decifra.c */
+.l3-code .l2-code-bar button { margin-left: 6px; }
+.l3-code .l3-reset { background: #444 !important; }
+.l3-src { flex: 1; overflow: auto; font: 15px Consolas, "Courier New", monospace; }
+.l3-src pre { margin: 0; padding: 0 12px; color: #d4d4d4; font: inherit; line-height: 1.4; }
+.l3-src pre.locked { color: #8a8a8a; background: #191919; padding: 6px 12px; }
+.l3-edit { display: flex; background: #1e1e1e; border-top: 1px dashed #0e639c; border-bottom: 1px dashed #0e639c; }
+.l3-edit .l3-gut { flex: none; padding: 6px 0 6px 12px !important; color: #6e7681 !important; user-select: none; text-align: right; min-width: 38px; }
+.l3-edit textarea { flex: 1; min-width: 0; width: 100%; resize: none; border: 0; outline: 0; padding: 6px 12px; background: transparent; color: #ffe9a8; font: inherit; line-height: 1.4; white-space: pre; overflow: hidden; tab-size: 4; }
+.l3-args { display: flex; gap: 8px; align-items: center; padding: 6px 12px; background: #000; color: #ccc; font: 14px Consolas, monospace; border-top: 1px solid #333; }
+.l3-args select, .l3-args input { background: #111; color: #7fff7f; border: 1px solid #444; padding: 4px 6px; font: inherit; }
+.l3-args input { width: 170px; text-transform: uppercase; }
+.l3-con { max-height: 140px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+.l3-con .dim { color: #888; }
+.l3-con .villain { color: #f33; font-weight: bold; }
+
+/* radio.exe */
+.l3-radio { height: 100%; overflow: auto; padding: 18px; display: flex; flex-direction: column; align-items: center; gap: 12px; background: #0d0d0d; color: #ddd; text-align: center; }
+.l3-lamp { width: 90px; height: 90px; border-radius: 50%; background: #2a0a0a; border: 3px solid #400; transition: background .05s; }
+.l3-lamp.on { background: #ff3b3b; box-shadow: 0 0 40px #f00; }
+.l3-rf { display: flex; gap: 8px; }
+.l3-rf input { padding: 7px 10px; background: #000; color: #7fff7f; border: 1px solid #444; font: 16px "Courier New", monospace; text-transform: uppercase; }
+
+/* placa.exe */
+.l3-net { height: 100%; overflow: auto; padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px; background: #0d0d0d; color: #ddd; text-align: center; }
+.l3-net p { margin: 0; }
+.l3-grid { display: grid; gap: 2px; width: min(100%, 420px); padding: 6px; background: #0a1f12; border: 2px solid #1f4d2b; border-radius: 6px; }
+.l3-tile { aspect-ratio: 1; background: #0f2a18; cursor: pointer; user-select: none; }
+.l3-tile:hover { background: #163b22; }
+.l3-tile svg { width: 100%; height: 100%; display: block; }
+.l3-tile line { stroke: #6b5a1e; stroke-width: 6; stroke-linecap: round; }
+.l3-tile circle, .l3-tile rect { fill: #6b5a1e; }
+.l3-tile.lit line { stroke: #ffd84a; }
+.l3-tile.lit circle { fill: #ff3b3b; filter: drop-shadow(0 0 4px #f00); }
+.l3-tile.src rect { fill: #222; stroke: #ffd84a; stroke-width: 2; }
+.l3-tile.jflash { animation: jflash .8s; }
+@keyframes jflash { 0%, 60% { background: #600; } }
+.l3-net.done .l3-grid { border-color: #3f6; box-shadow: 0 0 24px #0f04; }
+
+/* Textos do Nível 3 em formato de documento (docHTML) */
+.l3-doc { height: 100%; overflow: auto; padding: 20px 26px; background: #101010; color: #ddd; font: 15px/1.6 Arial, sans-serif; }
+.l3-doc h3 { margin: 0 0 12px; color: #ff4d4d; font-size: 21px; }
+.l3-doc h4 { margin: 18px 0 6px; color: #fff; font-size: 16px; border-bottom: 1px solid #400; padding-bottom: 4px; }
+.l3-doc p { margin: 0 0 10px; }
+.l3-doc b { color: #fff; }
+.l3-doc ol { margin: 0 0 12px; padding-left: 22px; }
+.l3-doc li { margin-bottom: 8px; }
+.l3-doc li::marker { color: #ff4d4d; font-weight: bold; }
+.l3-doc .warn { padding: 8px 12px; background: #2a0606; border-left: 3px solid #f33; color: #ffc9c9; }
+.l3-doc .box { margin: 12px 0; padding: 10px 12px; background: #0f1a10; border: 1px solid #2a5; border-radius: 4px; color: #cfe; }
+.l3-doc dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0 0 12px; }
+.l3-doc dt { color: #ff8080; font-weight: bold; }
+.l3-doc dd { margin: 0; }
+.l3-doc .sign { text-align: right; color: #f33; font: bold 18px "Courier New", monospace; margin-top: 16px; }
+.l3-doc code, .l3-rules code, .l3-files-note code { padding: 1px 5px; background: #000; border: 1px solid #333; border-radius: 3px; color: #ffd84a; font: 13px Consolas, "Courier New", monospace; white-space: nowrap; }
+.l3-steps { margin: 0; padding-left: 22px; text-align: left; line-height: 1.6; }
+.l3-steps li::marker { color: #ff4d4d; font-weight: bold; }
+.l3-warn { margin: 0; padding: 8px 10px; background: #2a0606; border-left: 3px solid #f33; color: #ffc9c9; font-size: 13px; }
+.l3-rules { padding: 8px 12px; background: #151515; border: 1px solid #333; border-radius: 4px; font-size: 13px; color: #bbb; }
+.l3-rules ul { margin: 6px 0 0; padding-left: 18px; }
+.l3-rules li { margin-bottom: 6px; }
+.l3-rules .l3-h-not { display: inline-flex; margin: 0 0 0 4px; vertical-align: middle; }
+.l3-rules .l3-h-not code { font-size: 12px; }
+.l3-files-h { margin: 0 0 8px; color: #ff4d4d; font: bold 17px Arial, sans-serif; }
+.l3-files-note { margin-top: 12px; padding: 8px 10px; background: #2a0606; border-left: 3px solid #f33; color: #ffc9c9; font: 13px Arial, sans-serif; }

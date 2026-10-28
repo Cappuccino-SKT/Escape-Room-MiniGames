@@ -1,8 +1,10 @@
 // ===== MINIGAME: TERMINAL HACKER =====
 // Fluxo: help → scan → crack 192.168.6.66 → connect 192.168.6.66 → ls / cat → decrypt chave.enc
+// api.options (opcional): { noTips: true } esconde as dicas "»"; { traceSeconds: n } muda o tempo do rastreamento.
 window.TerminalGame = function (el, api) {
+  const O = api.options || {};
   const TARGET = "192.168.6.66";
-  const TRACE_SECONDS = 150; // tempo até o vilão "rastrear" o jogador e derrubar a conexão
+  const TRACE_SECONDS = O.traceSeconds || 150; // tempo até o vilão "rastrear" o jogador e derrubar a conexão
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const st = { cracked: false, connected: false, busy: false, done: false, trace: 0, traceId: null };
   const history = []; let hIdx = 0;
@@ -54,7 +56,7 @@ window.TerminalGame = function (el, api) {
       await sleep(ms / 20);
     }
   }
-  const tip = (t) => print("» " + t, "tip");
+  const tip = (t) => { if (!O.noTips) print("» " + t, "tip"); };
 
   // ---------- Rastreamento (tensão) ----------
   function startTrace() {
@@ -205,7 +207,7 @@ window.TerminalGame = function (el, api) {
     await type("JIGSAW-NET Terminal v1.0", "hl", 20);
     await type("Conexão remota detectada na rede local.", "dim", 20);
     print("");
-    tip("Digite help e pressione Enter para ver os comandos.");
+    print("» Digite help e pressione Enter para ver os comandos.", "tip");
     st.busy = false;
     input.focus();
   })();
