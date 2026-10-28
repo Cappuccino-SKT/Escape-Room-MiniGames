@@ -32,7 +32,7 @@
 
   // ---------- caso.txt ----------
   function Caso(el) {
-    el.innerHTML = `<div class="notepad">${D.caso.map(esc).join("\n")}</div>`;
+    el.innerHTML = Doc.html(D.caso);
   }
 
   // ---------- Suspeitos ----------
@@ -319,7 +319,7 @@
         el.querySelectorAll(".l2-mail-i").forEach((x) => x.classList.remove("sel"));
         it.classList.add("sel");
         const m = D.emails[it.dataset.i];
-        el.querySelector(".l2-mail-body").innerHTML = `<h3>${esc(m.subject)}</h3><small>De: ${esc(m.from)} · ${esc(m.time)}</small><pre>${m.body.map(esc).join("\n")}</pre>`;
+        el.querySelector(".l2-mail-body").innerHTML = `<h3>${esc(m.subject)}</h3><small>De: <b>${esc(m.from)}</b> · ${esc(m.time)}</small><div class="mail-text">${Doc.paras(m.body)}</div>`;
       }));
     };
     if (mailOpen) return show();
@@ -366,12 +366,16 @@
 
   // ---------- Lixeira ----------
   function Lixeira(el) {
-    el.innerHTML = `<div class="notepad">🗑 senha_antiga_porta.txt\n\nsenha antiga da porta do ${D.room}: 4402\n(trocada ontem à noite)</div>`;
+    el.innerHTML = Doc.html([
+      { h: "🗑 senha_antiga_porta.txt" },
+      { p: `Senha antiga da porta do ${D.room}: \`4402\`` },
+      { p: "(trocada ontem à noite)" }
+    ]);
   }
 
   APPS.length = 0;
   APPS.push(
-    { id: "caso", title: "caso.txt", icon: "📄", width: 700, height: 480, render: Caso },
+    { id: "caso", title: "caso.txt", icon: "📄", width: 700, height: 560, render: Caso },
     { id: "suspeitos", title: "suspeitos", icon: "🗂️", width: 760, height: 520, render: Suspeitos },
     { id: "depoimentos", title: "depoimentos", icon: "🎙️", width: 680, height: 540, render: Depoimentos },
     { id: "fechadura", title: "fechadura.exe", icon: "🚪", width: 900, height: 560, render: Fechadura },

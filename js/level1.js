@@ -26,7 +26,7 @@
 
   // ---------- LEIA-ME (recado do J) ----------
   function Leia(el) {
-    el.innerHTML = `<div class="notepad">${D.intro.map((l) => esc(prof(l))).join("\n")}</div>`;
+    el.innerHTML = Doc.html(D.intro, prof);
   }
 
   // ---------- Sistema de Notas (bloqueado: a senha é falada ao J) ----------
@@ -76,8 +76,9 @@
       el.querySelectorAll(".l2-mail-i").forEach((x) => x.classList.remove("sel"));
       it.classList.add("sel");
       const m = D.emails[it.dataset.i], body = el.querySelector(".l2-mail-body");
-      body.innerHTML = `<h3>${esc(m.subject)}</h3><small>De: ${esc(m.from)} · ${esc(m.time)}</small><pre>${m.body.map(esc).join("\n")}</pre>
-        ${m.attach ? `<button class="l1-attach">📎 ${esc(m.attach.name)}</button><pre class="l1-att hidden">${m.attach.lines.map(esc).join("\n")}</pre>` : ""}`;
+      body.innerHTML = `<h3>${esc(m.subject)}</h3><small>De: <b>${esc(m.from)}</b> · ${esc(m.time)}</small><div class="mail-text">${Doc.paras(m.body)}</div>
+        ${m.attach ? `<button class="l1-attach">📎 ${esc(m.attach.name)}</button>
+          <div class="l1-att hidden"><b>${esc(m.attach.lines[0])}</b><ol>${m.attach.lines.slice(1).filter((l) => l.trim()).map((l) => `<li>${esc(l)}</li>`).join("")}</ol></div>` : ""}`;
       const b = body.querySelector(".l1-attach");
       if (b) b.onclick = () => { body.querySelector(".l1-att").classList.toggle("hidden"); done("turma", "Lista da turma 3B"); };
     }));
@@ -219,10 +220,10 @@
   // ---------- Lixeira (com armadilha) ----------
   function Lixeira(el) {
     el.innerHTML = `<div class="l1-trash">${D.trash.map((f, i) => `<button data-i="${i}">${f.trap ? "⚙️" : "📄"} ${esc(f.name)}</button>`).join("")}
-      <pre class="l1-trash-view"></pre></div>`;
+      <div class="l1-trash-view"></div></div>`;
     el.querySelectorAll("button").forEach((b) => (b.onclick = async () => {
       const f = D.trash[b.dataset.i], v = el.querySelector(".l1-trash-view");
-      if (!f.trap) return (v.textContent = f.lines.join("\n"));
+      if (!f.trap) return (v.innerHTML = Doc.paras(f.lines));
       v.textContent = "Executando NAO_ABRA.exe ...";
       await sleep(400);
       await Interference.scare("nivel1_armadilha");

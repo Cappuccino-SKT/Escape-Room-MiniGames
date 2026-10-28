@@ -36,21 +36,7 @@
   };
 
   // ---------- Ajudas (prêmio dos opcionais) ----------
-  // `texto` vira código e **texto** vira negrito
-  const fmt = (t) => esc(t).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
-  // Documento em blocos (formato dos textos em js/level3-data.js)
-  function docHTML(blocks) {
-    return `<div class="l3-doc">${blocks.map((b) =>
-      b.h ? `<h3>${fmt(b.h)}</h3>`
-      : b.h2 ? `<h4>${fmt(b.h2)}</h4>`
-      : b.p ? `<p>${fmt(b.p)}</p>`
-      : b.ol ? `<ol>${b.ol.map((x) => `<li>${fmt(x)}</li>`).join("")}</ol>`
-      : b.warn ? `<p class="warn">⚠ ${fmt(b.warn)}</p>`
-      : b.box ? `<div class="box">${fmt(b.box)}</div>`
-      : b.kv ? `<dl>${b.kv.map(([k, v]) => `<dt>${fmt(k)}</dt><dd>${fmt(v)}</dd>`).join("")}</dl>`
-      : b.sign ? `<p class="sign">${fmt(b.sign)}</p>`
-      : "").join("")}</div>`;
-  }
+  const fmt = Doc.fmt, docHTML = Doc.html; // textos formatados (js/doc.js)
   // Notação lógica usada no display (a ajuda do Karnaugh usa a mesma, em L3.help.kmap.notation)
   const NOTATION = `<span class="l3-h-not">${D.help.kmap.notation.map(([a, b]) => `<span><code>${esc(a)}</code> = ${esc(b)}</span>`).join("")}</span>`;
   // Mapa de g: linhas AB e colunas CD na ordem 00, 01, 11, 10 (só muda 1 bit de uma para a outra)
@@ -398,12 +384,17 @@
     }
     return { g, src };
   }
+  let board = null; // a placa sorteada fica guardada: fechar a janela não perde o progresso
   function Placa(el) {
     const n = NET.size;
     if (helps.has("kmap")) return (el.innerHTML = `<div class="l3-pad">${helpHTML("kmap")}</div>`);
-    let { g, src } = makeBoard(n);
-    const solved = g.slice();
-    do { g = g.map((m) => { for (let k = Math.floor(Math.random() * 4); k > 0; k--) m = rot(m); return m; }); } while (g.every((m, i) => m === solved[i]));
+    if (!board) {
+      board = makeBoard(n);
+      const solved = board.g.slice();
+      do { board.g = solved.map((m) => { for (let k = Math.floor(Math.random() * 4); k > 0; k--) m = rot(m); return m; }); }
+      while (board.g.every((m, i) => m === solved[i]));
+    }
+    const { g, src } = board;
     el.innerHTML = `
       <div class="l3-net">
         <p>O J embaralhou as trilhas da placa do decodificador.</p>

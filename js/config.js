@@ -4,8 +4,9 @@
 window.CONFIG = {
   // Nível do jogo: ao abrir o index.html, o jogo pergunta qual nível (ou use index.html?nivel=1, 2 ou 3).
   // Atalhos do mestre do jogo: Ctrl+Shift+1 / 2 / 3 trocam de nível a qualquer momento.
-  level: Number(new URLSearchParams(location.search).get("nivel")) || 1,
-  levelChosen: !!Number(new URLSearchParams(location.search).get("nivel")),
+  // Nível inválido (ex.: ?nivel=4) = mostra a tela de escolha.
+  level: [1, 2, 3].includes(Number(new URLSearchParams(location.search).get("nivel"))) ? Number(new URLSearchParams(location.search).get("nivel")) : 1,
+  levelChosen: [1, 2, 3].includes(Number(new URLSearchParams(location.search).get("nivel"))),
 
   userName: "Convidado",
   password: "",                // senha da tela de login. "" = sem login (cada nível ajusta)

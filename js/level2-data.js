@@ -14,24 +14,20 @@ window.L2 = {
   loginPassword: "TRAICAO",
   loginHint: "As letras estão espalhadas pela sala. Os números dizem a ordem.",
 
+  // Recado do J (formato de js/doc.js)
   caso: [
-    "Olá. Vocês já me conhecem.",
-    "",
-    "Ontem à noite, entre 23:00 e 23:10, alguém entrou no Laboratório N112",
-    "e instalou o meu vírus neste computador. Eu não estava aqui.",
-    "Eu tenho um CÚMPLICE.",
-    "",
-    "São 5 suspeitos. As fichas e os depoimentos estão neste computador.",
-    "",
-    "As regras do jogo:",
-    "  1. Meu cúmplice MENTE. Os inocentes dizem a VERDADE.",
-    "  2. Quando souberem quem é, digam o nome para mim, em voz alta.",
-    "  3. Errar a acusação tem um preço.",
-    "",
-    "Tudo o que vocês precisam está neste computador ou nesta sala.",
-    "Investiguem.",
-    "",
-    "                                                          — J"
+    { h: "Olá. Vocês já me conhecem." },
+    { p: "Ontem à noite, entre **23:00 e 23:10**, alguém entrou no **Laboratório N112** e instalou o meu vírus neste computador. Eu não estava aqui." },
+    { warn: "Eu tenho um **CÚMPLICE**." },
+    { p: "São **5 suspeitos**. As fichas e os depoimentos estão neste computador." },
+    { h2: "As regras do jogo" },
+    { ol: [
+      "Meu cúmplice **MENTE**. Os inocentes dizem a **VERDADE**.",
+      "Quando souberem quem é, **digam o nome para mim**, em voz alta.",
+      "Errar a acusação tem um preço."
+    ] },
+    { box: "Tudo o que vocês precisam está neste computador ou nesta sala. Investiguem." },
+    { sign: "— J" }
   ],
 
   suspects: [
@@ -139,7 +135,7 @@ window.L2 = {
     "23:09": "CAM-02 (corredor N) — A mesma pessoa sai do N112 apressada, ainda de capuz, com o tubo de projeto."
   },
 
-  // E-mail do Bruno: senha = gato (Bit) + ano de ingresso (ficha) → "bit2024". A partir do 3º erro: susto.
+  // E-mail do Bruno: senha = gato (Bit) + ano de ingresso (ficha) → "bit2024". Erros passam por Interference.error.
   emailPassword: "bit2024",
   emails: [
     { from: "Passe Urbano", subject: "Recibo da sua viagem", time: "ontem, 22:58",

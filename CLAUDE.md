@@ -18,6 +18,7 @@ Este repositório é o **jogo no notebook da sala**: uma simulação de computad
 | `js/os.js` | "Sistema operacional": janelas, ícones, diálogos (`OS.dialog`), notificações, `OS.showIcon`, `GATE`, revelar senha (`api.win`) |
 | `js/interference.js` | Sustos: `Interference.scare(lugar)` (vídeo/imagem do lugar ou rosto SVG + grito), `Interference.error(lugar)` (erro: só às vezes vira susto), `Interference.run()` (interferência do hacker, Ctrl+Shift+H) |
 | `js/phaselog.js` | Registro de tempo por etapa (Ctrl+Shift+L) |
+| `js/doc.js` | `Doc.html(blocos)` e `Doc.paras(linhas)`: textos formatados dos 3 níveis (título, passos, alerta, destaque, assinatura; `código` e **negrito**). Os recados do J (`intro`, `caso`) ficam em blocos nos dados de cada nível; e-mails usam `Doc.paras` |
 | `js/level1-data.js` / `js/level1.js` | **Nível 1 "As Notas"**: dados do caso / apps do desktop |
 | `js/level2-data.js` / `js/level2.js` | **Nível 2 "O Cúmplice"**: dados do caso / apps do desktop |
 | `js/level3-data.js` / `js/level3.js` | **Nível 3 "A Prova Final"**: dados do caso / apps do desktop |

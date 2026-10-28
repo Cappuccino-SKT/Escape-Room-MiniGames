@@ -62,7 +62,7 @@
 <script>
   // Ajustes: projetor.html?nivel=1&min=30&punicao=2&dicas=5
   const Q = new URLSearchParams(location.search);
-  const LEVEL = Number(Q.get("nivel"));
+  const LEVEL = [1, 2, 3].includes(Number(Q.get("nivel"))) ? Number(Q.get("nivel")) : 0; // inválido = pergunta o nível
   const $ = (s) => document.querySelector(s);
   if (!LEVEL) {
     const ch = document.createElement("div");

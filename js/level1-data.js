@@ -10,22 +10,14 @@ window.L1 = {
   password: "ALICE19987",
   passwordHint: "O nome da minha filha + o ano em que me formei + o meu número da sorte.",
 
+  // Recado do J (formato de js/doc.js; {prof} vira o nome do professor)
   intro: [
-    "Olá.",
-    "",
-    "Este é o computador do {prof}.",
-    "As notas finais de vocês estão aqui dentro.",
-    "",
-    "Eu troquei a senha do Sistema de Notas.",
-    "Quando o tempo acabar, TODAS as notas serão ZERADAS.",
-    "",
-    "A não ser que vocês descubram a senha nova.",
-    "Ela tem a cara do professor. Investiguem a vida dele.",
-    "",
-    "Quando souberem a senha, digam para mim, em voz alta.",
-    "Errar tem um preço.",
-    "",
-    "                                                          — J"
+    { h: "Olá." },
+    { p: "Este é o computador do **{prof}**. As notas finais de vocês estão aqui dentro." },
+    { warn: "Eu troquei a senha do Sistema de Notas. Quando o tempo acabar, **TODAS as notas serão ZERADAS**." },
+    { p: "A não ser que vocês descubram a senha nova. Ela tem a cara do professor: **investiguem a vida dele**." },
+    { box: "Quando souberem a senha, **digam para mim**, em voz alta. Errar tem um preço." },
+    { sign: "— J" }
   ],
 
   // ---------- Peça 1: o nome da filha ----------

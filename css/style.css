@@ -330,6 +330,9 @@ table.pl td, table.pl th { padding: 3px 10px; border-bottom: 1px solid #333; tex
 .l2-mail-body { flex: 1; padding: 14px; overflow: auto; }
 .l2-mail-body h3 { margin: 0 0 4px; }
 .l2-mail-body pre { white-space: pre-wrap; font: 15px "Courier New", monospace; color: #ddd; }
+.l2-mail-body small { color: #999; }
+.mail-text { margin-top: 14px; padding-top: 12px; border-top: 1px solid #333; color: #ddd; font: 15px/1.6 Arial, sans-serif; }
+.mail-text p { margin: 0 0 12px; }
 
 /* rede.exe */
 .l2-net { padding: 14px; }
@@ -377,7 +380,8 @@ table.pl td, table.pl th { padding: 3px 10px; border-bottom: 1px solid #333; tex
 .l1-forgot { background: none; border: 0; color: #1f4e79; text-decoration: underline; cursor: pointer; font: inherit; font-size: 13px; }
 .l1-hint { margin-top: 8px; padding: 8px; background: #fff7d6; border: 1px solid #e5c84d; font-size: 14px; }
 .l1-attach { margin-top: 8px; padding: 6px 10px; background: #222; color: #ddd; border: 1px solid #444; cursor: pointer; }
-.l1-att { margin-top: 8px; padding: 8px; background: #111; }
+.l1-att { margin-top: 8px; padding: 10px 14px; background: #111; border: 1px solid #333; border-radius: 4px; font: 14px Arial, sans-serif; color: #ddd; }
+.l1-att ol { margin: 6px 0 0; padding-left: 24px; columns: 2; }
 .l1-fotos { display: flex; height: 100%; }
 .l1-thumbs { width: 170px; display: flex; flex-direction: column; border-right: 1px solid #333; }
 .l1-thumbs button { padding: 10px; text-align: left; background: none; color: #ddd; border: 0; border-bottom: 1px solid #222; cursor: pointer; }
@@ -410,7 +414,8 @@ table.pl td, table.pl th { padding: 3px 10px; border-bottom: 1px solid #333; tex
 .l1-nav-i small { width: 110px; color: #888; flex-shrink: 0; }
 .l1-trash { padding: 14px; display: flex; flex-direction: column; gap: 6px; }
 .l1-trash button { text-align: left; padding: 8px; background: #1a1a1a; color: #ddd; border: 1px solid #333; cursor: pointer; }
-.l1-trash-view { margin-top: 8px; color: #ccc; font-family: "Courier New", monospace; white-space: pre-wrap; }
+.l1-trash-view { margin-top: 8px; color: #ccc; font: 14px/1.5 Arial, sans-serif; }
+.l1-trash-view p { margin: 0 0 6px; }
 
 /* ---------- Susto da senha final errada (js/final-scare.js, projetor do Nível 1) ---------- */
 #fs { position: fixed; inset: 0; z-index: 99996; overflow: hidden; cursor: none; font-family: "Courier New", monospace; }
@@ -551,22 +556,22 @@ table.pl td, table.pl th { padding: 3px 10px; border-bottom: 1px solid #333; tex
 @keyframes jflash { 0%, 60% { background: #600; } }
 .l3-net.done .l3-grid { border-color: #3f6; box-shadow: 0 0 24px #0f04; }
 
-/* Textos do Nível 3 em formato de documento (docHTML) */
-.l3-doc { height: 100%; overflow: auto; padding: 20px 26px; background: #101010; color: #ddd; font: 15px/1.6 Arial, sans-serif; }
-.l3-doc h3 { margin: 0 0 12px; color: #ff4d4d; font-size: 21px; }
-.l3-doc h4 { margin: 18px 0 6px; color: #fff; font-size: 16px; border-bottom: 1px solid #400; padding-bottom: 4px; }
-.l3-doc p { margin: 0 0 10px; }
-.l3-doc b { color: #fff; }
-.l3-doc ol { margin: 0 0 12px; padding-left: 22px; }
-.l3-doc li { margin-bottom: 8px; }
-.l3-doc li::marker { color: #ff4d4d; font-weight: bold; }
-.l3-doc .warn { padding: 8px 12px; background: #2a0606; border-left: 3px solid #f33; color: #ffc9c9; }
-.l3-doc .box { margin: 12px 0; padding: 10px 12px; background: #0f1a10; border: 1px solid #2a5; border-radius: 4px; color: #cfe; }
-.l3-doc dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0 0 12px; }
-.l3-doc dt { color: #ff8080; font-weight: bold; }
-.l3-doc dd { margin: 0; }
-.l3-doc .sign { text-align: right; color: #f33; font: bold 18px "Courier New", monospace; margin-top: 16px; }
-.l3-doc code, .l3-rules code, .l3-files-note code { padding: 1px 5px; background: #000; border: 1px solid #333; border-radius: 3px; color: #ffd84a; font: 13px Consolas, "Courier New", monospace; white-space: nowrap; }
+/* Textos formatados dos 3 níveis (js/doc.js) */
+.doc { height: 100%; overflow: auto; padding: 20px 26px; background: #101010; color: #ddd; font: 15px/1.6 Arial, sans-serif; }
+.doc h3 { margin: 0 0 12px; color: #ff4d4d; font-size: 21px; }
+.doc h4 { margin: 18px 0 6px; color: #fff; font-size: 16px; border-bottom: 1px solid #400; padding-bottom: 4px; }
+.doc p { margin: 0 0 10px; }
+.doc b { color: #fff; }
+.doc ol, .doc ul { margin: 0 0 12px; padding-left: 22px; }
+.doc li { margin-bottom: 8px; }
+.doc li::marker { color: #ff4d4d; font-weight: bold; }
+.doc .warn { padding: 8px 12px; background: #2a0606; border-left: 3px solid #f33; color: #ffc9c9; }
+.doc .box { margin: 12px 0; padding: 10px 12px; background: #0f1a10; border: 1px solid #2a5; border-radius: 4px; color: #cfe; }
+.doc dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0 0 12px; }
+.doc dt { color: #ff8080; font-weight: bold; }
+.doc dd { margin: 0; }
+.doc .sign { text-align: right; color: #f33; font: bold 18px "Courier New", monospace; margin-top: 16px; }
+.doc code, .l3-rules code, .l3-files-note code { padding: 1px 5px; background: #000; border: 1px solid #333; border-radius: 3px; color: #ffd84a; font: 13px Consolas, "Courier New", monospace; white-space: nowrap; }
 .l3-steps { margin: 0; padding-left: 22px; text-align: left; line-height: 1.6; }
 .l3-steps li::marker { color: #ff4d4d; font-weight: bold; }
 .l3-warn { margin: 0; padding: 8px 10px; background: #2a0606; border-left: 3px solid #f33; color: #ffc9c9; font-size: 13px; }
