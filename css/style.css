@@ -481,10 +481,11 @@ table.pl td, table.pl th { padding: 3px 10px; border-bottom: 1px solid #333; tex
 @keyframes fsTremble { 0% { translate: 1px 0; } 50% { translate: -1px 1px; } 100% { translate: 0 -1px; } }
 @keyframes fsTremble2 { 0% { translate: 2px -1px; rotate: .4deg; } 50% { translate: -2px 1px; rotate: -.5deg; } 100% { translate: 1px 2px; rotate: 0deg; } }
 /* salto: a máscara aparece de uma vez e vem para cima da tela, tremendo e com as cores separadas */
-.fs-face.lunge { animation: fsLunge .42s cubic-bezier(.6,0,1,1) forwards, scShake .04s steps(1) infinite;
+/* salto instantâneo: já surge maior e explode para a frente em 0,13 s (começa rápido, sem aceleração lenta) */
+.fs-face.lunge { animation: fsLunge .13s cubic-bezier(0,.9,.3,1) forwards, scShake .04s steps(1) infinite;
   filter: drop-shadow(12px 0 0 #f00c) drop-shadow(-12px 0 0 #0ffa); }
 .fs-face.lunge .fs-mask { opacity: 1; }
-@keyframes fsLunge { from { transform: scale(1); } to { transform: scale(6.5) translateY(4%); } }
+@keyframes fsLunge { from { transform: scale(1.8); } to { transform: scale(6.5) translateY(4%); } }
 /* erro do anel que "acorda" e apita */
 .fs-e.jolt { animation: fsJolt .3s; }
 @keyframes fsJolt { 0% { translate: 0 0; filter: brightness(2); } 25% { translate: -6px 3px; } 50% { translate: 5px -4px; } 75% { translate: -3px 2px; } 100% { translate: 0 0; filter: none; } }

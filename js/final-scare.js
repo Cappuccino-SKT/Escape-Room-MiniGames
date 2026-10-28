@@ -301,9 +301,9 @@ window.FinalScare = (() => {
     room && room.stop();
     svg.classList.add("lunge");
     A(scream);
-    await sleep(380);
+    await sleep(90);                 // a tela treme quase junto com o salto
     L.classList.add("shake");
-    await sleep(600);
+    await sleep(850);
     spawning = false;
     L.className = "black";
     L.innerHTML = "";
