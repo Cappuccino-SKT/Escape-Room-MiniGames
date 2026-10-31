@@ -83,13 +83,13 @@ O notebook abre pedindo senha. Depois de 3 erros, aparece o botão de dica: "As 
 - As regras ficam em `scareRules`, no `js/config.js`.
 
 ### Opcionais (pistas extras, nenhum é obrigatório)
-| App | Como resolver | Pista extra | Erro |
-|---|---|---|---|
-| `terminal.exe` | `help`, `dir /a` (mostra a pasta oculta `.backup`) e `type rascunho.txt` | "Ninguém desconfia de uma **monitora**." Das 3 pessoas que têm crachá, a única mulher é a Elisa | `jigsaw.exe` (em Downloads): **jump scare sempre** (é uma armadilha). `del`: **erro** |
-| `terminal.exe` | `cd Usuarios\bruno`, depois `type lembrete.txt` | Como montar a senha do e-mail (gato + ano de ingresso) | – |
-| `cameras.exe` | Digitar um horário HH:MM tirado de outras pistas | 23:03: pessoa com crachá e **tubo de projeto**. A ficha da Elisa diz que ela é de Arquitetura e anda com tubo | Horário sem gravação: **erro** |
-| `email_bruno` | Senha `bit2024`: o gato Bit, da ficha e do terminal, mais o ingresso em 2024, da ficha | Recibo do ônibus das 22:58 com o Rafael, que confirma o álibi do Bruno. Também tem um e-mail suspeito da Elisa | Cada senha errada: **erro** |
-| `rede.exe` | O log mostra os 2 últimos blocos em **decimal**; é preciso converter para **hexadecimal**: 164 = A4 e 94 = 5E | O celular da Elisa conectou às **23:02** e desconectou às 23:09 | MAC em hexadecimal que não existe: **erro**. Formato errado, como "164", só avisa |
+| App            | Como resolver                                                                                                 | Pista extra                                                                                                    | Erro                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `terminal.exe` | `help`, `dir /a` (mostra a pasta oculta `.backup`) e `type rascunho.txt`                                      | "Ninguém desconfia de uma **monitora**." Das 3 pessoas que têm crachá, a única mulher é a Elisa                | `jigsaw.exe` (em Downloads): **jump scare sempre** (é uma armadilha). `del`: **erro** |
+| `terminal.exe` | `cd Usuarios\bruno`, depois `type lembrete.txt`                                                               | Como montar a senha do e-mail (gato + ano de ingresso)                                                         | –                                                                                     |
+| `cameras.exe`  | Digitar um horário HH:MM tirado de outras pistas                                                              | 23:03: pessoa com crachá e **tubo de projeto**. A ficha da Elisa diz que ela é de Arquitetura e anda com tubo  | Horário sem gravação: **erro**                                                        |
+| `email_bruno`  | Senha `bit2024`: o gato Bit, da ficha e do terminal, mais o ingresso em 2024, da ficha                        | Recibo do ônibus das 22:58 com o Rafael, que confirma o álibi do Bruno. Também tem um e-mail suspeito da Elisa | Cada senha errada: **erro**                                                           |
+| `rede.exe`     | O log mostra os 2 últimos blocos em **decimal**; é preciso converter para **hexadecimal**: 164 = A4 e 94 = 5E | O celular da Elisa conectou às **23:02** e desconectou às 23:09                                                | MAC em hexadecimal que não existe: **erro**. Formato errado, como "164", só avisa     |
 
 ---
 

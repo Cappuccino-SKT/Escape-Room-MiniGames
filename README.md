@@ -31,6 +31,10 @@ Abra `index.html` e escolha **Nível 3**. O nível mais difícil: as questões p
 - **`imprimir-nivel3.html`**: papéis da sala (nós da lista, circuito do registrador, tabela ASCII, código Morse).
 - Dados do caso em `js/level3-data.js`. Guia completo (spoiler) em `TESTES-NIVEL3.md`.
 
+## Documentação em PDF
+A pasta **`pdf/`** tem os guias em PDF, para a equipe ler e imprimir: visão geral, guias dos Níveis 1, 2 e 3 (com spoilers) e o contexto técnico.
+Depois de mudar algum `.md`, gere de novo com `python gerar-pdfs.py`. É preciso ter o Chrome ou o Edge e o pacote markdown (`python -m pip install markdown`).
+
 ## Minigames reaproveitados
 `apps/terminal.js` (terminal hacker) e `apps/wires.js` (painel de fios ATX) são opcionais do Nível 3 (`invasao.exe` e `energia.exe`).
 O Nível 1 antigo (admin, hacker, labirinto, cmd, ransomware) está guardado no git, na tag `nivel1-antigo`.
