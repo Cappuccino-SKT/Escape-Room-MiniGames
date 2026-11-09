@@ -77,7 +77,9 @@ O jogo começa direto na área de trabalho, sem senha, e o `LEIA-ME.txt` abre so
 - O 1º erro da partida nunca vira susto.
 - Depois de qualquer susto, há 90 s de descanso.
 - Passado o descanso, cada erro aumenta a chance: 30%, 60%, 90% e 100%.
-- Nos erros sem susto aparece um efeito leve: a tela falha, um sussurro, um clarão vermelho ou um "rasgo" (faixas cortando a tela com um guincho curto, sem a máscara).
+- Nos erros sem susto aparece um efeito leve: a tela falha, um sussurro, um clarão vermelho, um "rasgo" (faixas cortando a tela com um guincho curto, sem a máscara) ou uma "espiada" (a máscara aparece calada num canto da tela, olha e some).
+- **Quando o erro vira susto, a entrada é sorteada** (nunca a mesma duas vezes seguidas): sem aviso nenhum; tela preta com uma "puxada" curta; tela preta com um coração batendo por um tempo incerto; ou "falso alívio" (a tela escurece, volta ao normal e só então vem o golpe). A máscara vem para cima da tela com a boca escancarada e o "BRAAAM", e o susto termina num corte seco para o preto.
+- **Réplica:** em cerca de 30% dos sustos, a máscara pisca de novo por uma fração de segundo, 1 a 3 s depois de tudo voltar ao normal (`aftershockChance` em `scareRules`).
 
 No Nível 1, o erro mais comum é tentar digitar a senha no Sistema de Notas.
 
@@ -103,7 +105,14 @@ No Nível 1, o erro mais comum é tentar digitar a senha no Sistema de Notas.
 4. O código trava, vem a chuva de erros (cerca de 7 s) e o som e o alarme ficam mais intensos. No fim, a chuva desacelera.
 5. Transição: o som do sistema "desliga" (desce de tom e escurece), o alarme some e o cmd se apaga. Os erros começam a voar em órbita em volta do centro, um depois do outro, e aos poucos se acomodam formando um círculo. Fica um zumbido grave bem baixo, e de vez em quando um erro do círculo dá um tranco e apita. Daqui até o fim, erros novos não param de surgir em volta (nunca no meio), cada vez mais rápido.
 6. Dois olhos de neon vermelho, com um pontinho branco no meio, abrem e ficam olhando por uns 5 segundos. Depois aparece um sorriso.
-7. Um som curto de "puxada" e, sem aviso, a máscara branca vem para cima da tela com um "BRAAAM" (a mesma serra do "VOCÊ ERROU", um pouco mais fina e bem mais forte, com um chiado de estática no fundo), com os erros ainda surgindo, e a tela fica preta.
+7. **O final é sorteado** entre três, sem repetir o último (para pegar até quem já viu a cena):
+   - **Bote:** um som curto de "puxada" e a máscara salta no meio dos erros.
+   - **Apagão:** tudo some de uma vez. Tela preta e silêncio total por 2 a 4 segundos, e a máscara salta do escuro.
+   - **Falso fim:** a cena "acaba". O projetor volta ao normal e mostra a mensagem de resposta errada por 1 a 3 segundos, e a máscara salta por cima dela.
+
+   Em todos, a máscara vem com a boca escancarada, os olhos de neon e o "BRAAAM" (a mesma serra do "VOCÊ ERROU", um pouco mais fina e bem mais forte), e a tela fica preta. A cena é a mesma nos 3 níveis; só mudam as caixas de erro ("SENHA INCORRETA", "ACUSAÇÃO ERRADA", "KILL SWITCH ERRADO"). Para deixar só os finais que preferir, edite `finalScareEndings` no `js/config.js`.
+
+**Aviso para o público:** os sustos têm luz piscando e som alto. Vale um aviso na entrada da sala. Para tirar o clarão vermelho piscando, coloque `scareStrobe: false` no `js/config.js`.
 
 Aperte **H** antes de começar a partida para esconder o painel de teclas: senão ele aparece por trás da mensagem.
 

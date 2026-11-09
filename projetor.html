@@ -77,15 +77,15 @@
   // Textos e punição de cada nível
   const culprit = L2.suspects.find((s) => s.name.startsWith(L2.culprit)).name;
   const TXT = {
-    1: { pen: 2, sub: "NOTAS ZERADAS EM",
+    1: { pen: 2, sub: "NOTAS ZERADAS EM", errs: [["Erro", "SENHA INCORRETA"], ["Sistema", "As notas estão sendo apagadas."]],
       wrong: ["SENHA ERRADA", (p) => `As notas estão caindo. Isso custou <b>${p} minutos</b>.<br>Tentem de novo.`],
       win: ["CORRETO.", `A senha era <b>${L1.password}</b>.<br>As notas foram salvas... por enquanto.<br><br>— J`],
       lose: ["TEMPO ESGOTADO", "As notas de vocês foram ZERADAS.<br><br>— J"] },
-    2: { pen: 5, sub: "TEMPO RESTANTE",
+    2: { pen: 5, sub: "TEMPO RESTANTE", errs: [["Erro", "ACUSAÇÃO ERRADA"], ["Sistema", "O cúmplice continua livre."]],
       wrong: ["ACUSAÇÃO ERRADA", (p) => `Vocês acusaram um inocente. Isso custou <b>${p} minutos</b>.<br>Mais uma chance.`],
       win: ["CORRETO.", `Meu cúmplice era <b>${culprit}</b>.<br>Vocês sobreviveram... desta vez.<br><br>— J`],
       lose: ["TEMPO ESGOTADO", "Meu cúmplice continua livre.<br>E vocês continuam aqui.<br><br>— J"] },
-    3: { pen: 5, sub: "O VÍRUS APAGA TUDO EM",
+    3: { pen: 5, sub: "O VÍRUS APAGA TUDO EM", errs: [["Erro", "KILL SWITCH ERRADO"], ["Sistema", "O vírus está apagando tudo."]],
       wrong: ["KILL SWITCH ERRADO", (p) => `O vírus acelerou. Isso custou <b>${p} minutos</b>.<br>Tentem de novo.`],
       win: ["CORRETO.", `O kill switch era <b>${L3.answer}</b>.<br>Vocês passaram na prova que eu não passei.<br><br>— J`],
       lose: ["TEMPO ESGOTADO", "O vírus apagou tudo.<br>Vocês foram reprovados.<br><br>— J"] }
@@ -127,9 +127,9 @@
 
   async function punish() {
     if (over || Interference.running || FinalScare.running) return;
-    // Níveis 1 e 3 (resposta final errada): cena própria em HTML/CSS; Nível 2: susto normal (ou vídeo de projetor_punicao)
-    if (LEVEL !== 2) await FinalScare.play();
-    else await Interference.scare("projetor_punicao");
+    // Resposta final errada: a mesma cena (js/final-scare.js) nos 3 níveis, com as caixas de erro de cada nível.
+    // No final "falso_fim", a cena finge que acabou e mostra esta mesma mensagem antes do golpe.
+    await FinalScare.play({ errs: TXT.errs, fakeEnd: () => message(TXT.wrong[0], TXT.wrong[1](PEN)) });
     left = Math.max(0, left - PEN * 60000);
     message(TXT.wrong[0], TXT.wrong[1](PEN), "", 5000);
   }

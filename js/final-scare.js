@@ -1,5 +1,7 @@
-// ===== SUSTO DA RESPOSTA FINAL ERRADA (projetor, Níveis 1 e 3) =====
-// Uso: await FinalScare.play()  — cena inteira em HTML/CSS + som gerado pelo navegador (WebAudio):
+// ===== SUSTO DA RESPOSTA FINAL ERRADA (projetor, os 3 níveis) =====
+// Uso: await FinalScare.play({ errs, fakeEnd })  — cena inteira em HTML/CSS + som gerado pelo navegador (WebAudio).
+//   errs:    caixas de erro extras do nível, ex.: [["Erro", "SENHA INCORRETA"]]
+//   fakeEnd: função que mostra a tela "normal" do projetor (a mensagem de resposta errada), usada no final "falso_fim"
 //  1. "PARABÉNS," ... (alguns segundos) ... "VOCÊ ERROU." + luz vermelha na tela
 //  2. corte seco para o preto
 //  3. cmd rodando código com som ambiente calmo
@@ -8,7 +10,11 @@
 //     voar em órbita, um depois do outro, e aos poucos se acomodam formando um círculo; o ambiente vira um zumbido
 //     grave bem baixo. Daqui até o fim, erros novos não param de surgir, sempre fora do rosto.
 //  6. dois olhos de neon vermelho (pontinho branco no meio) abrem e ficam olhando → aparece o sorriso (os erros aceleram)
-//  7. "puxada" curta e, sem aviso, a máscara branca vem para cima da tela, tremendo → "BRAAAM" (a serra grave do "você errou", bem mais forte) → preto
+//  7. O FINAL É SORTEADO (CONFIG.finalScareEndings; nunca o mesmo duas vezes seguidas), para o susto pegar até quem já viu:
+//       "bote"      — "puxada" curta e a máscara vem para cima da tela, com os erros ainda surgindo
+//       "apagao"    — tudo some de uma vez: tela preta e silêncio total por um tempo que ninguém sabe → a máscara salta do escuro
+//       "falso_fim" — a cena "acaba": o projetor volta ao normal, com a mensagem de resposta errada... e a máscara salta por cima
+//     Em todos: a máscara (o mesmo desenho do susto comum, Interference.mask()) + "BRAAAM" → preto
 window.FinalScare = (() => {
   const C = window.CONFIG || {};
   const VOL = C.scareVolume == null ? 1 : C.scareVolume;
@@ -23,11 +29,12 @@ window.FinalScare = (() => {
     "Comparando hash 0x5F3A9C ...", "Acesso ao projetor: 192.168.6.66", "Sincronizando quadros 24fps ...", "Enviando imagem ............... 64%",
     "mov eax, [0x6F6F6F]", "push ebp", "call verificar_resposta", "Lendo memória de vídeo ............. OK"
   ];
-  const ERRS = [
+  const BASE_ERRS = [
     ["Erro crítico", "Exceção 0x0000666 em PROJETOR.SYS"], ["Projetor", "Sinal de vídeo interceptado."],
     ["Falha de memória", "A instrução em 0x6F6F6F referenciou memória em 0x00000000."], ["Aviso", "Um invasor assumiu o controle da imagem."],
-    ["Erro", "SENHA INCORRETA"], ["Erro fatal", "VOCÊS ERRARAM"], ["Sistema", "As notas estão sendo apagadas."], ["Segurança", "Câmera ativada remotamente."]
+    ["Erro fatal", "VOCÊS ERRARAM"], ["Segurança", "Câmera ativada remotamente."], ["J", "Eu avisei que errar tinha um preço."]
   ];
+  let ERRS = BASE_ERRS;
 
   // ---------- Som (WebAudio) ----------
   function audio() {
@@ -120,21 +127,30 @@ window.FinalScare = (() => {
 
   // ---------- Rosto (SVG): começa só com olhos e boca no escuro; a máscara aparece no salto ----------
   // Olhos: dois pontos de neon vermelho com um pontinho branco no meio; depois o sorriso; a máscara só aparece no salto
-  const FACE = `<svg viewBox="0 0 200 240" class="fs-face">
-    <g class="fs-mask"><ellipse cx="100" cy="120" rx="86" ry="112" fill="#f1ede2"/>
-      <circle cx="42" cy="158" r="20" fill="#c00"/><circle cx="158" cy="158" r="20" fill="#c00"/>
-      <path d="M42 158 m-12 0 a12 12 0 1 0 24 0 a8 8 0 1 0 -16 0 a4 4 0 1 0 8 0" stroke="#600" stroke-width="2" fill="none"/>
-      <path d="M158 158 m-12 0 a12 12 0 1 0 24 0 a8 8 0 1 0 -16 0 a4 4 0 1 0 8 0" stroke="#600" stroke-width="2" fill="none"/>
-      <ellipse cx="62" cy="98" rx="24" ry="27" fill="#000"/><ellipse cx="138" cy="98" rx="24" ry="27" fill="#000"/></g>
+  const face = () => `<svg viewBox="0 0 200 240" class="fs-face">
+    <g class="fs-mask">${window.Interference && Interference.mask ? Interference.mask() : ""}</g>
     <g class="fs-eyes"><circle cx="62" cy="100" r="10" fill="#ff1a1a"/><circle cx="138" cy="100" r="10" fill="#ff1a1a"/>
       <circle cx="62" cy="100" r="2.8" fill="#fff"/><circle cx="138" cy="100" r="2.8" fill="#fff"/></g>
     <path class="fs-mouth" d="M36 156 Q100 230 164 156" pathLength="100" stroke="#d00" stroke-width="7" fill="none" stroke-linecap="round"/>
   </svg>`;
 
+  // Final da cena: sorteado entre os de CONFIG.finalScareEndings, sem repetir o último (guardado no navegador)
+  function pickEnding(canFake) {
+    let pool = (C.finalScareEndings && C.finalScareEndings.length ? C.finalScareEndings : ["bote", "apagao", "falso_fim"]).filter((e) => canFake || e !== "falso_fim");
+    if (!pool.length) pool = ["bote"];
+    let last = "";
+    try { last = localStorage.getItem("jigsaw-fs-ending") || ""; } catch (e) {}
+    const opts = pool.length > 1 ? pool.filter((e) => e !== last) : pool;
+    const e = pick(opts);
+    try { localStorage.setItem("jigsaw-fs-ending", e); } catch (err) {}
+    return e;
+  }
+
   // ---------- A cena ----------
-  async function play() {
+  async function play(opts = {}) {
     if (running) return;
     running = true;
+    ERRS = BASE_ERRS.concat(opts.errs || []);
     try { audio(); } catch (e) { ac = null; }
     const A = (fn, ...args) => { try { ac && fn(...args); } catch (e) {} };
     const L = document.createElement("div");
@@ -283,7 +299,7 @@ window.FinalScare = (() => {
     // 6. Dois olhos vermelhos abrem no centro e ficam olhando → sorriso. Os erros em volta só aumentam.
     const wrap = document.createElement("div");
     wrap.className = "fs-face-wrap";
-    wrap.innerHTML = FACE;
+    wrap.innerHTML = face();
     L.appendChild(wrap);
     const svg = wrap.querySelector("svg");
     svg.classList.add("eyes");
@@ -291,19 +307,48 @@ window.FinalScare = (() => {
     svg.classList.add("smile");
     spawnGap = 70;
     await sleep(800);
-    A(pull, 0.7); // "puxada" que termina exatamente no golpe
-    A(() => Interference.hiss && Interference.hiss(ac, master, 2.4, 1, 0.7)); // chiado de fundo do susto (abaixa no golpe)
-    spawnGap = 40;
-    await sleep(700);
+    const ending = opts.ending || pickEnding(!!opts.fakeEnd);
+    let lunger = svg;
+    if (ending === "bote") {
+      A(pull, 0.7); // "puxada" que termina exatamente no golpe
+      A(() => Interference.hiss && Interference.hiss(ac, master, 2.4, 1, 0.7)); // chiado de fundo do susto (abaixa no golpe)
+      spawnGap = 40;
+      await sleep(700);
+      dings = false;
+      room && room.stop();
+    } else {
+      // "apagao" e "falso_fim": num momento qualquer, tudo some de uma vez. Nenhum som avisa o golpe.
+      spawnGap = 40;
+      await sleep(rand(300, 1100));
+      dings = false; spawning = false;
+      room && room.stop();
+      L.className = "black";
+      L.innerHTML = "";
+      if (ending === "falso_fim" && opts.fakeEnd) {
+        await sleep(800);
+        L.style.display = "none";       // o projetor "volta ao normal", com a mensagem de resposta errada
+        try { opts.fakeEnd(); } catch (e) {}
+        await sleep(rand(1400, 3200));
+        L.className = "";               // transparente: a máscara salta por cima da mensagem
+        L.style.display = "";
+      } else {
+        await sleep(rand(1700, 4200));  // preto e silêncio
+      }
+      const w2 = document.createElement("div");
+      w2.className = "fs-face-wrap";
+      w2.innerHTML = face();
+      L.appendChild(w2);
+      lunger = w2.querySelector("svg");
+      lunger.classList.add("now", "eyes", "smile"); // já nasce com olhos e sorriso, sem as animações de entrada
+      A(() => Interference.hiss && Interference.hiss(ac, master, 1.6, 1, 0.01));
+    }
 
-    // 7. Sem aviso: a máscara branca aparece e vem para cima da tela gritando, com os erros ainda surgindo → preto
-    dings = false;
-    room && room.stop();
-    svg.classList.add("lunge");
+    // 7. Sem aviso: a máscara vem para cima da tela → BRAAAM → preto
+    lunger.classList.add("lunge");
     A(scream);
     await sleep(90);                 // a tela treme quase junto com o salto
     L.classList.add("shake");
-    await sleep(850);
+    await sleep(rand(800, 1100));
     spawning = false;
     L.className = "black";
     L.innerHTML = "";

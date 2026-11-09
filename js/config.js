@@ -38,8 +38,7 @@ window.CONFIG = {
     nivel2_armadilha: [],    // Nível 2: abrir o jigsaw.exe no terminal
     nivel3: [],              // Nível 3: erros nos minijogos (quando o erro vira susto)
     nivel3_armadilha: [],    // Nível 3: executar o kill_switch.exe da Lixeira
-    projetor_punicao: [],    // projetor: acusação errada no Nível 2 (tecla P). Nos Níveis 1 e 3 a tecla P toca a cena do js/final-scare.js
-    projetor_tempo: []       // projetor: tempo esgotado
+    projetor_tempo: []       // projetor: tempo esgotado (a resposta errada, tecla P, toca a cena do js/final-scare.js nos 3 níveis)
   },
   scareMaxSeconds: 8,        // corta o vídeo do susto depois desse tempo
 
@@ -47,7 +46,21 @@ window.CONFIG = {
   // nunca antes do erro nº firstAfterErrors; depois de qualquer susto, cooldownSeconds de descanso;
   // passado o descanso, cada erro soma chanceStep à chance (0.3 → 30%, 60%, 90%, 100%).
   // Nos erros sem susto aparece um efeito leve (tela falha, sussurro ou clarão vermelho).
-  scareRules: { firstAfterErrors: 2, cooldownSeconds: 90, chanceStep: 0.3 },
+  //
+  // entries: as ENTRADAS do susto que entram no sorteio (nunca a mesma duas vezes seguidas):
+  //   "seco" = sem aviso nenhum · "puxada" = tela preta + puxada curta · "silencio" = tela preta e coração batendo
+  //   por um tempo incerto · "alivio" = tela preta, a tela volta ao normal... e aí vem o golpe.
+  // aftershockChance: chance de uma RÉPLICA (a máscara pisca de novo 1 a 3 s depois que tudo voltou ao normal). 0 = nunca.
+  scareRules: { firstAfterErrors: 2, cooldownSeconds: 90, chanceStep: 0.3,
+    entries: ["seco", "puxada", "silencio", "alivio"], aftershockChance: 0.3 },
+
+  // Clarão vermelho piscando no início do susto. Coloque false se houver alguém sensível a luzes piscando.
+  scareStrobe: true,
+
+  // Finais da cena do projetor (resposta final errada), sorteados sem repetir o último:
+  //   "bote" = a máscara salta no meio dos erros · "apagao" = tudo some, preto e silêncio, e ela salta do escuro
+  //   "falso_fim" = a cena "acaba", a mensagem de resposta errada aparece... e a máscara salta por cima.
+  finalScareEndings: ["bote", "apagao", "falso_fim"],
 
   // Efeitos sonoros: coloque os arquivos na pasta "sounds/" e preencha o caminho.
   // Deixe "" para ficar sem som.

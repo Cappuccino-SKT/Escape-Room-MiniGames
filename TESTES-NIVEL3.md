@@ -141,7 +141,7 @@ Outros arquivos:
 | Tecla (`projetor.html`, Nível 3) | O que faz |
 |---|---|
 | **Espaço** | Inicia ou pausa o cronômetro ("O VÍRUS APAGA TUDO EM 30:00") |
-| **P** | **Kill switch errado:** toca a cena do susto final (a mesma do Nível 1), tira **5 min** e mostra "Tentem de novo" |
+| **P** | **Kill switch errado:** toca a cena do susto final (cerca de 30 s, a mesma dos 3 níveis, com final sorteado; descrição no `TESTES-NIVEL1.md`), tira **5 min** e mostra "Tentem de novo" |
 | **V** | **Certo:** "CORRETO. O kill switch era SEGFAULT. Vocês passaram na prova que eu não passei." |
 | **D / Shift + D** | +1 / −1 dica usada |
 | **↑ / ↓** | +1 / −1 minuto |

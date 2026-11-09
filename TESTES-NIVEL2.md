@@ -79,7 +79,9 @@ O notebook abre pedindo senha. Depois de 3 erros, aparece o botão de dica: "As 
 - O 1º erro da partida nunca vira susto.
 - Depois de qualquer susto, há 90 s de descanso.
 - Passado o descanso, cada erro aumenta a chance: 30%, 60%, 90% e 100%.
-- Nos erros sem susto aparece um efeito leve e variado: a tela falha, um sussurro ("Eu vi isso."), um clarão vermelho ou um "rasgo" (faixas cortando a tela com um guincho curto, sem a máscara).
+- Nos erros sem susto aparece um efeito leve e variado: a tela falha, um sussurro ("Eu vi isso."), um clarão vermelho, um "rasgo" (faixas cortando a tela com um guincho curto, sem a máscara) ou uma "espiada" (a máscara aparece calada num canto da tela, olha e some).
+- **Quando o erro vira susto, a entrada é sorteada** (nunca a mesma duas vezes seguidas): sem aviso nenhum; tela preta com uma "puxada" curta; tela preta com um coração batendo por um tempo incerto; ou "falso alívio" (a tela escurece, volta ao normal e só então vem o golpe). A máscara vem para cima da tela com a boca escancarada e o "BRAAAM", e o susto termina num corte seco para o preto.
+- **Réplica:** em cerca de 30% dos sustos, a máscara pisca de novo por uma fração de segundo, 1 a 3 s depois de tudo voltar ao normal (`aftershockChance` em `scareRules`).
 - As regras ficam em `scareRules`, no `js/config.js`.
 
 ### Opcionais (pistas extras, nenhum é obrigatório)
@@ -98,7 +100,7 @@ O notebook abre pedindo senha. Depois de 3 erros, aparece o botão de dica: "As 
 | Tecla (`projetor.html`) | O que faz |
 |---|---|
 | **Espaço** | Inicia ou pausa o cronômetro (30:00) |
-| **P** | **Acusação errada:** jump scare no projetor, perde 5 min e mostra "Mais uma chance" |
+| **P** | **Acusação errada:** toca a **cena do susto final** (cerca de 30 s, a mesma dos Níveis 1 e 3, com final sorteado; descrição no `TESTES-NIVEL1.md`), depois tira 5 min e mostra "Mais uma chance" |
 | **V** | **Acusação certa:** tela de vitória ("Meu cúmplice era Elisa Prado") |
 | **D / Shift + D** | +1 / −1 dica usada (o contador aparece na parede) |
 | **↑ / ↓** | +1 / −1 minuto |
