@@ -26,27 +26,32 @@ O que fazer com cada papel:
 
 ## 2. Resposta e cola rápida
 
-**Resposta final: `ALICE19987`.** O grupo fala a senha para o mestre do jogo pela câmera. Maiúscula ou minúscula, tanto faz.
+**Resposta final: `ALICE`.** O grupo fala para o mestre do jogo pela câmera: **"A palavra-chave é ALICE."** Maiúscula ou minúscula, tanto faz.
 
-| Peça | Resposta | De onde vem |
-|---|---|---|
-| Nome da filha | **ALICE** | Desenhos na sala + e-mail da escola ("sua filha, da turma 3B") + lista da turma 3B (anexo do e-mail) |
-| Ano da formatura | **1998** | Diploma na sala ("curso de 4 anos") + `formatura.c` (1994 + 4) |
-| Número da sorte | **7** | Post-it "111" na sala + tabela binária ou `aula_binario.pptx` |
+| Peça | Resposta | De onde vem | Para que serve |
+|---|---|---|---|
+| Ano da formatura | **1998** | Diploma na sala ("curso de 4 anos") + `formatura.c` (1994 + 4) | 1ª pergunta de segurança |
+| Número da sorte | **7** | Post-it "111" na sala + tabela binária ou `aula_binario.pptx` | 2ª pergunta de segurança (em decimal; "111" só avisa que está em binário) |
+| Lembrete da senha | **"Uma palavra só: o nome da minha filha."** | Aparece no "Esqueci a senha" quando as 2 perguntas estão certas | Diz do que a senha é feita |
+| Nome da filha | **ALICE** | Desenhos na sala + e-mail da escola ("sua filha, da turma 3B") + lista da turma 3B (anexo do e-mail) | **É a palavra-chave** |
 
-A ordem das peças está na dica do professor, que aparece no Sistema de Notas ao clicar em "Esqueci a senha": *"O nome da minha filha + o ano em que me formei + o meu número da sorte."*
+O "Esqueci a senha" do Sistema de Notas mostra as **perguntas de segurança**: *"Em que ano você se formou?"* e *"Qual é o seu número da sorte? (em decimal)"*. Respostas erradas contam como **erro** (podem dar susto). Com as duas certas, aparece o lembrete do professor.
 
 ---
 
 ## 3. A lógica do caso
 
-1. **O objetivo é claro desde o começo:** o `LEIA-ME.txt` (o J) diz que a senha do Sistema de Notas foi trocada, e o "Esqueci a senha" mostra a fórmula. O grupo pode se dividir em 3, um para cada peça.
-2. **Filha:** há 3 desenhos na parede, de Alice, Pedro e Sofia.
+1. **O objetivo é claro desde o começo:** o `LEIA-ME.txt` (o J) diz que a senha do Sistema de Notas foi trocada e que ela é **uma palavra só**. O "Esqueci a senha" pede o ano da formatura e o número da sorte. O grupo pode se dividir em 3: ano, número e filha.
+2. **Ano:** o diploma está com o ano rasgado, mas diz "curso de **4** anos". O `formatura.c` tem `ingresso = 1994` e uma **lacuna** na duração; preenchendo com 4 e clicando em "Compilar e executar", o programa imprime "Me formei em **1998**".
+3. **Número da sorte:** o post-it diz "111 — meu número da sorte, em binário". A tabela na parede (ou os slides da `aula_binario`) mostra que **111 = 4 + 2 + 1 = 7**.
+4. **Lembrete:** com 1998 e 7 nas perguntas de segurança, o sistema mostra *"Uma palavra só: o nome da minha filha."*
+5. **Filha (a dedução final):** há 3 desenhos na parede, de Alice, Pedro e Sofia.
    - O e-mail da escola fala da "sua **filha**, da turma **3B**", e o anexo `lista_turma_3B.txt` tem a **Alice** (e não a Sofia).
    - O Pedro é o filho: outro e-mail fala do "seu **filho**, da turma 5A", e ele aparece no desenho da Alice e no histórico do navegador.
    - O desenho da Sofia diz "Para o **tio**": ela é sobrinha.
-3. **Ano:** o diploma está com o ano rasgado, mas diz "curso de **4** anos". O `formatura.c` tem `ingresso = 1994` e uma **lacuna** na duração; preenchendo com 4 e clicando em "Compilar e executar", o programa imprime "Me formei em **1998**".
-4. **Número da sorte:** o post-it diz "111 — meu número da sorte, em binário". A tabela na parede (ou os slides da `aula_binario`) mostra que **111 = 4 + 2 + 1 = 7**.
+   - Conclusão: **"A palavra-chave é ALICE."**
+
+O grupo pode chutar o nome da filha sem as perguntas de segurança, mas não tem como saber que a senha é o nome dela sem o lembrete, e cada chute errado custa 2 min e um susto.
 
 ---
 
@@ -58,7 +63,7 @@ O jogo começa direto na área de trabalho, sem senha, e o `LEIA-ME.txt` abre so
 | App | O que tem |
 |---|---|
 | `LEIA-ME.txt` | Recado do J: as notas serão zeradas; digam a senha para mim |
-| `Sistema de Notas` | Notas borradas e o cadeado "BLOQUEADO PELO J". **"Esqueci a senha"** mostra a fórmula. O campo de senha não aceita nada: digitar qualquer coisa conta como **erro** e mostra "a senha só vale se for dita para mim" |
+| `Sistema de Notas` | Notas borradas e o cadeado "BLOQUEADO PELO J". **"Esqueci a senha"** abre as perguntas de segurança (ano da formatura e número da sorte, em decimal); certas, mostram o lembrete "o nome da minha filha". Erradas: **erro**. O campo de senha não aceita nada: digitar qualquer coisa conta como **erro** e mostra "a senha só vale se for dita para mim" |
 | `E-mail` | E-mail da escola (filha, turma 3B) com o anexo **lista_turma_3B.txt**; e-mail sobre o filho (turma 5A); e-mail do J ("sua senha foi alterada") |
 | `Fotos` | `familia.jpg` (pai, menina e menino, sem nomes), `gato.jpg` e `formatura.jpg` (**corrompida** até o grupo completar o `memoria.exe`) |
 | `formatura.c` | Programa em C com a lacuna `duracao = ___`. Com 4, imprime 1998. Com outro número, imprime outro ano. Com texto, dá erro de compilação |
@@ -67,9 +72,9 @@ O jogo começa direto na área de trabalho, sem senha, e o `LEIA-ME.txt` abre so
 ### Opcionais (pistas extras, nenhum é obrigatório)
 | App | Como resolver | Pista extra |
 |---|---|---|
-| `anotacoes.docx` | Parece vazio. **Ctrl + A** (ou arrastar o mouse) revela o texto em branco | Confirma a ordem: nome dela, depois o ano, depois o número da sorte, tudo junto |
+| `anotacoes.docx` | Parece vazio. **Ctrl + A** (ou arrastar o mouse) revela o texto em branco | Diz que as perguntas de segurança são o ano da formatura e o número da sorte (em decimal) |
 | `memoria.exe` | Jogo da memória: ligar cada ícone ao nome (CPU, RAM, SSD, Mouse, Teclado, GPU) | Recupera a `formatura.jpg`, com a faixa "FORMANDOS ENG. COMPUTAÇÃO **1998**". É um atalho para a peça 2 |
-| `Navegador` | Só ler o histórico | "presente para menina de 8 anos", "turma 3B", "como explicar binário", "feira de ciências do Pedro" |
+| `Navegador` | Só ler o histórico | "presente para menina de 8 anos", "turma 3B", "como explicar binário", "feira de ciências do Pedro", "pergunta de segurança: ano de formatura e número da sorte" |
 | `Lixeira` | `senha_antiga.txt` | Isca: "pedro2020 (não serve mais)" |
 | `Lixeira` | `NAO_ABRA.exe` | **Armadilha:** dá jump scare sempre |
 
@@ -81,7 +86,7 @@ O jogo começa direto na área de trabalho, sem senha, e o `LEIA-ME.txt` abre so
 - **Quando o erro vira susto, a entrada é sorteada** (nunca a mesma duas vezes seguidas): sem aviso nenhum; tela preta com uma "puxada" curta; tela preta com um coração batendo por um tempo incerto; ou "falso alívio" (a tela escurece, volta ao normal e só então vem o golpe). A máscara vem para cima da tela com a boca escancarada e o "BRAAAM", e o susto termina num corte seco para o preto.
 - **Réplica:** em cerca de 30% dos sustos, a máscara pisca de novo por uma fração de segundo, 1 a 3 s depois de tudo voltar ao normal (`aftershockChance` em `scareRules`).
 
-No Nível 1, o erro mais comum é tentar digitar a senha no Sistema de Notas.
+No Nível 1, os erros mais comuns são tentar digitar a senha no Sistema de Notas e errar as perguntas de segurança (por exemplo, colocar 1994 no ano ou 111 no número).
 
 ---
 
@@ -90,8 +95,8 @@ No Nível 1, o erro mais comum é tentar digitar a senha no Sistema de Notas.
 | Tecla (`projetor.html`, Nível 1) | O que faz |
 |---|---|
 | **Espaço** | Inicia ou pausa o cronômetro ("NOTAS ZERADAS EM 30:00") |
-| **P** | **Senha errada:** toca a **cena do susto final** (cerca de 30 s, veja abaixo), depois tira **2 min** e mostra "Tentem de novo" |
-| **V** | **Senha certa:** "CORRETO. A senha era ALICE19987. As notas foram salvas... por enquanto." |
+| **P** | **Palavra-chave errada:** toca a **cena do susto final** (cerca de 30 s, veja abaixo), depois tira **2 min** e mostra "Tentem de novo" |
+| **V** | **Palavra-chave certa:** "CORRETO. A palavra-chave era ALICE. As notas foram salvas... por enquanto." |
 | **D / Shift + D** | +1 / −1 dica usada (o contador aparece na parede) |
 | **↑ / ↓** | +1 / −1 minuto |
 | **R** (2 vezes seguidas) | Reinicia tudo |
@@ -132,11 +137,13 @@ Comece pela dica mais leve. Aperte **D** no projetor a cada dica dada.
 | Onde o grupo travou | Dica leve | Dica direta |
 |---|---|---|
 | Não sabe por onde começar | "Todo sistema tem um botão para quem esquece a senha." | "Abram o Sistema de Notas e cliquem em 'Esqueci a senha'." |
-| Nome da filha | "O professor tem mais de uma criança na vida dele." | "A escola mandou um e-mail sobre a filha. Abram o anexo." |
-| Alice × Sofia | "Leiam com atenção para quem cada desenho foi feito." | "A Sofia chama o professor de 'tio'." |
 | Ano da formatura | "O diploma está rasgado, mas ainda diz quanto tempo durou o curso." | "Coloquem a duração do curso na lacuna do formatura.c e executem." |
-| Número da sorte | "Tem um recado colado perto do computador." | "111 em binário: cada posição vale 4, 2 e 1." |
-| Ordem da senha | "A dica do professor já está na ordem certa." | "Nome + ano + número, tudo junto." |
+| Número da sorte | "Tem um recado colado perto do computador." | "111 em binário: cada posição vale 4, 2 e 1. O sistema quer em decimal." |
+| Liberaram o lembrete, mas não sabem qual nome | "O professor tem mais de uma criança na vida dele." | "A escola mandou um e-mail sobre a filha. Abram o anexo." |
+| Alice × Sofia | "Leiam com atenção para quem cada desenho foi feito." | "A Sofia chama o professor de 'tio'." |
+| Como falar a resposta | "É uma palavra só." | "Digam: 'A palavra-chave é...' e o nome." |
+
+A lista completa de dicas, situação por situação, está no `DICAS-MESTRE.md` (PDF `Dicas-do-Mestre.pdf`).
 
 ---
 

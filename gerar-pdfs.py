@@ -16,6 +16,8 @@ OUT = os.path.join(ROOT, "pdf")
 
 # arquivo .md → nome do PDF e título da capa
 DOCS = [
+    ("GUIA-MESTRE.md", "Guia-do-Mestre.pdf", "Guia do Mestre do Jogo — passo a passo dos 3 níveis"),
+    ("DICAS-MESTRE.md", "Dicas-do-Mestre.pdf", "Dicas do Mestre do Jogo — banco de dicas por situação"),
     ("README.md", "Escape-Room-Visao-Geral.pdf", "Visão geral do projeto"),
     ("TESTES-NIVEL1.md", "Guia-Nivel-1-As-Notas.pdf", "Guia do Nível 1 — As Notas"),
     ("TESTES-NIVEL2.md", "Guia-Nivel-2-O-Cumplice.pdf", "Guia do Nível 2 — O Cúmplice"),

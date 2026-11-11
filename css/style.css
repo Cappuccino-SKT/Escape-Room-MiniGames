@@ -438,6 +438,10 @@ table.pl td, table.pl th { padding: 3px 10px; border-bottom: 1px solid #333; tex
 .l1-lock .l2-msg { color: #b00; font-size: 13px; }
 .l1-forgot { background: none; border: 0; color: #1f4e79; text-decoration: underline; cursor: pointer; font: inherit; font-size: 13px; }
 .l1-hint { margin-top: 8px; padding: 8px; background: #fff7d6; border: 1px solid #e5c84d; font-size: 14px; }
+.l1-sec { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; text-align: left; font-size: 13px; }
+.l1-sec input { display: block; width: 100%; margin-top: 2px; padding: 5px; border: 1px solid #aaa; font: inherit; }
+.l1-sec button { padding: 6px; background: #1f4e79; color: #fff; border: 0; cursor: pointer; }
+.l1-sec-msg { margin: 6px 0 0; color: #b00; font-size: 13px; }
 .l1-attach { margin-top: 8px; padding: 6px 10px; background: #222; color: #ddd; border: 1px solid #444; cursor: pointer; }
 .l1-att { margin-top: 8px; padding: 10px 14px; background: #111; border: 1px solid #333; border-radius: 4px; font: 14px Arial, sans-serif; color: #ddd; }
 .l1-att ol { margin: 6px 0 0; padding-left: 24px; columns: 2; }

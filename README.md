@@ -14,7 +14,7 @@ O jogo pergunta **qual nível** vai ser jogado (1, 2 ou 3). Para trocar depois: 
 Os dados de cada nível ficam em `js/level1-data.js`, `js/level2-data.js` e `js/level3-data.js`.
 
 ## Nível 1 – "As Notas"
-Abra `index.html` e escolha **Nível 1**. O hacker trocou a senha do Sistema de Notas do professor; o grupo investiga o computador e a sala para descobrir a senha (nome da filha + ano da formatura + número da sorte) e fala a resposta ao mestre do jogo.
+Abra `index.html` e escolha **Nível 1**. O hacker trocou a senha do Sistema de Notas do professor; o grupo investiga o computador e a sala (ano da formatura e número da sorte liberam o lembrete da senha) e descobre a palavra-chave, o nome da filha, que fala ao mestre do jogo.
 - **`projetor.html`** (escolha Nível 1): cronômetro "notas zeradas em", punição por senha errada (P, −2 min), dicas (D) e vitória (V).
 - **`imprimir-nivel1.html`**: papéis da sala (desenhos das crianças, diploma, post-it, tabela binária).
 - Dados do caso em `js/level1-data.js`. Guia completo (spoiler) em `TESTES-NIVEL1.md`.
@@ -32,7 +32,7 @@ Abra `index.html` e escolha **Nível 3**. O nível mais difícil: as questões p
 - Dados do caso em `js/level3-data.js`. Guia completo (spoiler) em `TESTES-NIVEL3.md`.
 
 ## Documentação em PDF
-A pasta **`pdf/`** tem os guias em PDF, para a equipe ler e imprimir: visão geral, guias dos Níveis 1, 2 e 3 (com spoilers) e o contexto técnico.
+A pasta **`pdf/`** tem os guias em PDF, para a equipe ler e imprimir: **Guia do Mestre** (passo a passo dos 3 níveis), **Dicas do Mestre** (dica pronta para cada situação de travamento), visão geral, guias dos Níveis 1, 2 e 3 (com spoilers) e o contexto técnico.
 Depois de mudar algum `.md`, gere de novo com `python gerar-pdfs.py`. É preciso ter o Chrome ou o Edge e o pacote markdown (`python -m pip install markdown`).
 
 ## Minigames reaproveitados

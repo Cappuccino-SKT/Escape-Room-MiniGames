@@ -1,6 +1,7 @@
 // ===== NÍVEL 1 — "AS NOTAS" =====
 // Ativo com index.html?nivel=1 (ou escolhendo "Nível 1"). O J trocou a senha do Sistema de Notas do professor;
-// a senha = nome da filha + ano da formatura + número da sorte. O grupo investiga o PC e a sala e FALA a senha
+// a senha é uma palavra só: o nome da filha (ALICE). O "Esqueci a senha" pede as perguntas de segurança (ano da
+// formatura e número da sorte) e só então mostra o lembrete. O grupo investiga o PC e a sala e FALA a palavra-chave
 // ao mestre do jogo (cronômetro, punição e vitória no projetor.html).
 // Trilha principal: LEIA-ME → Sistema de Notas ("Esqueci a senha") → E-mail + Fotos (filha) → formatura.c (ano) → aula_binario (sorte).
 // Opcionais: anotacoes.docx (Ctrl+A), memoria.exe (foto da formatura), Navegador, Lixeira (armadilha).
@@ -61,9 +62,31 @@
     };
     el.querySelector(".l1-forgot").onclick = () => {
       const h = el.querySelector(".l1-hint");
+      if (!h.classList.contains("hidden")) return;
       h.classList.remove("hidden");
-      h.innerHTML = `Dica cadastrada pelo professor:<br><b>“${esc(D.passwordHint)}”</b>`;
-      done("hint", "Dica da senha");
+      h.innerHTML = `<b>Perguntas de segurança</b>
+        <form class="l1-sec">${D.security.map((s, i) => `<label>${esc(s.q)}<input data-i="${i}" autocomplete="off" spellcheck="false"></label>`).join("")}
+        <button>Confirmar</button></form><p class="l1-sec-msg"></p>`;
+      const sf = h.querySelector("form"), sm = h.querySelector(".l1-sec-msg");
+      let sbusy = false;
+      sf.onsubmit = async (e) => {
+        e.preventDefault();
+        if (sbusy) return;
+        const vals = [...sf.querySelectorAll("input")].map((x) => x.value.trim());
+        if (vals.some((v) => !v)) return (sm.textContent = "Responda às duas perguntas.");
+        const alt = D.security.find((s, i) => vals[i] !== s.a && (s.alt || []).includes(vals[i]));
+        if (alt) return (sm.textContent = alt.altMsg);
+        if (D.security.every((s, i) => vals[i] === s.a)) {
+          h.innerHTML = `Respostas corretas. Lembrete cadastrado pelo professor:<br><b>“${esc(D.passwordHint)}”</b>`;
+          done("hint", "Perguntas de segurança");
+          return;
+        }
+        const ok = D.security.filter((s, i) => vals[i] === s.a).length;
+        sm.textContent = `Respostas incorretas (${ok} de ${D.security.length} certa${ok === 1 ? "" : "s"}).`;
+        sbusy = true;
+        await Interference.error("nivel1");
+        sbusy = false;
+      };
     };
   }
 

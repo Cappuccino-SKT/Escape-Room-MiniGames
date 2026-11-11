@@ -2,7 +2,7 @@
 // Usado pelo jogo (js/level2.js) e pelos papéis da sala (imprimir-nivel2.html).
 // ATENÇÃO: as pistas dependem umas das outras. Se mudar algo aqui, confira o guia TESTES-NIVEL2.md.
 //
-// Resposta final (falada ao mestre do jogo): ELISA.
+// Resposta final (falada ao mestre do jogo, "A palavra-chave é ELISA"): ELISA.
 // Caminho: fechadura (portas lógicas) → quem entrou tinha crachá de monitor E a senha →
 // lista de monitores (sala): Bruno, Elisa, Rafael → chat (senha = saída do limpeza.c): Rafael saiu antes da senha nova →
 // Bruno tem álibi (ônibus 22:58 com o Rafael) → sobra a Elisa, que mente no depoimento.
@@ -23,7 +23,7 @@ window.L2 = {
     { h2: "As regras do jogo" },
     { ol: [
       "Meu cúmplice **MENTE**. Os inocentes dizem a **VERDADE**.",
-      "Quando souberem quem é, **digam o nome para mim**, em voz alta.",
+      "Quando souberem quem é, digam para mim, em voz alta: **\"A palavra-chave é...\"** e o **primeiro nome** do cúmplice.",
       "Errar a acusação tem um preço."
     ] },
     { box: "Tudo o que vocês precisam está neste computador ou nesta sala. Investiguem." },

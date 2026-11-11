@@ -3,12 +3,19 @@
 // ATENÇÃO: só o NOME do professor é real; todo o resto (filha, formatura, número da sorte, fotos, e-mails) é inventado.
 // O nome ainda depende da autorização do professor: se ele não autorizar, troque "professor" abaixo e reimprima os papéis.
 //
-// Resposta final (falada ao mestre do jogo): ALICE19987
-//   = nome da filha (ALICE) + ano da formatura (1994 + 4 = 1998) + número da sorte (111 em binário = 7)
+// Resposta final (falada ao mestre do jogo, "A palavra-chave é ALICE"): ALICE = o nome da filha.
+//   Para saber DO QUE a senha é feita, o grupo responde às perguntas de segurança do "Esqueci a senha":
+//   ano da formatura (1994 + 4 = 1998) e número da sorte (111 em binário = 7). Só aí aparece o lembrete
+//   "o nome da minha filha", e o grupo ainda precisa deduzir qual criança é a filha (Alice, não Sofia nem Pedro).
 window.L1 = {
   professor: "Prof. Muriel Godoi",
-  password: "ALICE19987",
-  passwordHint: "O nome da minha filha + o ano em que me formei + o meu número da sorte.",
+  password: "ALICE",
+  // "Esqueci a senha": perguntas de segurança. As duas certas liberam o lembrete (passwordHint).
+  security: [
+    { q: "Em que ano você se formou?", a: "1998" },
+    { q: "Qual é o seu número da sorte? (em decimal)", a: "7", alt: ["111"], altMsg: "Isso está em binário. O sistema pede o número em decimal." }
+  ],
+  passwordHint: "Uma palavra só: o nome da minha filha.",
 
   // Recado do J (formato de js/doc.js; {prof} vira o nome do professor)
   intro: [
@@ -16,7 +23,7 @@ window.L1 = {
     { p: "Este é o computador do **{prof}**. As notas finais de vocês estão aqui dentro." },
     { warn: "Eu troquei a senha do Sistema de Notas. Quando o tempo acabar, **TODAS as notas serão ZERADAS**." },
     { p: "A não ser que vocês descubram a senha nova. Ela tem a cara do professor: **investiguem a vida dele**." },
-    { box: "Quando souberem a senha, **digam para mim**, em voz alta. Errar tem um preço." },
+    { box: "A senha nova é **uma palavra só**. Quando souberem, digam para mim, em voz alta: **\"A palavra-chave é...\"**. Errar tem um preço." },
     { sign: "— J" }
   ],
 
@@ -51,7 +58,7 @@ window.L1 = {
 
   // ---------- Opcionais ----------
   // anotacoes.docx: texto em branco sobre branco, aparece com Ctrl+A (selecionar tudo).
-  hiddenNote: ["Lembrete — senha nova do Sistema de Notas:", "começa pelo NOME DELA,", "depois o ANO em que me formei,", "e termina com o meu NÚMERO DA SORTE.", "Tudo junto, sem espaço."],
+  hiddenNote: ["Lembrete — se eu esquecer a senha do Sistema de Notas:", "as perguntas de segurança são o ANO em que me formei", "e o meu NÚMERO DA SORTE (em decimal!).", "Acertando as duas, o sistema me lembra da senha."],
 
   // Jogo da memória de hardware: ao completar, recupera a foto da formatura (com o ano).
   memory: [
@@ -67,7 +74,7 @@ window.L1 = {
     { t: "ontem, 22:31", q: "escola pequeno saber reunião de pais turma 3B" },
     { t: "ontem, 21:05", q: "como explicar números binários para criança" },
     { t: "ontem, 20:50", q: "foguete de garrafa pet passo a passo (feira de ciências do Pedro)" },
-    { t: "ontem, 18:12", q: "senha forte: misturar nome + ano + número é seguro?" },
+    { t: "ontem, 18:12", q: "pergunta de segurança: ano de formatura e número da sorte é seguro?" },
     { t: "anteontem", q: "reencontro da turma de engenharia — 30 anos de formados?" }
   ],
 

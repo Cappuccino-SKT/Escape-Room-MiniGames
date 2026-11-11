@@ -2,7 +2,7 @@
 // Usado pelo jogo (js/level3.js) e pelos papéis da sala (imprimir-nivel3.html).
 // ATENÇÃO: as pistas dependem umas das outras. Se mudar algo aqui, confira o guia TESTES-NIVEL3.md.
 //
-// Resposta final (falada ao mestre do jogo): SEGFAULT.
+// Resposta final (falada ao mestre do jogo, "A palavra-chave é SEGFAULT"): SEGFAULT.
 // Questões principais (exigem conhecimento do curso; podem ser feitas ao mesmo tempo):
 //   Entrada: dump de memória em hex → ASCII = PONTEIRO
 //   Q1 lista encadeada (cartões na sala, head no lista.c) = MALLOC
@@ -32,7 +32,7 @@ window.L3 = {
       "**O decifra.c** faz o resto. Se vocês souberem programar."
     ] },
     { box: "Quem não souber pode pedir ajuda aos programas menores deste computador. Eu nunca tive essa sorte." },
-    { p: "Quando souberem o kill switch, **digam para mim**. Errar tem um preço." },
+    { p: "O kill switch é **uma palavra só**. Quando souberem, digam para mim: **\"A palavra-chave é...\"**. Errar tem um preço." },
     { sign: "— J" }
   ],
 
