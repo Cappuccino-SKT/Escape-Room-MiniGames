@@ -46,7 +46,7 @@ Para iniciantes (mais guiado que o Nível 2). O J trocou a senha do Sistema de N
 - O Nível 1 antigo (admin, hacker, labirinto, cmd, ransomware) foi removido a pedido do usuário; está na tag git `nivel1-antigo`.
 
 ## Nível 2 — "O Cúmplice" (`index.html?nivel=2`)
-Partida separada de 30 min (cada grupo escolhe o nível na inscrição). Mesmo hacker (J), história nova: descobrir quem instalou o vírus no Lab. N112. Detalhes e respostas em `TESTES-NIVEL2.md`.
+Partida separada de 30 min (cada grupo escolhe o nível na inscrição). Mesmo hacker (J), história nova: descobrir quem instalou o vírus no Lab. N011. Detalhes e respostas em `TESTES-NIVEL2.md`.
 - Resposta: **Elisa**, falada ao mestre do jogo. Acusação errada = tecla P no `projetor.html` (cena do `final-scare.js` + perde 5 min + segunda chance). Dicas: 1 por jogador, pedidas pela câmera.
 - Trilha principal: senha do notebook (cartas na sala) → `fechadura.exe` (deduzir AND/OR pelo registro) → lista de monitores (sala) → `chat_monitores` (senha = saída do `limpeza.c`) → depoimentos + bilhete de ônibus.
 - Opcionais com pistas extras: `terminal.exe` (arquivos ocultos), `cameras.exe` (horário), `email_bruno` (senha deduzida), `rede.exe` (MAC decimal → hex). Erros = jump scare.
@@ -64,7 +64,7 @@ O mais difícil. O J se revela: ex-aluno de Eng. de Computação que trancou no 
 
 ## Pendências / decisões em aberto
 - **Autorização do Prof. Muriel Godoi** para usar o nome no Nível 1.
-- **Sala real do evento**: ainda não decidida (o Nível 2 usa "N112" em `js/level2-data.js`).
+- **Sala do Nível 2**: Laboratório N011 (confirmada pelo usuário; fica em `js/level2-data.js`).
 - **Vídeos dos sustos**: o usuário vai gerar com IA. Cada lugar tem sua lista em `CONFIG.scareMedia` (arquivos em `videos/`); com vários, sorteia sem repetir. Lugares: padrao, interferencia, nivel1, nivel1_armadilha, nivel2, nivel2_armadilha, nivel3, nivel3_armadilha, projetor_tempo (o `projetor_punicao` foi removido: a resposta errada toca a cena do `final-scare.js` nos 3 níveis).
 - **Sustos por erro são condicionais** (`Interference.error` + `CONFIG.scareRules`): nunca no 1º erro, descanso de 90 s após qualquer susto, chance crescente (30% por erro). Sem susto = efeito leve. Armadilhas e projetor sempre assustam. **Aviso ao público:** os sustos têm luz piscando e som alto; vale um aviso na entrada.
 - **Sons**: ainda sem arquivos (pasta `sounds/` + `CONFIG.sounds.*`).
