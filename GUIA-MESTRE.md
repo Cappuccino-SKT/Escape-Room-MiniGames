@@ -138,7 +138,7 @@ Há 3 desenhos de criança na parede. O grupo precisa descobrir qual é a **filh
 
 ## NÍVEL 2 — "O Cúmplice" (intermediário)
 
-**História:** entre 23:00 e 23:10 de ontem, alguém instalou o vírus do J no computador do Laboratório N112. O J tem um **cúmplice** entre 5 suspeitos. **Regra do J: o cúmplice mente; os inocentes dizem a verdade.**
+**História:** entre 23:00 e 23:10 de ontem, alguém instalou o vírus do J no computador do Laboratório N011. O J tem um **cúmplice** entre 5 suspeitos. **Regra do J: o cúmplice mente; os inocentes dizem a verdade.**
 
 **Palavra-chave: ELISA** (Elisa Prado, a cúmplice).
 

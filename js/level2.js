@@ -1,5 +1,5 @@
 // ===== NÍVEL 2 — "O CÚMPLICE" =====
-// Ativo com index.html?nivel=2. Investigação: descobrir quem instalou o vírus no N112.
+// Ativo com index.html?nivel=2. Investigação: descobrir quem instalou o vírus no N011.
 // Trilha principal: caso.txt → suspeitos/depoimentos → fechadura.exe (portas lógicas) → limpeza.c → chat_monitores.
 // Opcionais (pistas extras): terminal.exe, cameras.exe, email do Bruno, rede.exe (Wi-Fi).
 // Erros nos minijogos passam por Interference.error: só às vezes viram jump scare (CONFIG.scareRules).

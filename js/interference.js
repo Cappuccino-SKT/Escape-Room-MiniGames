@@ -18,7 +18,7 @@ window.Interference = (() => {
     "del /f /s /q C:\\Usuarios\\*", "Copiando arquivos para 192.168.6.66...",
     "format C: /y", "Desativando antivírus... OK", "Injetando payload JIGSAW.EXE",
     "Sobrescrevendo BIOS... 34%", "Sobrescrevendo BIOS... 67%",
-    "EU ESTOU VENDO VOCÊ", "Rastreando localização... SALA N112",
+    "EU ESTOU VENDO VOCÊ", "Rastreando localização... SALA N011",
     "Sobrescrevendo BIOS... 100%", "Upload de notas: zerando prova de lógica...",
     "taskkill /f /im explorer.exe", "VOCÊ NÃO DEVERIA TER FEITO ISSO"
   ];

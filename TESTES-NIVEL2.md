@@ -42,7 +42,7 @@ O `projetor.html` aceita ajustes pelo endereço: `projetor.html?nivel=2&min=30&p
 
 ## 3. A lógica do caso
 
-**Regra do J:** o cúmplice **mente**; os inocentes dizem a **verdade**. O vírus foi instalado no N112 entre 23:00 e 23:10.
+**Regra do J:** o cúmplice **mente**; os inocentes dizem a **verdade**. O vírus foi instalado no N011 entre 23:00 e 23:10.
 
 1. **Fechadura:** o circuito é `PORTA = (A AND B) OR C`. O registro reconstruído das 23:03 mostra **C = 0** (a chave física não foi usada) e a porta **aberta**. Logo, **A = 1 e B = 1**: quem entrou tinha **crachá de monitor** e sabia a **senha da porta**.
 2. **Lista de monitores (sala):** dos 5 suspeitos, têm crachá **Bruno, Elisa e Rafael**. Carla e Diego estão fora.
@@ -151,5 +151,5 @@ OS.openApp('fechadura')    // abrir qualquer app pelo id: caso, suspeitos, depoi
 
 ## 9. Ainda provisório
 
-- Nomes dos suspeitos e a sala **N112**: a sala real do evento ainda não foi decidida. Se mudar, substitua todos os "N112" em `js/level2-data.js` e reimprima os papéis.
+- Nomes dos suspeitos e a sala **N011**: sala confirmada (N011). Se mudar de novo, substitua todos os "N011" em `js/level2-data.js` e reimprima os papéis.
 - Vídeos dos sustos: ainda não existem. Enquanto isso, aparecem o rosto desenhado e o grito gerado pelo navegador (veja `videos/LEIA-ME.txt` e `scareMedia` no config).

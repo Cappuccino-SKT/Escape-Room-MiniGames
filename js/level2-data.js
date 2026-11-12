@@ -8,7 +8,7 @@
 // Bruno tem álibi (ônibus 22:58 com o Rafael) → sobra a Elisa, que mente no depoimento.
 window.L2 = {
   culprit: "Elisa",
-  room: "N112",
+  room: "N011",
 
   // Login do notebook. Na sala: uma carta por letra, com o número da posição (imprimir-nivel2.html).
   loginPassword: "TRAICAO",
@@ -17,7 +17,7 @@ window.L2 = {
   // Recado do J (formato de js/doc.js)
   caso: [
     { h: "Olá. Vocês já me conhecem." },
-    { p: "Ontem à noite, entre **23:00 e 23:10**, alguém entrou no **Laboratório N112** e instalou o meu vírus neste computador. Eu não estava aqui." },
+    { p: "Ontem à noite, entre **23:00 e 23:10**, alguém entrou no **Laboratório N011** e instalou o meu vírus neste computador. Eu não estava aqui." },
     { warn: "Eu tenho um **CÚMPLICE**." },
     { p: "São **5 suspeitos**. As fichas e os depoimentos estão neste computador." },
     { h2: "As regras do jogo" },
@@ -32,11 +32,11 @@ window.L2 = {
 
   suspects: [
     { name: "Bruno Sato",    icon: "🧑‍💻", course: "Eng. da Computação", year: 2024,
-      notes: "Usa o N112 quase todo dia. Tem um gato chamado Bit." },
+      notes: "Usa o N011 quase todo dia. Tem um gato chamado Bit." },
     { name: "Elisa Prado",   icon: "👩‍🎨", course: "Arquitetura",        year: 2022,
-      notes: "Usa o N112 para renderizar maquetes. Sempre anda com um tubo de projeto." },
+      notes: "Usa o N011 para renderizar maquetes. Sempre anda com um tubo de projeto." },
     { name: "Carla Menezes", icon: "👩‍💼", course: "Direito",            year: 2023,
-      notes: "Estagiária da secretaria. Responsável pela chave física do N112." },
+      notes: "Estagiária da secretaria. Responsável pela chave física do N011." },
     { name: "Diego Fontes",  icon: "🧑‍⚕️", course: "Medicina",           year: 2023,
       notes: "Estuda no corredor do bloco N até tarde. Sempre de jaleco." },
     { name: "Rafael Kuhn",   icon: "👨‍🔧", course: "Eng. Elétrica",      year: 2022,
@@ -47,8 +47,8 @@ window.L2 = {
   statements: {
     "Bruno Sato":    "Saí do laboratório às 22:50. Peguei o ônibus das 22:58 com o Rafael e fui direto para casa.",
     "Elisa Prado":   "Eu já tinha ido embora bem antes das 23h. E eu vi: o Bruno voltou ao laboratório depois das 23h.",
-    "Carla Menezes": "Devolvi a chave do N112 na portaria às 22h, como sempre. Depois fui embora.",
-    "Diego Fontes":  "Eu estava estudando no corredor. Por volta das 23h, vi alguém com crachá de monitor entrando no N112. Não vi o rosto.",
+    "Carla Menezes": "Devolvi a chave do N011 na portaria às 22h, como sempre. Depois fui embora.",
+    "Diego Fontes":  "Eu estava estudando no corredor. Por volta das 23h, vi alguém com crachá de monitor entrando no N011. Não vi o rosto.",
     "Rafael Kuhn":   "Às 23h o Bruno estava no ônibus comigo. E eu nem sei a senha nova da porta: saí do grupo dos monitores antes de ela mudar."
   },
 
@@ -91,7 +91,7 @@ window.L2 = {
   chatPassword: "MNTRA9",
 
   chat: [
-    { t: "19:30", who: "Paula (coordenação)", msg: "Pessoal, a senha da porta do N112 vai mudar hoje à noite." },
+    { t: "19:30", who: "Paula (coordenação)", msg: "Pessoal, a senha da porta do N011 vai mudar hoje à noite." },
     { t: "19:41", who: "Rafael Kuhn",         msg: "Galera, vou sair do grupo, esse semestre não vou mais monitorar. Valeu!" },
     { t: "20:15", sys: "Rafael Kuhn saiu do grupo." },
     { t: "21:00", who: "Paula (coordenação)", msg: "Nova senha da porta: 7391. Não passem para ninguém." },
@@ -107,7 +107,7 @@ window.L2 = {
   fs: {
     "Documentos\\": {
       "aulas.txt": ["Seg 19h  Algoritmos (monitor: Bruno)", "Ter 19h  Desenho Digital (monitora: Elisa)", "Qua 19h  Circuitos (monitor: Rafael — saiu)"],
-      "avisos.txt": ["O N112 fecha às 23h. Depois desse horário, só com crachá de monitor + senha, ou com a chave da secretaria."]
+      "avisos.txt": ["O N011 fecha às 23h. Depois desse horário, só com crachá de monitor + senha, ou com a chave da secretaria."]
     },
     "Downloads\\": {
       "jigsaw.exe": { trap: true },
@@ -129,10 +129,10 @@ window.L2 = {
   // Câmeras: o grupo digita um horário exato (HH:MM) que encontrou em outras pistas. Horário sem gravação = susto.
   cameras: {
     "22:00": "CAM-01 (portaria) — Carla Menezes devolve uma chave no balcão e vai embora.",
-    "22:50": "CAM-02 (corredor N) — Bruno Sato sai do N112 com a mochila e apaga a luz.",
+    "22:50": "CAM-02 (corredor N) — Bruno Sato sai do N011 com a mochila e apaga a luz.",
     "22:58": "CAM-04 (ponto de ônibus) — Bruno Sato e Rafael Kuhn entram no ônibus da linha 12.",
-    "23:03": "CAM-02 (corredor N) — 1 pessoa com CRACHÁ DE MONITOR abre a porta do N112. Carrega um TUBO DE PROJETO nas costas. Rosto coberto pelo capuz. Ao fundo, um aluno de jaleco estuda no corredor.",
-    "23:09": "CAM-02 (corredor N) — A mesma pessoa sai do N112 apressada, ainda de capuz, com o tubo de projeto."
+    "23:03": "CAM-02 (corredor N) — 1 pessoa com CRACHÁ DE MONITOR abre a porta do N011. Carrega um TUBO DE PROJETO nas costas. Rosto coberto pelo capuz. Ao fundo, um aluno de jaleco estuda no corredor.",
+    "23:09": "CAM-02 (corredor N) — A mesma pessoa sai do N011 apressada, ainda de capuz, com o tubo de projeto."
   },
 
   // E-mail do Bruno: senha = gato (Bit) + ano de ingresso (ficha) → "bit2024". Erros passam por Interference.error.
